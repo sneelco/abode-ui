@@ -5,6 +5,7 @@ var abode = angular.module('abode', [
   'ui.bootstrap',
   'abode.welcome',
   'abode.home',
+  'abode.devices',
 ]);
 
 abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function($state, $urlRouter, abode) {
@@ -91,7 +92,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
   this.message_scope = null;
 
 
-  this.url = function (uri) {
+  this.url = function (uri, source) {
     var url = {};
     url.value = function() {return self.config.server + uri; };
     url.split = function (separator,limit) { return url.value().split(separator,limit); };

@@ -1,0 +1,98 @@
+  <div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+    <div style="position: fixed; right: 1em; top: .5em; font-size: 3em; cursor: pointer" ng-click="back()"><i class="glyphicon glyphicon-arrow-left"></i></div>
+    <div class="row">
+      <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+        <h2>Edit Device</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-3" style="font-size: 1.5em; position: relative">
+                <ul class="section-nav">
+                  <li ng-click="section='provider'" ng-class="{active: section == 'provider'}">{{device.provider | capitalize}}</li>
+                  <li ng-click="section='rooms'" ng-class="{active: section == 'rooms'}">Rooms</li>
+                  <li ng-click="section='scenes'" ng-class="{active: section == 'scenes'}">Scenes</li>
+                  <li ng-click="section='triggers'" ng-class="{active: section == 'triggers'}">Triggers</li>
+                  <li ng-click="section='advanced'" ng-class="{active: section == 'advanced'}">Advanced</li>
+                </ul>
+              </div>
+              <div class="col-sm-9 col-xs-12" style="font-size: 2em;">
+
+                <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+                <form name="editDevice">
+                  <div ng-show="section=='provider'" ng-include="provider_template">
+                  </div>
+                  <div ng-show="section=='advanced'">
+                    <div class="form-group">
+                      <label for="name">Provider</label>
+                      <select size="1" class="form-control" id="provider" placeholder="Provider" required="" ng-model="device.provider" ng-options="o as o for o in providers | orderBy: '+'"></select>
+                    </div>
+                    <div class="form-group">
+                      <label for="enabled">Active: </label>
+                      <toggle value="device.active" class="pull-right"></toggle>
+                    </div>
+                    <div class="form-group">
+                      <label for="name">Capabilities</label>
+                      <div style="overflow: auto; height: 8em;">
+                      <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="capability in capabilities | orderBy: '+'" ng-click="toggle_capability(capability)" ng-class="{'list-group-item-success': has_capability(capability)}" style="cursor: pointer;">
+                          <i class="glyphicon glyphicon-ok-circle" ng-show="has_capability(capability)"></i>
+                          <i class="glyphicon glyphicon-ban-circle text-muted" ng-show="!has_capability(capability)"></i>
+                          {{capability}}
+                        </li>
+                      </ul>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="editDevice.$invalid"><i class="icon-savetodrive"></i> Save</button>
+                      <button type="submit" class="btn btn-sm btn-default" ng-click="remove()"><i class="icon-circledelete"></i> Remove</button>
+                    </div>
+                  </div>
+
+                  <div ng-show="section=='rooms'">
+                    <div ng-show="loading"><i class="icon-refresh spin"></i> Loading Rooms</div>
+                    <div class="form-group" ng-hide="loading">
+                      <label for="name">Rooms </label>
+                      <button class="btn btn-success btn-xs pull-right" ng-click="addRoom()"><i class="icon-plus-sign"></i> Assign</button>
+                      <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="room in rooms">{{room.name}} <button class="pull-right btn btn-default btn-xs" ng-click="removeRoom(room._id)"><i class="icon-remove-sign"></i> Unassign</button></li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div ng-show="section=='scenes'">
+                    <div ng-show="loading_scenes"><i class="icon-refresh spin"></i> Loading Scenes</div>
+                    <div class="form-group" ng-hide="loading">
+                      <label for="name">Scenes </label>
+                      <button class="btn btn-success btn-xs pull-right" ng-click="addScene()"><i class="icon-plus-sign"></i> Assign</button>
+                      <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="scene in scenes">{{scene.name}} <button class="pull-right btn btn-default btn-xs" ng-click="removeScene(scene._id)"><i class="icon-remove-sign"></i> Unassign</button></li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div ng-show="section=='triggers'">
+                    <div ng-show="loading_triggers"><i class="icon-refresh spin"></i> Loading Triggers</div>
+                    <div class="form-group" ng-hide="loading">
+                      <label for="name">Triggers </label>
+                      <button class="btn btn-success btn-xs pull-right" ng-click="addTrigger()"><i class="icon-plus-sign"></i> Assign</button>
+                      <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="trigger in triggers">{{trigger.name}} <button class="pull-right btn btn-default btn-xs" ng-click="removeScene(trigger._id)"><i class="icon-remove-sign"></i> Unassign</button></li>
+                      </ul>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>

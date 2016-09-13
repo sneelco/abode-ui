@@ -1,0 +1,26 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{name}}
+
+      <button class="btn btn-primary btn-sm pull-right" ng-hide="errors || processing" ng-click="reload()"><i class="icon-refresh"></i></button>
+      <button class="btn btn-danger btn-sm pull-right" ng-show="errors" ng-click="reload()"><i class="icon-erroralt"></i></button>
+      <button class="btn btn-default btn-sm pull-right" ng-show="processing"><i class="icon-loadingalt spin"></i></button>
+    </h4>
+</div>
+<div class="modal-body">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-9" ng-class="{'col-xs-offset-1': sensors.length == 0}" ng-hide="controls.length == 0">
+        <div ng-repeat="control in controls" ng-include="control.view" class="row" > </div>
+      </div>
+      <div class="col-xs-3" style="font-size: .8em;" ng-class="{'col-xs-offset-4': controls.length == 0, 'text-center': controls.length == 0, 'text-right': controls.length != 0}">
+        <div ng-repeat="sensor in sensors" ng-include="sensor.view" class="row" style="" > </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning btn-sm" type="button" ng-click="ok()">Close</button>
+    <button class="btn btn-default btn-sm pull-left" type="button" ng-click="edit()" ng-hide="source"><i class="icon-edit"></i></button>
+</div>
