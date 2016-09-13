@@ -1,0 +1,66 @@
+<div class="row">
+  <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+    <div>&nbsp;</div>
+    <div class="row well">
+      <div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-0">
+        <img src="images/home.png"  class="img-responsive img-rounded">
+      </div>
+
+      <div class="col-xs-12  col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-0" ng-show="config.server == undefined">
+      
+        <p class="text-center"><strong>Connect to an Abode Server</strong></p>
+        <div class="list-group">
+          <button type="button" class="list-group-item list-group-item-danger" ng-show="sources.length == 0 && !loading" ng-click="load()"><i class="icon-exclamation-sign text-danger"></i> Unable to detect any Abode servers. Specify an address manually below or click here to retry</button>
+          <button type="button" class="list-group-item" ng-repeat="source in sources" ng-click="connect(source.url)"><i class="icon-home"></i> {{source.name}}</button>
+          <button type="button" class="list-group-item" disabled ng-show="loading"><i class="icon-loadingalt spin"></i> Searching of servers...</button>
+          <button type="button" class="list-group-item" ng-show="!loading && sources.length > 0" ng-click="load()"><i class="icon-ok-sign text-success"></i> Found {{sources.length}} Server[s]<div><small>Click to search again.</small></div></button>
+        </div>
+        <p class="text-center"><strong>- or -</strong></p>
+        <form name="manualFrm">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Specify Manually" ng-model="manual">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button" ng-click="connect(manual)">Go!</button>
+            </span>
+          </div>
+        </form>
+
+      </div>
+
+      <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-0" ng-show="config.server != undefined && config.auth == undefined">
+        <p class="text-center"><strong>You need to login to continue:</strong></p>
+        <form name="loginFrm">
+          <div class="form-group">
+            <label for="user">Username</label>
+            <input type="text" class="form-control" id="user" placeholder="Username" ng-model="auth.user" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Password" ng-model="auth.password" required>
+          </div>
+          <button class="btn btn-success" ng-disabled="loginFrm.$invalid" ng-click="do_login()"><span class="glyphicon glyphicon-log-in"></span> Login</button>
+        </form>
+      </div>
+
+      <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-0" ng-show="config.server != undefined && config.auth != undefined">
+        <p class="text-center"><strong>Select an Interface</strong></p>
+        <div class="list-group">
+          <button type="button" class="list-group-item" disabled ng-show="loading"><i class="icon-loadingalt spin"></i> Looking for Interfaces</button>
+          <button type="button" class="list-group-item list-group-item-warning" ng-show="interfaces.length == 0 && !loading" ng-click="load_interfaces()"><i class="icon-warning-sign text-warning"></i> No existing interfaces found. Create a new one below or click here to retry</button>
+          <button type="button" class="list-group-item" ng-repeat="interface in interfaces" ng-click="select(interface.name)"><i class="{{interface.icon}}"></i> {{interface.name}}</button>
+        </div>
+        <p class="text-center"><strong>- or -</strong></p>
+        <form name="manualFrm">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Create a New Interface" ng-model="interface_name">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button" ng-click="select(interface_name)"><i class="icon-plus-sign"></i> <span class="hidden-xs">Create</span></button>
+            </span>
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,5 @@
+<div class="messages" ng-class="{'messages-active': messages.length > 0}">
+  <div class="messages-message" ng-repeat="message in messages">
+    <i class="" ng-class="{'text-success': message.type == 'success', 'text-info': message.type == 'info', 'text-danger': message.type == 'failed', 'icon-ok-sign': message.type == 'success', 'icon-info-sign': message.type == 'info', 'icon-warning-sign': message.type == 'failed'}"></i> {{message.message}}
+  </div>
+</div>

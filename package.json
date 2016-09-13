@@ -1,0 +1,19 @@
+{
+  "name": "abode-ui",
+  "version": "0.0.1",
+  "description": "",
+  "author": "Scott Neel",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-concurrent": "^2.3.1",
+    "grunt-contrib-connect": "^1.0.2",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0"
+  },
+  "dependencies": {},
+  "scripts": {
+    "postinstall": "bower install && cd src/vendor && wget -nc -O whhg-font.zip http://www.webhostinghub.com/glyphs/resources/whhg-font.zip && unzip -o whhg-font.zip && rm whhg-font.zip && cd ../../",
+    "start": "grunt"
+  }
+}

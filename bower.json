@@ -1,0 +1,24 @@
+{
+  "name": "abode-ui",
+  "version": "0.0.0",
+  "authors": [
+    "Scott Neel <scott@neel.net>"
+  ],
+  "description": "abode-ui",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "static/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-ui-router": "^0.3.1",
+    "bootstrap": "^3.3.7",
+    "angular-resource": "^1.5.8",
+    "angular-bootstrap": "^2.1.1"
+  }
+}

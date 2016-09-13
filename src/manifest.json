@@ -1,0 +1,13 @@
+{
+  "name": "Abode",
+  "short_name": "Abode",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#000",
+  "description": "Welcome Home",
+  "icons": [{
+    "src": "images/home.png",
+    "sizes": "256x256",
+    "type": "image/png"
+  }]
+}
