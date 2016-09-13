@@ -28,6 +28,11 @@ abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function(
         auth: ['$q', 'abode', 'Auth', function ($q, abode, Auth) {
           var defer = $q.defer();
 
+          if (!abode.config.server) {
+            defer.reject({'state': 'welcome', 'message': 'Login Expired'});
+            return defer.promise;
+          }
+
           Auth.get(function (auth) {
             abode.auth = auth;
             defer.resolve(auth);
@@ -38,7 +43,7 @@ abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function(
               delete abode.config.auth;
               abode.save();
 
-              defer.reject({'state': 'Welcome', 'message': 'Login Expired'});
+              defer.reject({'state': 'welcome', 'message': 'Login Expired'});
             } else {
               defer.reject({'message': 'Server has gone away'});
             }
@@ -159,10 +164,37 @@ abode.directive('messages', function () {
   };
 });
 
-abode.controller('rootController', function () {
+abode.controller('rootController', ['$rootScope', '$state', 'abode', function ($rootScope, $state, abode) {
 
-});
+  $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
 
-abode.controller('mainController', ['auth', function (auth) {
-  
+    if (error.message || error.state !== 'welcome') {
+      abode.message({'message': error.message || 'Error Loading Page', 'type': 'error'});
+    }
+    $rootScope.loading = false;
+    event.preventDefault();
+    if ( ! error ) {
+      alert('Application failed to load');
+    } else {
+      if (error.state && toState.name !== error.state) {
+        $state.go(error.state, error);
+      }
+    }
+  });
+
+}]);
+
+abode.controller('mainController', ['$scope', '$state', 'abode', function ($scope, $state, abode) {
+  $scope.logout = function () {
+    abode.auth.$logout().then(function () {
+      console.log('success');
+      abode.save({});
+      $state.go('welcome');
+    }, function (err) {
+      abode.message({'message': err.message || 'Unknown Error Occured', 'type': 'failed'});
+      abode.config = {};
+      abode.save({});
+      $state.go('welcome');
+    });
+  };
 }]);

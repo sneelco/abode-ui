@@ -46,7 +46,7 @@ abode.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$st
               return (item.url === response.data.url);
             });
 
-            if (matches.length == 0) {
+            if (matches.length === 0) {
               $scope.sources.push({
                 'name': response.data.name,
                 'url': response.data.url

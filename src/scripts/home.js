@@ -5,10 +5,7 @@ home.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRouter
   $state
     .state('main.home', {
       url: '/Home/:interface',
-      //templateUrl: "views/home/index.html",
-      templateUrl: function () {
-        return 'views/home/index.html';
-      },
+      template: '<interface class="interface"></interface>',
       controller: 'homeController',
     });
 
@@ -20,19 +17,19 @@ home.factory('Interfaces', ['$resource', 'abode', function($resource, abode) {
 
 }]);
 
-home.controller('homeController', ['$scope', '$state', 'abode', function ($scope, $state, abode) {
-  console.log(abode.auth);
-  $scope.logout = function () {
-    abode.auth.$logout().then(function () {
-      console.log('success');
-      abode.save({});
-      $state.go('welcome');
-    }, function (err) {
-      abode.message({'message': err.message || 'Unknown Error Occured', 'type': 'failed'});
-      abode.config = {};
-      abode.save({});
-      $state.go('welcome');
-    });
+home.directive('interface', ['$sce', 'abode', function ($sce, abode) {
+  return {
+    restrict: 'E',
+    replace: false,
+    scope: {},
+    templateUrl: function () {
+      return $sce.trustAsResourceUrl(abode.url('/api/abode/views/home.html').value());
+      //return $sce.trustAsResourceUrl(abode.url('/api/abode/interfaces/' + abode.config.interface).value());
+    }
   };
+}]);
+
+home.controller('homeController', ['$scope', '$state', '$templateCache', 'abode', function ($scope, $state, $templateCache, abode) {
+
 
 }]);

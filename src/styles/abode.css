@@ -139,3 +139,126 @@ body {
 .messages.messages-active {
   height: 1.6em;
 }
+
+.interface {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+  #shade {
+    background-color: #000;
+    opacity: .7;
+    position: absolute;
+    top: 0em;
+    bottom: 0em;
+    left: 0em;
+    right: 0em;
+  }
+  .anav-drawer {
+    position: absolute;
+    width: 20em;
+    top: 0em;
+    bottom: 0em;
+    left: -22em;
+    background-color: #333;
+    z-index: 9999;
+    box-shadow: 0em 0em 1em #000;
+    transition: left .25s ease-out;
+  }
+
+  .anav-top {
+    position: absolute;
+    padding: 1em;
+    height: 7em;
+    top: 0em;
+    left: 0em;
+    right: 0em;
+  }
+  .anav-mid {
+    position: absolute;
+    bottom: 6em;
+    top: 7em;
+    left: 0em;
+    right: 0em;
+    overflow-y: auto;
+    background-color: #444;
+  }
+  .anav-mid ul {
+    list-style: none;
+    padding: 0px;
+  }
+  .anav-mid ul li {
+    font-size: 1.3em;
+    padding: 1em;
+    cursor: pointer;
+  }
+  .anav-mid ul li:hover {
+    background-color: #555;
+  }
+  .anav-bottom {
+    background-color: #333;
+    position: absolute;
+    bottom: 0em;
+    height: 6em;
+    left: 0em;
+    right: 0em;
+  }
+  .anav-bottom ul {
+    list-style: none;
+    padding: 0px;
+  }
+  .anav-bottom ul li {
+    display: inline-block;
+    width: 7.55em;
+    font-size: 1.3em;
+    padding: 1em;
+    cursor: pointer;
+    text-align: center;
+  }
+  .anav-bottom ul li:hover {
+    background-color: #222;
+  }
+  .anav-shade {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    opacity: .7;
+    background-color: #000;
+    z-index: 9998;
+  }
+  .anav-visible {
+    left: 0em;
+  }
+  .anav-opener {
+    background-color: transparent;
+    text-shadow: 0px 0px .1em #000;
+    margin: 0em;
+    padding: 0em;
+    border: 0px;
+    margin-top: -0.07em;
+    margin-left: .3em;
+    z-index: 1000;
+  }
+  .anav {
+    position: absolute;
+    top: 0em;
+    bottom: 0em;
+    left: 0em;
+    right: 0em;
+    z-index: 9999;
+    background: transparent;
+  }
+  .loadingPage {
+    position: absolute;
+    top: 0em;
+    bottom: 0em;
+    left: 0em;
+    right: 0em;
+    text-align: center;
+    font-size: 3em;
+    color: #aaa;
+  }

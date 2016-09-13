@@ -1,1 +1,49 @@
-<div ui-view></div>
+<div class="view" ui-view>
+
+</div>
+<div class="anav-shade" ng-click="anav_open = false" ng-show="anav_open"></div>
+
+<div class="anav-drawer" ng-class="{'anav-visible': anav_open}">
+	<div class="anav-opener">
+
+	</div>
+	<div class="anav-top">
+
+	    <div class="row">
+	      <div class="col-xs-4"><img src="./images/home.png" style="height: 5em;"></div>
+	      <div class="col-xs-8" style="text-align: right">
+
+	<div class="btn-group" uib-dropdown is-open="status.isopen">
+	  <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="disabled">
+	    <i class="icon-map-marker"></i> <span class="caret"></span>
+	  </button>
+	  <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
+	    <li role="menuitem" ng-repeat="source in sources" ng-click="changeSource(source)"><a href="#">{{source.name}}</a></li>
+	  </ul>
+	</div>
+
+	      </div>
+	    </div>
+
+	</div>
+	<div class="anav-mid">
+	  <ul>
+	    <li ui-sref="index.home"><i class="glyphicon glyphicon-home"></i> Home</li>
+	    <li ui-sref="index.rooms"><i class="glyphicon glyphicon-modal-window"></i> Rooms</li>
+	    <li ui-sref="index.devices"><i class="glyphicon glyphicon-oil"></i> Devices</li>
+	    <li ui-sref="index.scenes"><i class="icon-picture"></i> Scenes</li>
+	    <li ui-sref="index.triggers"><i class="glyphicon glyphicon-tasks"></i> Triggers</li>
+
+	  </ul>
+	</div>
+	<div class="anav-bottom">
+	  <ul>
+	    <li ui-sref="index.settings"><i class="glyphicon glyphicon-cog"></i> Settings</li>
+	    <li class="text-right" ng-click="logout()"><i class="glyphicon glyphicon-log-out"></i> Logout</li>
+	  </ul>
+	</div>
+</div>
+
+<div style="position: absolute; z-index: 1000">
+<button class="anav-opener text-muted"  ng-click="anav_open = true">&#9776;</button>
+</div>
