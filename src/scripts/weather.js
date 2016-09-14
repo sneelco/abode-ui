@@ -1,7 +1,7 @@
 var weather = angular.module('abode.weather', []);
 
-weather.service('weather', function ($interval, $timeout, $http, $state) {
-  var devices = {};
+weather.service('weather', function ($interval, $timeout, $http, $state, devices) {
+  var weather_devices = {};
   var states = [];
   var loader;
   var updater;
@@ -16,8 +16,8 @@ weather.service('weather', function ($interval, $timeout, $http, $state) {
 
   var parseWeather = function (device, source) {
 
-    return function (response) {
-      devices[source][device] = response.data;
+    return function (result) {
+      weather_devices[source][device] = result;
     };
 
   };
@@ -27,7 +27,9 @@ weather.service('weather', function ($interval, $timeout, $http, $state) {
 
     var source_uri = (source === undefined || source === 'local') ? '/api' : '/api/sources/' + source;
 
-    $http.get(source_uri +  '/devices/' + device ).then(parseWeather(device, source), errorResponse(device));
+    console.log(device);
+
+    devices.get(device).then(parseWeather(device, source), errorResponse(device));
 
   };
 
@@ -37,8 +39,8 @@ weather.service('weather', function ($interval, $timeout, $http, $state) {
       return;
     }
 
-    Object.keys(devices).forEach(function (source) {
-      Object.keys(devices[source]).forEach(function (device) {
+    Object.keys(weather_devices).forEach(function (source) {
+      Object.keys(weather_devices[source]).forEach(function (device) {
         getWeather(device, source);
       });
     });
@@ -56,11 +58,11 @@ weather.service('weather', function ($interval, $timeout, $http, $state) {
     add_device: function (device, source) {
       var src = (source) ? source : 'local';
 
-      if (devices[src] === undefined) {
-        devices[src] = {};
+      if (weather_devices[src] === undefined) {
+        weather_devices[src] = {};
       }
-      if (devices[src][device] === undefined) {
-        devices[src][device] = {};
+      if (weather_devices[src][device] === undefined) {
+        weather_devices[src][device] = {};
       }
 
       if (loader !== undefined) {
@@ -71,7 +73,7 @@ weather.service('weather', function ($interval, $timeout, $http, $state) {
     },
     get: function (device, source) {
       var src = (source) ? source : 'local';
-      return devices[src][device];
+      return weather_devices[src][device];
     },
     register: register_state
   };
