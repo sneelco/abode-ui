@@ -117,7 +117,8 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
       }
 
     }, function (error) {
-      abode.message({'message': error.data.message, 'type': 'failed'});
+      var msg = (error.data && erro.data.message) ? error.data.message : error.data;
+      abode.message({'message': msg || 'Unknown error occured', 'type': 'failed'});
     });
   };
 
