@@ -234,7 +234,7 @@ abode.service('confirm', function ($q, $uibModal) {
     });
 
     return defer.promise;
-  }
+  };
 });
 
 abode.filter('capitalize', function() {
@@ -684,7 +684,6 @@ abode.directive('content', function () {
     replace: true,
   };
 });
-'use strict';
 
 abode.service('datetime', function ($interval, $http, $state) {
 
@@ -719,7 +718,8 @@ abode.service('datetime', function ($interval, $http, $state) {
       return obj;
     }
   };
-})
+});
+
 abode.directive('datetime', function () {
 
   return {

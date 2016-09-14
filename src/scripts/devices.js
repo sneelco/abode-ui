@@ -1,5 +1,6 @@
-angular.module('abode.devices', ['ui.router','ngResource'])
-.config(function($stateProvider, $urlRouterProvider) {
+var devices = angular.module('abode.devices', ['ui.router','ngResource']);
+
+devices.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.when('/devices', '/devices/list');
 
   $stateProvider
@@ -75,8 +76,9 @@ angular.module('abode.devices', ['ui.router','ngResource'])
       }
     }
   });
-})
-.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout, $resource, abode) {
+});
+
+devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout, $resource, abode) {
   var model = $resource(abode.url('/api/:source/devices/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },
     'on': { method: 'POST', params: {'action': 'on'}},
@@ -600,8 +602,9 @@ angular.module('abode.devices', ['ui.router','ngResource'])
     'openDevice': openDevice,
     'openCamera': openCamera
   };
-})
-.controller('devicesList', function ($scope, $state, devices) {
+});
+
+devices.controller('devicesList', function ($scope, $state, devices) {
   $scope.devices = [];
   $scope.loading = true;
 
@@ -629,8 +632,9 @@ angular.module('abode.devices', ['ui.router','ngResource'])
   };
 
   $scope.load();
-})
-.controller('devicesEdit', function ($scope, $state, $uibModal, notifier, devices, device, confirm, providers, capabilities) {
+});
+
+devices.controller('devicesEdit', function ($scope, $state, $uibModal, notifier, devices, device, confirm, providers, capabilities) {
   $scope.providers = providers;
   $scope.capabilities = capabilities;
   $scope.device = device;
@@ -764,8 +768,9 @@ angular.module('abode.devices', ['ui.router','ngResource'])
     return ($scope.device.capabilities.indexOf(capability) !== -1);
   };
 
-})
-.controller('devicesAdd', function ($scope, $state, notifier, devices, providers, capabilities) {
+});
+
+devices.controller('devicesAdd', function ($scope, $state, notifier, devices, providers, capabilities) {
   $scope.device = {'capabilities': []};
   $scope.alerts = [];
   $scope.providers = providers;
@@ -815,8 +820,9 @@ angular.module('abode.devices', ['ui.router','ngResource'])
   $scope.has_capability = function (capability) {
     return ($scope.device.capabilities.indexOf(capability) !== -1);
   };
-})
-.directive('device', function () {
+});
+
+devices.directive('device', function () {
 
   return {
     restrict: 'E',

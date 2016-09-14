@@ -1,7 +1,6 @@
-'use strict';
+var scenes = angular.module('abode.scenes', ['ui.router','ngResource']);
 
-angular.module('abode.scenes', ['ui.router','ngResource'])
-.config(function($stateProvider, $urlRouterProvider) {
+scenes.config(function($stateProvider, $urlRouterProvider) {
 
   $urlRouterProvider.when('/scenes', '/scenes/list');
 
@@ -40,8 +39,9 @@ angular.module('abode.scenes', ['ui.router','ngResource'])
       }
     }
   });
-})
-.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
+});
+
+scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
   var model = $resource(abode.url('/api/scenes/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },
     'on': { method: 'POST', params: {'action': 'on'}},
@@ -248,8 +248,9 @@ angular.module('abode.scenes', ['ui.router','ngResource'])
     'addRoom': addSceneRoom,
     'removeRoom': removeSceneRoom
   };
-})
-.controller('scenesList', function ($scope, $state, scenes) {
+});
+
+scenes.controller('scenesList', function ($scope, $state, scenes) {
   $scope.scenes = [];
   $scope.loading = true;
 
@@ -275,8 +276,9 @@ angular.module('abode.scenes', ['ui.router','ngResource'])
 
 
   $scope.load();
-})
-.controller('scenesAdd', function ($scope, $state, notifier, scenes) {
+});
+
+scenes.controller('scenesAdd', function ($scope, $state, notifier, scenes) {
   $scope.scene = {};
   $scope.alerts = [];
 
@@ -297,8 +299,9 @@ angular.module('abode.scenes', ['ui.router','ngResource'])
       $scope.errors = err;
     });
   };
-})
-.controller('scenesEdit', function ($scope, $state, $uibModal, notifier, scene, devices, scenes, rooms, confirm) {
+});
+
+scenes.controller('scenesEdit', function ($scope, $state, $uibModal, notifier, scene, devices, scenes, rooms, confirm) {
   $scope.scene = scene;
   $scope.alerts = [];
   $scope.rooms = [];
@@ -856,7 +859,8 @@ angular.module('abode.scenes', ['ui.router','ngResource'])
     });
   };
 
-})
-.controller('scene', function () {
+});
+
+scenes.controller('scene', function () {
 
 });

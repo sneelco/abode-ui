@@ -1,7 +1,6 @@
-'use strict';
+var triggers = angular.module('abode.triggers', ['ui.router','ngResource']);
 
-angular.module('abode.triggers', ['ui.router','ngResource'])
-.config(function($stateProvider, $urlRouterProvider) {
+triggers.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.when('/triggers', '/triggers/list');
 
   $stateProvider
@@ -48,8 +47,9 @@ angular.module('abode.triggers', ['ui.router','ngResource'])
       }
     }
   });
-})
-.service('triggers', function ($http, $q, $uibModal, $resource, abode, confirm, devices, rooms, scenes) {
+});
+
+triggers.service('triggers', function ($http, $q, $uibModal, $resource, abode, confirm, devices, rooms, scenes) {
   var model = $resource(abode.url('/api/triggers/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },
   });
@@ -366,7 +366,7 @@ angular.module('abode.triggers', ['ui.router','ngResource'])
       size: 'lg',
       controller: function ($scope, $uibModalInstance, devices, rooms, scenes, title, condition) {
         $scope.title = title;
-        $scope.condition = condition || {'and': [], 'or': []};;
+        $scope.condition = condition || {'and': [], 'or': []};
         $scope.devices = devices;
         $scope.left_capabilities = [];
         $scope.right_capabilities = [];
@@ -379,7 +379,7 @@ angular.module('abode.triggers', ['ui.router','ngResource'])
           {title: '≥', value: 'ge'},
           {title: '>', value: 'gt'},
           {title: '≠', value: 'ne'},
-        ]
+        ];
 
         if ($scope.condition.and && $scope.condition.and.length > 0) {
           $scope.type = 'and';
@@ -479,8 +479,9 @@ angular.module('abode.triggers', ['ui.router','ngResource'])
     'addCondition': addCondition,
     'types': getTypes
   };
-})
-.directive('conditions', function ($uibModal) {
+});
+
+triggers.directive('conditions', function ($uibModal) {
   return {
     restrict: 'E',
     transclude: true,
@@ -498,13 +499,14 @@ angular.module('abode.triggers', ['ui.router','ngResource'])
 
       $scope.removeCondition = function (index) {
         $scope.value.splice(index, 1);
-      }
+      };
     },
     templateUrl: '/views/triggers/triggers.conditions.html',
     replace: true,
   };
-})
-.directive('conditionSide', function ($uibModal, devices, rooms, scenes) {
+});
+
+triggers.directive('conditionSide', function ($uibModal, devices, rooms, scenes) {
   return {
     restrict: 'E',
     transclude: true,
@@ -521,7 +523,7 @@ angular.module('abode.triggers', ['ui.router','ngResource'])
       $scope.type = $scope.value[$scope.side + '_type'];
       $scope.obj = $scope.value[$scope.side + '_object'];
       $scope.key = $scope.value[$scope.side + '_key'];
-      $scope.watched = {}
+      $scope.watched = {};
 
       if ($scope.type === 'devices') {
         devices.get($scope.obj).then(function (result) {
@@ -629,7 +631,7 @@ angular.module('abode.triggers', ['ui.router','ngResource'])
         $scope.watched.key = undefined;
 
         $scope.key = $scope.value[$scope.side + '_key'];
-      }
+      };
 
       $scope.hasCapability = function (c) {
         var has = false;
@@ -646,8 +648,9 @@ angular.module('abode.triggers', ['ui.router','ngResource'])
     templateUrl: '/views/triggers/conditions.side.html',
     replace: true,
   };
-})
-.controller('triggersList', function ($scope, $state, triggers, confirm) {
+});
+
+triggers.controller('triggersList', function ($scope, $state, triggers, confirm) {
   $scope.triggers = [];
   $scope.loading = true;
 
@@ -679,8 +682,9 @@ angular.module('abode.triggers', ['ui.router','ngResource'])
 
 
   $scope.load();
-})
-.controller('triggersEdit', function ($scope, $state, notifier, triggers, trigger, devices, rooms, confirm, types) {
+});
+
+triggers.controller('triggersEdit', function ($scope, $state, notifier, triggers, trigger, devices, rooms, confirm, types) {
   $scope.trigger = trigger;
   $scope.alerts = [];
   $scope.state = $state;
@@ -798,11 +802,13 @@ angular.module('abode.triggers', ['ui.router','ngResource'])
       });
     });
   };
-})
-.controller('room', function () {
+});
 
-})
-.filter('conditionReadable', function () {
+triggers.controller('room', function () {
+
+});
+
+triggers.filter('conditionReadable', function () {
     return function (condition) {
       var left, right, cond;
 
@@ -825,7 +831,7 @@ angular.module('abode.triggers', ['ui.router','ngResource'])
         }
 
         return text;
-      }
+      };
 
       if ((condition.and && condition.and.length > 0) || (condition.or && condition.or.length > 0)) {
         return condition.name;
@@ -836,10 +842,10 @@ angular.module('abode.triggers', ['ui.router','ngResource'])
 
       switch (condition.condition) {
         case 'eq':
-          cond = 'equal to'
+          cond = 'equal to';
           break;
         case 'ne':
-          cond = 'not equal to'
+          cond = 'not equal to';
           break;
         case 'lt':
           cond = 'less then';

@@ -1,6 +1,6 @@
 var welcome = angular.module('abode.welcome', ['abode']);
 
-abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function($state, $urlRouter, abode) {
+welcome.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRouter) {
 
   $state
     .state('welcome', {
@@ -11,7 +11,7 @@ abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function(
 
 }]);
 
-abode.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$state', 'abode', 'Auth', 'Interfaces', function ($scope, $timeout, $http, $q, $state, abode, Auth, Interfaces) {
+welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$state', 'abode', 'Auth', 'Interfaces', function ($scope, $timeout, $http, $q, $state, abode, Auth, Interfaces) {
 
   var attempts = [
     '',

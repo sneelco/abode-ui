@@ -1,7 +1,6 @@
-'use strict';
+var settings = angular.module('abode.settings', ['ui.router']);
 
-angular.module('abode.settings', ['ui.router'])
-.config(function($stateProvider, $urlRouterProvider) {
+settings.config(function($stateProvider, $urlRouterProvider) {
 
   $urlRouterProvider.when('/settings', '/settings/list');
   $urlRouterProvider.when('/settings/sources', '/settings/sources/list');
@@ -109,8 +108,9 @@ angular.module('abode.settings', ['ui.router'])
     url: '/advanced',
     templateUrl: '/views/settings/settings.advanced.html',
   });
-})
-.service('settings', function ($q, $http, $templateCache, abode) {
+});
+
+settings.service('settings', function ($q, $http, $templateCache, abode) {
 
   var get_sources = function () {
     var defer = $q.defer();
@@ -175,7 +175,7 @@ angular.module('abode.settings', ['ui.router'])
   var get_config = function (provider) {
     var defer = $q.defer();
 
-    var url = (provider) ? '/api/abode/config/' + provider : '/api/abode/config'
+    var url = (provider) ? '/api/abode/config/' + provider : '/api/abode/config';
 
     $http.get(abode.url(url).value()).then(function (response) {
       defer.resolve(response.data);
@@ -190,7 +190,7 @@ angular.module('abode.settings', ['ui.router'])
     var defer = $q.defer();
 
 
-    var url = (provider) ? '/api/abode/config/' + provider : '/api/abode/config'
+    var url = (provider) ? '/api/abode/config/' + provider : '/api/abode/config';
 
     $http.put(url, config).then(function (response) {
       defer.resolve(response.data);
@@ -211,7 +211,7 @@ angular.module('abode.settings', ['ui.router'])
     });
 
     return defer.promise;
-  }
+  };
 
   var get_view = function () {
     var defer = $q.defer();
@@ -223,7 +223,7 @@ angular.module('abode.settings', ['ui.router'])
     });
 
     return defer.promise;
-  }
+  };
 
   var save_view = function (view) {
     var defer = $q.defer();
@@ -236,7 +236,7 @@ angular.module('abode.settings', ['ui.router'])
     });
 
     return defer.promise;
-  }
+  };
 
   return {
     get_config: get_config,
@@ -251,18 +251,20 @@ angular.module('abode.settings', ['ui.router'])
     remove_source: remove_source,
   };
 
-})
-.controller('sourceSettings', function ($scope, $state, abode, settings, sources) {
+});
+
+settings.controller('sourceSettings', function ($scope, $state, abode, settings, sources) {
   $scope.sources = sources;
 
   $scope.view = function (source) {
     $state.go('index.settings.sources.edit', {'name': source.name});
   };
 
-})
-.controller('addSourceSettings', function ($scope, $state, abode, settings) {
+});
+
+settings.controller('addSourceSettings', function ($scope, $state, abode, settings) {
   $scope.source = {};
-  var notifier = abode.message
+  var notifier = abode.message;
 
 
   $scope.add = function () {
@@ -278,7 +280,7 @@ angular.module('abode.settings', ['ui.router'])
 })
 .controller('editSourceSettings', function ($scope, $state, abode, settings, source, confirm) {
   $scope.source = source;
-  var notifier = abode.message
+  var notifier = abode.message;
 
   $scope.save = function () {
     settings.save_source($scope.source).then(function () {
@@ -301,8 +303,9 @@ angular.module('abode.settings', ['ui.router'])
     });
   };
 
-})
-.controller('homeSettings', function ($scope, $state, abode, settings, view) {
+});
+
+settings.controller('homeSettings', function ($scope, $state, abode, settings, view) {
   $scope.view = view;
   var notifier = abode.message;
 
@@ -323,10 +326,11 @@ angular.module('abode.settings', ['ui.router'])
       });
     });
 
-  }
-})
-.controller('settings', function ($scope, $state, abode, settings, config) {
-  var notifier = abode.message
+  };
+});
+
+settings.controller('settings', function ($scope, $state, abode, settings, config) {
+  var notifier = abode.message;
   $scope.config = config;
   $scope.state = $state;
   $scope.reload = function () {

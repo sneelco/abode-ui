@@ -1,7 +1,6 @@
-'use strict';
+var weather = angular.module('abode.weather', []);
 
-angular.module('abode.weather', [])
-.service('weather', function ($interval, $timeout, $http, $state) {
+weather.service('weather', function ($interval, $timeout, $http, $state) {
   var devices = {};
   var states = [];
   var loader;
@@ -77,8 +76,9 @@ angular.module('abode.weather', [])
     register: register_state
   };
 
-})
-.directive('weather', function () {
+});
+
+weather.directive('weather', function () {
 
   return {
     restrict: 'E',

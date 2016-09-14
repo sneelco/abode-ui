@@ -1,5 +1,6 @@
-angular.module('abode.rooms', ['ui.router','ngResource'])
-.config(function($stateProvider, $urlRouterProvider) {
+var rooms = angular.module('abode.rooms', ['ui.router','ngResource']);
+
+rooms.config(function($stateProvider, $urlRouterProvider) {
 
   $urlRouterProvider.when('/rooms', '/rooms/list');
 
@@ -30,8 +31,9 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
       }
     }
   });
-})
-.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $timeout, abode, devices) {
+});
+
+rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $timeout, abode, devices) {
   var rooms = {};
 
   var model = $resource(abode.url('/api/rooms/:id/:action'), {id: '@_id'}, {
@@ -292,7 +294,7 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
 
         $scope.filter = function (filter) {
           $scope.filter_condition = (filter !== $scope.filter_condition) ? filter : '';
-        }
+        };
 
         $scope.check_filter = function (device) {
 
@@ -355,7 +357,7 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
             return false;
           });
 
-          $scope.cameras = $scope.devices.filter(function (d) { return d.capabilities.indexOf('camera') !== -1});
+          $scope.cameras = $scope.devices.filter( function (d) { return d.capabilities.indexOf('camera') !== -1; } );
 
           $scope.room_temperature = parseInt(temp / temp_count, 10) || ' ';
 
@@ -367,7 +369,7 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
             });
 
             $scope.filter_counts[f] = match.length;
-            $scope.on_counts[f] = match.filter(function (d) {return d._on}).length;
+            $scope.on_counts[f] = match.filter( function (d) {return d._on; }).length;
 
             if ($scope.filter_condition !== undefined) return;
 
@@ -380,7 +382,7 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
           if ($scope.scenes.length > 0) {
             $scope.filter_condition = 'scenes';
           }
-        }
+        };
 
         $scope.reload = function () {
 
@@ -401,7 +403,7 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
             getRoomScenes($scope.room.name, source).then(function (scenes) {
               $scope.scenes = scenes;
               $scope.filter_counts.scenes = $scope.scenes.length;
-              $scope.on_counts.scenes = $scope.scenes.filter(function (d) { return d._on});
+              $scope.on_counts.scenes = $scope.scenes.filter(function (d) { return d._on; });
 
               done();
             }, function () {
@@ -540,8 +542,9 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
     'addDevice': addRoomDevice,
     'removeDevice': removeRoomDevice,
   };
-})
-.controller('roomsList', function ($scope, $state, rooms) {
+});
+
+rooms.controller('roomsList', function ($scope, $state, rooms) {
   $scope.rooms = [];
   $scope.loading = true;
 
@@ -567,8 +570,9 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
 
 
   $scope.load();
-})
-.controller('roomsAdd', function ($scope, $state, notifier, rooms) {
+});
+
+rooms.controller('roomsAdd', function ($scope, $state, notifier, rooms) {
   $scope.room = {};
   $scope.alerts = [];
 
@@ -589,8 +593,9 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
       $scope.errors = err;
     });
   };
-})
-.controller('roomsEdit', function ($scope, $state, $uibModal, notifier, rooms, room, confirm) {
+});
+
+rooms.controller('roomsEdit', function ($scope, $state, $uibModal, notifier, rooms, room, confirm) {
   $scope.room = room;
   $scope.alerts = [];
   $scope.devices = [];
@@ -706,11 +711,13 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
     });
   };
 
-})
-.controller('room', function () {
+});
 
-})
-.directive('roomCameras', function () {
+rooms.controller('room', function () {
+
+});
+
+rooms.directive('roomCameras', function () {
 
   return {
     restrict: 'E',
@@ -757,41 +764,43 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
         } else {
           $scope.index += 1;
         }
-      }
+      };
+
       $scope.previous = function () {
-        if ($scope.index == 0) {
+        if ($scope.index === 0) {
           $scope.index = $scope.cameras.length - 1;
         } else {
           $scope.index -= 1;
         }
-      }
+      };
 
       $scope.reload = function (index) {
         random = new Date();
-        var device = $scope.devices.filter(function (d) {return d._id === $scope.cameras[$scope.index]._id });
+        var device = $scope.devices.filter(function (d) { return d._id === $scope.cameras[$scope.index]._id; });
 
         if (device[0]) {
-          $scope.cameras[$scope.index].image = source_uri + '/devices/' + device[0]._id + '/image?live=true&' + random.getTime()
+          $scope.cameras[$scope.index].image = source_uri + '/devices/' + device[0]._id + '/image?live=true&' + random.getTime();
         }
       };
 
 
       $scope.play = function () {
         var camera = $scope.cameras[$scope.index];
-        var device = $scope.devices.filter(function (dev) {return dev._id === camera._id});
+        var device = $scope.devices.filter(function (dev) { return dev._id === camera._id; });
 
         devices.openCamera(device[0], $scope.source);
-      }
+      };
 
       $scope.$watch('devices', function () {
         if ($scope.cameras.length !== 0 ) { return; }
-        parseDevices()
+        parseDevices();
       });
 
     }
-  }
-})
-.directive('roomIcon', function () {
+  };
+});
+
+rooms.directive('roomIcon', function () {
 
   return {
     restrict: 'E',
@@ -850,7 +859,7 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
       $scope.interval = $scope.interval || 30;
 
       if ($scope.left !== undefined || $scope.right !== undefined || $scope.top !== undefined || $scope.bottom !== undefined) {
-        $scope.styles.position = 'absolute;'
+        $scope.styles.position = 'absolute';
       }
       if ($scope.left) { $scope.styles.left = $scope.left + 'em'; }
       if ($scope.right) { $scope.styles.right = $scope.right + 'em'; }
@@ -862,7 +871,7 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
       if ($scope.align) { $scope.styles['text-align'] = $scope.align; }
       if ($scope.size) { $scope.styles['font-size'] = $scope.size + 'em'; }
 
-      if ($scope.icon) { $scope.show_icon = true}
+      if ($scope.icon) { $scope.show_icon = true; }
 
       $scope.view = function () {
         rooms.view($scope.room, $scope.source);
@@ -878,7 +887,7 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
           if ($scope.temperatures.length <= temp_index) { temp_index = 0; }
 
           $scope.temperature = parseInt($scope.temperatures[temp_index], 10);
-        }
+        };
 
         next();
         cycle_timeout = $interval(next, 4000);
@@ -931,7 +940,7 @@ angular.module('abode.rooms', ['ui.router','ngResource'])
         });
 
         return temps;
-      }
+      };
 
       var roomTimer;
       var getRoom = function () {
