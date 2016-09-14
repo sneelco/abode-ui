@@ -1,4 +1,4 @@
-var welcome = angular.module('abode.welcome', ['abode']);
+var welcome = angular.module('abode.welcome', []);
 
 welcome.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRouter) {
 
