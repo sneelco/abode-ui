@@ -147,6 +147,41 @@ body {
   left: 0px;
   right: 0px;
 }
+
+@media (min-width: 360px) {
+  .interface {
+    font-size: 7px;
+  }
+  .anav-drawer {
+    font-size: 12px;
+  }
+  .anav-opener {
+    font-size: 45px;
+  }
+}
+@media (min-width: 480px) {
+  .interface {
+    font-size: 9px;
+  }
+  .anav-drawer {
+    font-size: 11px;
+  }
+  .anav-opener {
+    font-size: 50px;
+  }
+}
+@media (min-width: 768px) {
+  .interface {
+    font-size: 11px;
+  }
+  .anav-drawer {
+    font-size: 14px;
+  }
+  .anav-opener {
+    font-size: 60px;
+  }
+}
+
   #shade {
     background-color: #000;
     opacity: .7;
