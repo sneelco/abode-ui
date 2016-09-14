@@ -24,11 +24,6 @@ weather.service('weather', function ($interval, $timeout, $http, $state, devices
 
   var getWeather = function (device, source) {
 
-
-    var source_uri = (source === undefined || source === 'local') ? '/api' : '/api/sources/' + source;
-
-    console.log(device);
-
     devices.get(device).then(parseWeather(device, source), errorResponse(device));
 
   };
