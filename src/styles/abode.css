@@ -486,3 +486,33 @@ body {
   font-size: 5.5em;
   opacity: .3;
 }
+
+
+
+
+.section-nav {
+  list-style: none;
+  padding: 0px;
+  width: 100%;
+}
+
+
+.section-nav li {
+  cursor: pointer;
+  padding: .25em;
+}
+
+.section-nav li.active {
+  background-color: #375A7F;
+}
+
+
+.section-nav li:hover {
+  background-color: #444;
+}
+
+
+
+.section-nav li:hover.active {
+  background-color: #375A7F;
+}

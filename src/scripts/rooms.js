@@ -24,19 +24,18 @@ rooms.config(function($stateProvider, $urlRouterProvider) {
     templateUrl: '/views/rooms/rooms.edit.html',
     controller: 'roomsEdit',
     resolve: {
-      'room': function ($stateParams, $state, rooms) {
+      'room': function ($stateParams, $state, Rooms) {
 
-        return rooms.get($stateParams.name);
+        return Rooms.get({'id': $stateParams.name}).$promise;
 
       }
     }
   });
 });
 
-rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $timeout, abode, devices) {
-  var rooms = {};
+rooms.factory('Rooms', ['$resource', 'abode', function ($resource, abode) {
 
-  var model = $resource(abode.url('/api/rooms/:id/:action'), {id: '@_id'}, {
+  return $resource(abode.url('/api/rooms/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },
     'get_temperature': { method: 'GET' , params: { action: 'get_temperature'}},
     'get_humidity': { method: 'GET' , params: { action: 'get_humidity'}},
@@ -67,7 +66,27 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
     'set_point': { method: 'POST' , params: { action: 'set_point'}},
     'status': { method: 'POST' , params: { action: 'status'}},
     'play': { method: 'POST' , params: { action: 'play'}},
+    'devices': { method: 'GET' , params: { action: 'devices'}},
   });
+
+}]);
+
+rooms.factory('RoomDevices', ['$resource', 'abode', function ($resource, abode) {
+
+  return $resource(abode.url('/api/rooms/:room/devices/:id'), {id: '@_id'}, {
+  });
+
+}]);
+
+rooms.factory('RoomScenes', ['$resource', 'abode', function ($resource, abode) {
+
+  return $resource(abode.url('/api/rooms/:room/scenes/:id'), {id: '@_id'}, {
+  });
+
+}]);
+
+rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $timeout, abode, Rooms, RoomScenes, RoomDevices, devices) {
+  var rooms = {};
 
   $rootScope.$on('ROOM_CHANGE', function (event, args) {
 
@@ -83,13 +102,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
     var defer = $q.defer();
     var req_timeout;
 
-    var config = {
-      'method': 'GET',
-      'url': 'api/rooms',
-      'timeout': defer.promise,
-    };
-
-    model.query({'source': source}).$promise.then(function (results) {
+    Rooms.query({'source': source}).$promise.then(function (results) {
       $timeout.cancel(req_timeout);
       defer.resolve(results);
     }, function (err) {
@@ -106,8 +119,9 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
 
   var addRoom = function (config) {
     var defer = $q.defer();
+    var room = new Rooms(config);
 
-    $http.post('/api/rooms', config).then(function (response) {
+    room.$save().then(function (response) {
       defer.resolve(response.data);
     }, function (err) {
       defer.reject(err);
@@ -141,7 +155,6 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
   var getRoom = function (room, source) {
     var defer = $q.defer();
     var req_timeout;
-    var source_uri = (source === undefined) ? '/api' : '/api/sources/' + source;
 
     source = source || 'local';
 
@@ -156,13 +169,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
       }
     }
 
-    var config = {
-      'method': 'GET',
-      'url': source_uri + '/rooms/' + room,
-      'timeout': 20000
-    };
-
-    $http(config).then(function (response) {
+    Room.get({'id': room}).$promise.then(function (response) {
       $timeout.cancel(req_timeout);
       rooms[source] = rooms[source] || {};
       rooms[source][response.data._id] = response.data;
@@ -182,11 +189,10 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
 
   var getRoomScenes = function (room, source) {
     var defer = $q.defer();
-    var source_uri = (source === undefined) ? '/api' : '/api/sources/' + source;
 
-    $http({ url: source_uri + '/rooms/' + room + '/scenes'}).then(function (response) {
+    RoomScenes.query({'room': name, 'source': source}).$promise.then(function (results) {
 
-      response.data.forEach(function (scene) {
+      results.forEach(function (scene) {
         if (scene._on === true) {
           scene.age = new Date() - new Date(scene.last_on);
         } else {
@@ -210,43 +216,11 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
 
   var getRoomDevices = function (room, source) {
     var defer = $q.defer();
-    var source_uri = (source === undefined) ? '/api' : '/api/sources/' + source;
-    var room_devices = [];
 
-    /*
-    getRoom(room, source).then(function (roomObj) {
-      var index = -1;
-
-      var done = function () {
-        defer.resolve(room_devices);
-      };
-
-      var next = function () {
-        index += 1;
-
-        if (!roomObj._devices[index]) { done(); return; }
-
-        devices.get(roomObj._devices[index], source).then(function (device) {
-          room_devices.push(device);
-          next();
-        }, function () { next(); });
-      };
-
-      next();
-
-    });
-    */
-
-    var config = {
-      'method': 'GET',
-      'url': source_uri + '/rooms/' + room + '/devices',
-      'timeout': 20000
-    };
-
-    $http(config).then(function (response) {
+    RoomDevices.query({'room': room, 'source': source}).$promise.then(function (results) {
       var devs = [];
 
-      response.data.forEach(function (device) {
+      results.forEach(function (device) {
 
         devs.push(devices.set(device));
 
@@ -486,7 +460,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
   var addRoomDevice = function (room, device) {
     var defer = $q.defer();
 
-    $http.post('/api/rooms/' + room + '/devices', {'name': device}).then(function () {
+    roomdevice = new RoomDevices({'id': room, 'source': source, 'name': device}).then(function () {
       defer.resolve();
     }, function () {
       defer.reject();
@@ -553,7 +527,7 @@ rooms.controller('roomsList', function ($scope, $state, rooms) {
   };
 
   $scope.edit = function (room) {
-    $state.go('index.rooms.edit', {'name': room.name});
+    $state.go('main.rooms.edit', {'name': room.name});
   };
 
   $scope.load = function () {
@@ -572,8 +546,8 @@ rooms.controller('roomsList', function ($scope, $state, rooms) {
   $scope.load();
 });
 
-rooms.controller('roomsAdd', function ($scope, $state, notifier, rooms) {
-  $scope.room = {};
+rooms.controller('roomsAdd', function ($scope, $state, notifier, Rooms) {
+  $scope.room = new Rooms();
   $scope.alerts = [];
 
   $scope.back = function () {
@@ -585,7 +559,7 @@ rooms.controller('roomsAdd', function ($scope, $state, notifier, rooms) {
   };
 
   $scope.add = function () {
-    rooms.add($scope.room).then(function () {
+    room.$save().then(function () {
       notifier.notify({'status': 'success', 'message': 'Room Added'});
       $scope.room = {};
     }, function (err) {
@@ -595,7 +569,7 @@ rooms.controller('roomsAdd', function ($scope, $state, notifier, rooms) {
   };
 });
 
-rooms.controller('roomsEdit', function ($scope, $state, $uibModal, notifier, rooms, room, confirm) {
+rooms.controller('roomsEdit', function ($scope, $state, $uibModal, abode, rooms, room, RoomDevices, confirm) {
   $scope.room = room;
   $scope.alerts = [];
   $scope.devices = [];
@@ -628,9 +602,9 @@ rooms.controller('roomsEdit', function ($scope, $state, $uibModal, notifier, roo
 
   $scope.save = function () {
     rooms.save($scope.room).then(function () {
-      notifier.notify({'status': 'success', 'message': 'Room Saved'});
+      abode.message({'type': 'success', 'message': 'Room Saved'});
     }, function (err) {
-      notifier.notify({'status': 'failed', 'message': 'Failed to save Room', 'details': err});
+      abode.message({'type': 'failed', 'message': 'Failed to save Room', 'details': err});
       $scope.errors = err;
     });
   };
@@ -638,10 +612,10 @@ rooms.controller('roomsEdit', function ($scope, $state, $uibModal, notifier, roo
   $scope.remove = function () {
     confirm('Are you sure you want to remove this Room?').then(function () {
       rooms.remove(room._id).then(function () {
-        notifier.notify({'status': 'success', 'message': 'Room Removed'});
+        abode.message({'type': 'success', 'message': 'Room Removed'});
         $state.go('index.rooms');
       }, function (err) {
-        notifier.notify({'status': 'failed', 'message': 'Failed to remove Room', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to remove Room', 'details': err});
         $scope.errors = err;
       });
     });
@@ -652,9 +626,9 @@ rooms.controller('roomsEdit', function ($scope, $state, $uibModal, notifier, roo
     confirm('Are you sure?').then(function () {
       rooms.removeDevice(room.name, id).then(function () {
         getDevices();
-        notifier.notify({'status': 'success', 'message': 'Device removed from Room'});
+        abode.message({'type': 'success', 'message': 'Device removed from Room'});
       }, function (err) {
-        notifier.notify({'status': 'failed', 'message': 'Failed to remove Device from Room', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to remove Device from Room', 'details': err});
       });
     });
 
@@ -703,9 +677,9 @@ rooms.controller('roomsEdit', function ($scope, $state, $uibModal, notifier, roo
 
       rooms.addDevice(room.name, device.name).then(function () {
         getDevices();
-        notifier.notify({'status': 'success', 'message': 'Device added to Room'});
+        abode.message({'type': 'success', 'message': 'Device added to Room'});
       }, function () {
-        notifier.notify({'status': 'failed', 'message': 'Failed to add Device to Room', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to add Device to Room', 'details': err});
       });
 
     });
