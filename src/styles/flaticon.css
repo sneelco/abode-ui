@@ -1,0 +1,27 @@
+@font-face {
+
+font-family: "Flaticon1";
+
+src: url("flaticon.eot");
+src: url("flaticon.eot#iefix") format("embedded-opentype"),
+url("flaticon.woff") format("woff"),
+url("flaticon.ttf") format("truetype");
+
+font-weight: normal;
+font-style: normal;
+
+}
+
+[class^="fi-"]:before, [class*=" fi-"]:before,
+[class^="fi-"]:after, [class*=" fi-"]:after {
+
+font-family: "Flaticon1";
+font-style: normal;
+
+}
+.fi-door-open:before { content: "\e003"; }
+
+
+.fi-door-closed:before { content: "\e000"; }
+.fi-window:before { content: "\e001"; }
+.fi-motion:before { content: "\e002"; }

@@ -1,0 +1,76 @@
+
+
+.weather {
+  position: absolute;
+  text-shadow: 0 0 .2em black;
+}
+
+.weather-icon {
+  background-size: 400% 500%;
+}
+
+.day_unknown, .night_unknown {
+  background-image: url('../images/weather.png');
+  background-position: 100% 75%;
+  background-repeat: no-repeat;
+}
+.day_clear {
+  background-image: url('../images/weather.png');
+  background-position: 66.667% 25%;
+  background-repeat: no-repeat;
+}
+.day_cloudy {
+  background-image: url('../images/weather2.png');
+  background-position: 0% 25%;
+  background-repeat: no-repeat;
+}
+.day_partlycloudy {
+  background-image: url('../images/weather2.png');
+  background-position: 66.667% 25%;
+  background-repeat: no-repeat;
+}
+.day_rain {
+  background-image: url('../images/weather.png');
+  background-position: 100% 50%;
+  background-repeat: no-repeat;
+}
+.day_thunderstorms {
+  background-image: url('../images/weather2.png');
+  background-position: 33.334% 50%;
+  background-repeat: no-repeat;
+}
+.day_snow {
+  background-image: url('../images/weather.png');
+  background-position: 100% 25%;
+  background-repeat: no-repeat;
+}
+.night_clear {
+  background-image: url('../images/weather2.png');
+  background-position: 0% 75%;
+  background-repeat: no-repeat;
+}
+.night_cloudy {
+  background-image: url('../images/weather2.png');
+  background-position: 66.667% 50%;
+  background-repeat: no-repeat;
+}
+.night_partlycloudy {
+  background-image: url('../images/weather.png');
+  background-position: 0% 75%;
+  background-repeat: no-repeat;
+}
+.night_rain {
+  background-image: url('../images/weather2.png');
+  background-position: 0% 100%;
+  background-repeat: no-repeat;
+}
+.night_thunderstorms {
+  background-image: url('../images/weather2.png');
+  background-position: 66.667% 75%;
+  background-repeat: no-repeat;
+}
+.night_snow {
+  background-image: url('../images/weather.png');
+  background-position: 66.667% 75%;
+  background-repeat: no-repeat;
+}
