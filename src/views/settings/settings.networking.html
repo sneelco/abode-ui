@@ -1,0 +1,54 @@
+
+<div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+<div style="position: fixed; right: 1em; top: .5em; font-size: 3em; cursor: pointer" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i></div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+    <h2>Settings / Networking</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2" style="font-size: 2em;">
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+            <form name="settings">
+              <div class="form-group">
+                <label for="name">Source</label>
+                <ul class="list-group">
+                  <li class="list-group-item" ><i class="glyphicon glyphicon-ban-circle text-muted"></i> Static</li>
+                  <li class="list-group-item" ><i class="glyphicon glyphicon-ok-circle text-success"></i> DHCP </li>
+                </ul>
+              </div>
+              <div class="form-group">
+                <label for="name">IP</label>
+                <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="room.name">
+              </div>
+              <div class="form-group">
+                <label for="name">Mask</label>
+                <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="room.name">
+              </div>
+              <div class="form-group">
+                <label for="name">Gateway</label>
+                <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="room.name">
+              </div>
+              <div class="form-group">
+                <label for="name">DNS 1</label>
+                <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="room.name">
+              </div>
+              <div class="form-group">
+                <label for="name">DNS 2</label>
+                <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="room.name">
+              </div>
+              <div class="form-group">
+                <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="settings.$invalid"><i class="icon-savetodrive"></i> Save</button>
+                <button type="submit" class="btn btn-sm btn-default" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i> Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+  </div>
+</div>
+</div>
+

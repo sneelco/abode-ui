@@ -1,0 +1,207 @@
+  <div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+    <div style="position: fixed; right: 1em; top: .5em; font-size: 3em; cursor: pointer" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i></div>
+    <div class="row">
+      <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+        <h2>Edit Trigger</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default">
+          <div class="panel-body">
+
+            <div class="row">
+              <div class="col-sm-3" style="font-size: 1.5em; position: relative">
+                <ul class="section-nav">
+                  <li ng-click="section='general'" ng-class="{active: section == 'general'}">General</li>
+                  <li ng-click="section='conditions'" ng-class="{active: section == 'conditions'}">Conditions</li>
+                  <li ng-click="section='delay'" ng-class="{active: section == 'delay'}">Delay</li>
+                  <li ng-click="section='actions'" ng-class="{active: section == 'actions'}">Actions</li>
+                  <li ng-click="section='duration'" ng-class="{active: section == 'duration'}">Duration</li>
+                </ul>
+              </div>
+              <div class="col-sm-9 col-xs-12" style="font-size: 2em;">
+
+                <form name="edit">
+                  <div ng-show="section=='general'">
+                    <div class="form-group">
+                      <label for="enabled">Enabled: </label>
+                      <toggle value="trigger.enabled" class="pull-right"></toggle>
+                    </div>
+                    <div class="form-group">
+                      <label for="name">Name</label>
+                      <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="trigger.name">
+                    </div>
+                    <div class="form-group">
+                      <label for="trigger">Trigger<span ng-show="trigger.trigger">: {{trigger.trigger}}</span></label>
+
+                      <div>
+                      <ul class="list-group bg-muted select-list">
+                        <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in trigger_types | orderBy: '+name'" ng-click="trigger.trigger = t.name" ng-class="{'list-group-item-success': trigger.trigger == t.name}">
+                          {{t.name}}
+                        </li>
+                      </ul>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="trigger">Match<span ng-show="trigger.match_type">: {{trigger.match_type}}<span ng-show="trigger.match_type == 'device' && trigger.match">.{{trigger.match}}</span></span></label>
+                    </div>
+                    <div class="container-fluid">
+                      <div class="row">
+                        <div class="col-sm-6">
+
+                          <div class="form-group">
+                            <ul class="list-group bg-muted select-list" >
+                              <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in match_types" ng-click="changeType(t.value)" ng-class="{'list-group-item-success': trigger.match_type == t.value}">
+                                <i class="{{t.icon}}"></i> {{t.name}}
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="col-sm-6">
+
+                          <div class="form-group">
+                            <div ng-show="trigger.match_type == 'device'">
+                              <div ng-show="devices_loading"><i class="icon-loadingalt spin"></i> Loading...</div>
+                              <ul class="list-group bg-muted select-list" ng-hide="devices_loading">
+                                <li class="list-group-item" style="cursor: pointer;" ng-repeat="device in devices | orderBy: '+name'" ng-click="changeDevice(device)" ng-class="{'list-group-item-success': trigger.match == device.name}">
+                                  {{device.name}}
+                                </li>
+                              </ul>
+                            </div>
+
+                            <div ng-show="trigger.match_type == 'room'">
+                              <div ng-show="rooms_loading"><i class="icon-loadingalt spin"></i> Loading...</div>
+                              <ul class="list-group bg-muted select-list" ng-hide="rooms_loading">
+                                <li class="list-group-item" style="cursor: pointer;" ng-repeat="room in rooms | orderBy: '+name'" ng-click="changeRoom(room)" ng-class="{'list-group-item-success': trigger.match == room.name}">
+                                  {{room.name}}
+                                </li>
+                              </ul>
+                            </div>
+
+                            <div ng-show="trigger.match_type == 'time'" style="padding-left: 1em;">
+                              <epochtime time="trigger.match" disabled="{{trigger.match_type != 'time'}}"></epochtime>
+                            </div>
+
+                            <div ng-show="trigger.match_type == 'string'" style="padding-left: 1em;">
+                              <input type="text" class="form-control" id="match" placeholder="String" required="" ng-model="trigger.match">
+                            </div>
+
+                            <div ng-show="trigger.match_type == 'number'" style="padding-left: 1em;">
+                              <input type="text" class="form-control" id="match" placeholder="Number" required="" ng-model="trigger.match">
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="editTrigger.$invalid"><i class="icon-savetodrive"></i> Save</button>
+                      <button class="btn btn-warning btn-sm pull-left" type="button" ng-click="state.go('^')">Cancel</button>
+                    </div>
+
+                  </div>
+
+                  <div ng-show="section=='conditions'">
+
+                    <div class="form-group">
+                      <label for="trigger">Conditions (Match Any)</label>
+                      <button class="btn btn-default btn-xs pull-right" ng-click="conditions.addCondition(trigger.conditions)"><i class="icon-plus-sign"></i> Add</button>
+
+                      <conditions value="trigger.conditions" name="conditions"></conditions>
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="editTrigger.$invalid"><i class="icon-savetodrive"></i> Save</button>
+                      <button class="btn btn-warning btn-sm pull-left" type="button" ng-click="state.go('^')">Cancel</button>
+                    </div>
+
+                  </div>
+
+                  <div ng-show="section=='delay'">
+
+                    <div class="form-group">
+                      <label for="trigger">Delay (DD:HH:MM)</label>
+                      <toggle value="delay" class="pull-right"></toggle>
+
+                      <div class="form-group" style="padding-left: 1em;" ng-show="delay">
+                        <epochduration time="trigger.delay.time"></epochduration>
+                      </div>
+
+                      <div class="form-group" style="padding-left: 1em;" ng-show="delay">
+                        <toggle value="trigger.delay.force"></toggle>
+                        <small>Force Condition Check after Delay</small>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="editTrigger.$invalid"><i class="icon-savetodrive"></i> Save</button>
+                      <button class="btn btn-warning btn-sm pull-left" type="button" ng-click="state.go('^')">Cancel</button>
+                    </div>
+
+                  </div>
+
+                  <div ng-show="section=='actions'">
+
+                    <div class="form-group">
+                      <label for="trigger">Actions</label>
+                      <button class="btn btn-default btn-xs pull-right" ng-click="addAction(trigger.actions)"><i class="icon-plus-sign"></i> Add</button>
+                      <div>
+                        <ul class="list-group bg-muted select-list" ng-show="trigger.actions.length > 0">
+                          <li class="list-group-item" style="cursor: pointer;" ng-repeat="action in trigger.actions" ng-click="editAction(action)">
+                            {{action.name}}
+                            <button class="pull-right btn btn-xs btn-danger" ng-click="removeAction(trigger.actions, $index)" stop-event><i class="icon-trash"></i></button>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="editTrigger.$invalid"><i class="icon-savetodrive"></i> Save</button>
+                      <button class="btn btn-warning btn-sm pull-left" type="button" ng-click="state.go('^')">Cancel</button>
+                    </div>
+
+                  </div>
+
+                  <div ng-show="section=='duration'">
+
+                    <div class="form-group">
+                      <label for="trigger">Duration (DD:HH:MM)</label>
+                      <toggle value="duration" class="pull-right"></toggle>
+
+                      <div class="form-group" style="padding-left: 1em;" ng-show="duration">
+                        <epochduration time="trigger.duration.time"></epochduration>
+                      </div>
+
+                      <div class="form-group" style="padding-left: 1em;" ng-show="duration">
+                        <label for="trigger"><small>Actions</small></label>
+                        <button class="btn btn-default btn-xs pull-right" ng-click="addAction(trigger.duration.actions)"><i class="icon-plus-sign"></i> Add</button>
+                        <ul class="list-group bg-muted select-list" ng-show="trigger.duration.actions.length > 0">
+                          <li class="list-group-item" style="cursor: pointer;" ng-repeat="action in trigger.duration.actions" ng-click="editAction(action)">
+                            {{action.name}}
+                          <button class="pull-right btn btn-xs btn-danger" ng-click="removeAction(trigger.duration.actions, $index)" stop-event><i class="icon-trash"></i></button>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div class="form-group" style="padding-left: 1em;" ng-show="duration">
+                        <label for="trigger"><small>Triggers</small></label>
+                        <button class="btn btn-default btn-xs pull-right" ng-click="addAction(trigger.duration.triggers)"><i class="icon-plus-sign"></i> Add</button>
+                        <ul class="list-group bg-muted select-list" ng-show="trigger.duration.triggers.length > 0">
+                          <li class="list-group-item" style="cursor: pointer;" ng-repeat="trigger in trigger.duration.triggers" ng-click="editTrigger(trigger)">
+                            {{trigger.name}}
+                          </li>
+                        </ul>
+                      </div>
+
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="editTrigger.$invalid"><i class="icon-savetodrive"></i> Save</button>
+                      <button class="btn btn-warning btn-sm pull-left" type="button" ng-click="state.go('^')">Cancel</button>
+                    </div>
+
+                  </div>
+                </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

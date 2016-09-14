@@ -1,0 +1,23 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{name}}
+
+      <button class="btn btn-primary btn-sm pull-right" ng-hide="errors || processing" ng-click="reload()"><i class="icon-refresh"></i></button>
+      <button class="btn btn-danger btn-sm pull-right" ng-show="errors" ng-click="reload()"><i class="icon-erroralt"></i></button>
+      <button class="btn btn-default btn-sm pull-right" ng-show="processing"><i class="icon-loadingalt spin"></i></button>
+    </h4>
+</div>
+<div class="modal-body">
+<div style="text-align: center;">
+  <div style="border: .1em solid white; border-radius: .4em; height: 9em; width: 20em; text-align: center; vertical-align: middle; margin: 0 auto; position: relative; cursor: pointer; padding-top: 1em; transition: 2s;" ng-class="{'bg-success':  scene._state == 'active', 'bg-warning':  scene._state == 'pending'}" ng-click="toggle_onoff()">
+    <div style="text-align: center;">
+      <h2>{{scene._state | capitalize}}</h2>
+    </div>
+  </div>
+</div>
+</div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning btn-sm" type="button" ng-click="ok()">Close</button>
+    <button class="btn btn-default btn-sm pull-left" type="button" ng-click="edit()"><i class="icon-edit"></i></button>
+</div>

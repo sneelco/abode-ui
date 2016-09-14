@@ -1,0 +1,9 @@
+<div>
+  <div style="position: relative;">
+    <div ng-click="play()" ng-show="cameras[index].video" class="room-cameras-controls play"><i class="icon-circleplayempty"></i></div>
+    <div ng-click="previous()" ng-show="cameras.length > 1" class="room-cameras-controls previous"><i class="icon-chevron-left"></i></div>
+    <div ng-click="next()" ng-show="cameras.length > 1"  class="room-cameras-controls next"><i class="icon-chevron-right"></i></div>
+  <img ng-repeat="camera in cameras" src="{{camera.image}}" ng-show="$index == index" style="width: 100%">
+    <div ng-click="reload($index)" ng-show="cameras.length > 1" class="room-cameras-refresh"><i class="icon-refresh"></i></div>
+  </div>
+</div>

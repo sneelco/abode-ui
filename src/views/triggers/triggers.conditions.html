@@ -1,0 +1,8 @@
+
+<ul class="list-group bg-muted select-list" ng-show="conditions.length > 0">
+  <li class="list-group-item" style="cursor: pointer;" ng-repeat="condition in conditions" ng-click="editCondition(condition)" ng-class="{'or-conditions': condition.or.length, 'and-conditions': condition.and.length}">
+    <i class="glyphicon glyphicon-th-large" ng-class="{'text-warning': condition.or.length, 'text-success': condition.and.length}" ng-show="condition.or.length || condition.and.length"></i>
+    {{condition | conditionReadable}}
+    <button class="pull-right btn btn-xs btn-danger" ng-click="removeCondition($index)" stop-event><i class="icon-trash"></i></button>
+  </li>
+</ul>

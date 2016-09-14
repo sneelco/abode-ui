@@ -1,0 +1,90 @@
+<div>
+  <div class="row" style="font-size: 1.5em;">
+    <button class="btn btn-link" ng-click="toggle()">
+      <i class="icon-plus" ng-show="expanded"></i>
+      <i class="icon-minus" ng-hide="expanded"></i>
+    </button>
+    <span ng-show="!type">Select a value type:</span>
+    <span>{{type}}<span ng-show="obj">.{{obj}}</span><span ng-show="key != undefined">.{{key}}</span></span>
+  </div>
+  <div class="row" ng-show="expanded">
+
+    <div class="col-sm-4" style="font-size: 1.5em;">
+      <div class="form-group">
+        <label for="trigger">Type <span ng-show="type">({{type | capitalize}})</span></label>
+        <div>
+        <ul class="list-group bg-muted select-list" >
+          <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in condition_types" ng-click="changeType(t);" ng-class="{'list-group-item-success': type == t.value}">
+            <i class="{{t.icon}}"></i> {{t.name}}
+          </li>
+        </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4" style="font-size: 1.5em;" ng-show="type == 'devices'">
+        <label for="trigger">Device <span ng-show="obj">({{obj | capitalize}})</span></label>
+        <ul class="list-group bg-muted select-list" >
+          <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in devices | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': obj == t.name}">
+            {{t.name}}
+          </li>
+        </ul>
+    </div>
+
+    <div class="col-sm-4" style="font-size: 1.5em;" ng-show="type == 'rooms'">
+        <label for="trigger">Room <span ng-show="obj">({{obj | capitalize}})</span></label>
+        <ul class="list-group bg-muted select-list" >
+          <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in rooms | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': obj == t.name}">
+            {{t.name}}
+          </li>
+        </ul>
+    </div>
+
+    <div class="col-sm-4" style="font-size: 1.5em;" ng-show="type == 'scenes'">
+        <label for="trigger">Scene <span ng-show="obj">({{obj | capitalize}})</span></label>
+        <ul class="list-group bg-muted select-list" >
+          <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in scenes | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': obj == t.name}">
+            {{t.name}}
+          </li>
+        </ul>
+    </div>
+
+    <div class="col-sm-4" style="font-size: 1.5em;" ng-if="type == 'boolean'">
+        <label for="trigger">Boolean</label>
+        <ul class="list-group bg-muted select-list" >
+          <li class="list-group-item" style="cursor: pointer;" ng-click="watched.key = true" ng-class="{'list-group-item-success': watched.key}">True</li>
+          <li class="list-group-item" style="cursor: pointer;" ng-click="watched.key = false" ng-class="{'list-group-item-success': !watched.key}">False</li>
+        </ul>
+    </div>
+
+    <div class="col-sm-4" style="font-size: 1.5em;" ng-if="type == 'timeofday'">
+        <label for="trigger">Time</label>
+        <epochtime time="watched.key" disabled="false"></epochtime>
+    </div>
+
+    <div class="col-sm-4" style="font-size: 1.5em;" ng-if="type == 'string'">
+        <label for="trigger">String</label>
+        <input type="input" ng-model="watched.key">
+    </div>
+
+    <div class="col-sm-4" style="font-size: 1.5em;" ng-if="type == 'number'">
+        <label for="trigger">Number</label>
+        <input type="input" ng-model="watched.key">
+    </div>
+
+    <div class="col-sm-4" style="font-size: 1.5em;" ng-if="capabilities.length > 0">
+
+      <div class="form-group">
+        <label for="trigger">Key  <span ng-show="key">({{key | capitalize}})</span></label>
+        <div>
+        <ul class="list-group bg-muted select-list" >
+          <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in condition_keys" ng-click="changeKey(t)" ng-class="{'list-group-item-success': key == t.value}" ng-show="hasCapability(t.capabilities)">
+            {{t.name}}
+          </li>
+        </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

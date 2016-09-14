@@ -262,3 +262,227 @@ body {
     font-size: 3em;
     color: #aaa;
   }
+
+
+.content {
+  position: absolute;
+  z-index: 10;
+}
+
+
+.room-icon {
+  position: relative;
+  height: 3em;
+  width: 3em;
+  border: .25em solid #444;
+  border-radius: 1.5em;
+  line-height: 2.5em;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  background-color: #222;
+  transition: .5s ease;
+  text-shadow: 0em 0em .2em black;
+  cursor: pointer;
+  color: #777;
+  margin: 0em .1em;
+  box-shadow: 0em 0em .2em black;
+}
+
+.room-icon.active {
+  color: inherit;
+}
+
+.night .room-icon {
+  border-color: #222;
+  background-color: #111;
+  color: #71180e;
+}
+
+.room-icon-temp {
+  font-size: 1.3em;
+  margin-top: .1em
+}
+
+.night .room-icon-temp {
+  color: #e3301c;
+  text-shadow: 0 0 .1em white;
+}
+
+.night .room-light .room-icon-temp {
+  color: white;
+  text-shadow: 0 0 .1em black;
+}
+
+.room-icon-display {
+  position: absolute;
+  top: -1.5em;
+  left: 0em;
+  right: 0em;
+  text-align: center;
+  font-size: .5em;
+}
+
+.room-icon-status {
+  position: absolute;
+  top: -.5em;
+  font-size: .5em;
+  height: 2em;
+  width: 2em;
+  line-height: 2em;
+  background-color: #333;
+  border-radius: 1em;
+  text-align: center;
+  text-shadow: 0em 0em .3em black;
+  opacity: 0;
+  color: white;
+  transition: .5s ease;
+}
+
+.room-icon-loading {
+  left: -.5em;
+}
+
+.room-loading {
+  opacity: .5;
+}
+
+.room-icon-error {
+  color: gray;
+  text-shadow: 0em 0em .2em #5b130b;
+  right: -.5em;
+}
+
+.room-error {
+  opacity: 1;
+}
+
+.room-icon-badge {
+  position: absolute;
+  bottom: -1em;
+  font-size: .5em;
+  height: 2em;
+  width: 2em;
+  line-height: 2em;
+  background-color: #333;
+  border-radius: 1em;
+  text-align: center;
+  text-shadow: 0em 0em .3em black;
+  opacity: 0;
+  transition: .5s ease;
+}
+
+.night .room-icon-badge {
+  color: #666;
+}
+
+.room-icon-openclose {
+  left: -.4em;
+}
+
+.room-icon-fan {
+  left: 1.66em;
+}
+
+.room-icon-conditioner {
+  right: -.4em;
+}
+
+.room-light {
+  background-color: #c27b0a !important;
+}
+
+.night .room-light {
+  color: #fff;
+}
+
+.room-motion {
+  border-color: #5a100c !important;
+  box-shadow: 0em 0em .2em white;
+  border-color: #fff !important;
+  box-shadow: inset 0em 0em .2em black;
+}
+
+.room-openclose {
+  background-color: rgb(231, 76, 60);
+  font-weight: bold;
+  opacity: 1;
+}
+
+.night .room-openclose {
+  background-color: #5a100c;
+  color: white;
+}
+
+.room-fan {
+  background-color: #00805f;
+  opacity: 1;
+}
+
+.night .room-fan {
+  color: white;
+}
+
+.room-heat {
+  background-color: rgb(231, 76, 60);
+  opacity: 1;
+}
+
+.night .room-heat {
+  color: white;
+}
+
+.room-cool {
+  background-color: #3498DB;
+  opacity: 1;
+}
+
+
+.night .room-cool {
+  color: white;
+}
+
+.room-cameras {
+
+}
+
+.room-cameras-controls {
+  text-shadow: 0em 0em .2em black;
+  top: 40%; cursor:
+  pointer;
+  font-size: 4em;
+  position: absolute;
+  right: 0em;
+  opacity: .7
+  display: inline-block;
+}
+
+.room-cameras-refresh {
+  position: absolute;
+  text-align: center;
+  text-shadow: 0em 0em .2em black;
+  font-size: 4em;
+  top: 1em;
+  opacity: .3;
+  left: 40%;
+  right: 40%;
+  cursor: pointer;
+}
+
+.room-cameras-controls.previous {
+  left: 0em;
+  width: 1em;
+}
+
+.room-cameras-controls.next {
+  right: 0em;
+  width: 1em;
+}
+
+.room-cameras-controls.play {
+  left: 40%;
+  right: 40%;
+  text-align: center;
+  font-size: 5.5em;
+  opacity: .3;
+}

@@ -1,0 +1,74 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{title}}</h4>
+</div>
+
+<div class="modal-body">
+  <form name="conditionFrm">
+    <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+    <div class="btn-group">
+      <button class="btn" ng-class="{'btn-success': type == 'condition', 'btn-primary': type != 'condition'}" ng-click="changeType('condition')">Check</button>
+      <button class="btn" ng-class="{'btn-success': type == 'or', 'btn-primary': type != 'or'}" ng-click="changeType('or')">OR Group</button>
+      <button class="btn" ng-class="{'btn-success': type == 'and', 'btn-primary': type != 'and'}" ng-click="changeType('and')">AND Group</button>
+    </div>
+
+    <div ng-show="type != 'condition'">
+      <div>&nbsp;</div>
+      <div class="form-group">
+        <input type="text" class="form-control" id="name" placeholder="Description of this Group" ng-model="condition.name">
+      </div>
+
+      <div ng-if="type == 'and'">
+        <h5>When ALL of the match
+          <button class="btn btn-default btn-xs pull-right" ng-click="addCondition(condition.and)"><i class="icon-plus-sign"></i> Add</button>
+        </h5>
+        <ul class="list-group bg-muted select-list" style="font-size: 1.5em;">
+          <li class="list-group-item" style="cursor: pointer;" ng-repeat="c in condition.and" ng-click="editCondition(c)" ng-class="{'or-conditions': c.or.length, 'and-conditions': c.and.length}">
+            <i class="glyphicon glyphicon-th-large" ng-class="{'text-warning': c.or.length, 'text-success': c.and.length}" ng-show="c.or.length || c.and.length"></i>
+            {{c | conditionReadable}}
+            <button class="pull-right btn btn-xs btn-danger" ng-click="removeCondition(condition.and, $index)" stop-event><i class="icon-trash"></i></button>
+          </li>
+        </ul>
+      </div>
+
+      <div ng-if="type == 'or'">
+        <h5>When ANY of the match
+          <button class="btn btn-default btn-xs pull-right" ng-click="addCondition(condition.or)"><i class="icon-plus-sign"></i> Add</button>
+        </h5>
+        <ul class="list-group bg-muted select-list" style="font-size: 1.5em;">
+          <li class="list-group-item" style="cursor: pointer;" ng-repeat="c in condition.or" ng-click="editCondition(c)" ng-class="{'or-conditions': c.or.length, 'and-conditions': c.and.length}">
+            <i class="glyphicon glyphicon-th-large" ng-class="{'text-warning': c.or.length, 'text-success': c.and.length}" ng-show="c.or.length || c.and.length"></i>
+            {{c | conditionReadable}}
+            <button class="pull-right btn btn-xs btn-danger" ng-click="removeCondition(condition.or, $index)" stop-event><i class="icon-trash"></i></button>
+          </li>
+        </ul>
+      </div>
+
+
+    </div>
+    <div ng-show="type == 'condition'">
+
+      <condition-side side="left" value="condition" rooms="rooms" devices="devices" scenes="scenes"></condition-side>
+
+      <div class="row">
+
+        <div class="col-sm-4" style="font-size: 1.5em;">
+            <label for="trigger">Condition<span ng-show="builder.item">: {{condition.condition}}</span></label>
+            <ul class="list-group bg-muted select-list" >
+              <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in condition_options" ng-click="changeCondition(t);" ng-class="{'list-group-item-success': condition.condition == t.value}">
+                {{t.title}}
+              </li>
+            </ul>
+        </div>
+
+      </div>
+
+      <condition-side side="right" value="condition" rooms="rooms" devices="devices" scenes="scenes"></condition-side>
+
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-warning btn-sm pull-left" type="button" ng-click="cancel()">Close</button>
+    <button class="btn btn-primary btn-sm" type="button" ng-click="save()" ng-disabled="conditionFrm.$invalid"><i class="icon-edit"></i> Save</button>
+</div>

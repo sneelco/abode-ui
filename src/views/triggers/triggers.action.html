@@ -1,0 +1,124 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{title}}</h4>
+</div>
+<div class="modal-body">
+  <form name="actionFrm">
+            <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6" style="font-size: 1.5em;">
+
+        <div class="form-group">
+          <label for="trigger">Type<span ng-show="builder.type">: {{builder.type}}</span></label>
+          <div>
+          <ul class="list-group bg-muted select-list" >
+            <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in action_types" ng-click="changeType(t.value);" ng-class="{'list-group-item-success': builder.type == t.value}">
+              <i class="{{t.icon}}"></i> {{t.name}}
+            </li>
+          </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-sm-6" style="font-size: 1.5em;" ng-show="builder.type == 'devices'">
+          <label for="trigger">Device<span ng-show="builder.item">: {{builder.item.name}}</span></label>
+          <ul class="list-group bg-muted select-list" >
+            <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in devices | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': builder.item == t}">
+              {{t.name}}
+            </li>
+          </ul>
+      </div>
+
+      <div class="col-sm-6" style="font-size: 1.5em;" ng-show="builder.type == 'rooms'">
+          <label for="trigger">Room<span ng-show="builder.item">: {{builder.item.name}}</span></label>
+          <ul class="list-group bg-muted select-list" >
+            <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in rooms | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': builder.item == t}">
+              {{t.name}}
+            </li>
+          </ul>
+      </div>
+
+      <div class="col-sm-6" style="font-size: 1.5em;" ng-show="builder.type == 'scenes'">
+          <label for="trigger">Scene<span ng-show="builder.item">: {{builder.item.name}}</span></label>
+          <ul class="list-group bg-muted select-list" >
+            <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in scenes | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': builder.item == t}">
+              {{t.name}}
+            </li>
+          </ul>
+      </div>
+
+      <div class="col-sm-6" style="font-size: 1.5em;">
+
+        <div class="form-group">
+          <label for="trigger">Action<span ng-show="builder.action">: {{builder.action}}</span></label>
+          <div>
+          <ul class="list-group bg-muted select-list" >
+            <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in type_actions" ng-click="change_action(t)" ng-show="has_capability(t.capabilities)" ng-class="{'list-group-item-success': builder.action == t.value}">
+              {{t.name}}
+            </li>
+          </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6" style="font-size: 1.5em;" ng-show="type_args.indexOf('level') != -1">
+        <div class="form-group">
+          <label for="name">Level</label>
+          <input type="text" class="form-control" id="name" placeholder="Level" ng-model="builder.level">
+        </div>
+      </div>
+
+      <div class="col-sm-6" style="font-size: 1.5em;" ng-show="type_args.indexOf('url') != -1">
+        <div class="form-group">
+          <label for="name">URL</label>
+          <input type="text" class="form-control" id="name" placeholder="URL" ng-model="builder.url">
+        </div>
+      </div>
+
+      <div class="col-sm-6" style="font-size: 1.5em;" ng-show="type_args.indexOf('duration') != -1">
+        <div class="form-group">
+          <label for="name">Duration</label>
+          <input type="text" class="form-control" id="name" placeholder="Duration (seconds)" ng-model="builder.duration">
+        </div>
+      </div>
+
+      <div class="col-sm-6" style="font-size: 1.5em;" ng-show="type_args.indexOf('temperature') != -1">
+        <div class="form-group">
+          <label for="name">Temperature</label>
+          <input type="text" class="form-control" id="name" placeholder="Temperature" ng-model="builder.mode.temperature">
+        </div>
+      </div>
+
+      <div class="col-sm-6" style="font-size: 1.5em;" ng-show="type_args.indexOf('mode') != -1">
+        <div class="form-group">
+          <label for="name">Mode</label>
+          <ul class="list-group bg-muted select-list" >
+            <li class="list-group-item" style="cursor: pointer;" ng-click="builder.mode = 'COOL'" ng-class="{'list-group-item-success': builder.mode == 'COOL'}">
+              <i class="icon-snow"></i> COOL
+            </li>
+            <li class="list-group-item" style="cursor: pointer;" ng-click="builder.mode = 'HEAT'" ng-class="{'list-group-item-success': builder.mode == 'HEAT'}">
+              <i class="icon-fire"></i> HEAT
+            </li>
+            <li class="list-group-item" style="cursor: pointer;" ng-click="builder.mode = 'OFF'" ng-class="{'list-group-item-success': builder.mode == 'OFF'}">
+              <i class="glyphicon glyphicon-off"></i> OFF
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <input type="hidden" required="" ng-model="builder.type">
+  <input type="hidden" required="" ng-model="builder.action">
+
+  </form>
+</div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning btn-sm pull-left" type="button" ng-click="cancel()">Close</button>
+    <button class="btn btn-primary btn-sm" type="button" ng-click="save()" ng-disabled="actionFrm.$invalid"><i class="icon-edit"></i> Save</button>
+</div>

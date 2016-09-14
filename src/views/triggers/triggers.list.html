@@ -1,0 +1,29 @@
+
+  <div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+    <div class="row">
+      <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+        <h2>Triggers</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-8 col-sm-offset-2" style="font-size: 2em;">
+        <h4 ng-show="loading"><i class="icon-refresh spin"></i> Loading...</h4>
+        <ul class="list-group" ng-hide="loading">
+          <li class="list-group-item" style="font-size: 1.2em; cursor: pointer;" ng-repeat="trigger in triggers | orderBy: '+name'" ng-click="edit(trigger)">
+            {{trigger.name}}<button class="pull-right btn btn-xs btn-danger" ng-click="remove(trigger)" stop-event><i class="icon-trash"></i></button>
+            <div style="font-size: .6em;" class="text-muted" ng-class="{'strike-through': !trigger.enabled}">
+              <span ng-show="trigger.match">{{trigger.match_type | capitalize}} is
+                <span ng-show="trigger.match_type == 'time'">{{trigger.match | time}} during </span>
+                <span ng-show="trigger.match_type == 'date'">{{trigger.match | date: 'EEE MMM d, yyyy'}} during </span>
+                <span ng-show="trigger.match_type == 'device'">{{trigger.match}} from </span>
+                <span ng-show="trigger.match_type == 'string'">{{trigger.match}} from </span>
+                <span ng-show="trigger.match_type == 'number'">{{trigger.match}} from </span>
+              </span>
+              {{trigger.trigger}} Event
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="bg-success img-circle " style="position: fixed; bottom: 1.5em; right: 1.5em; font-size: 2em; height: 2.5em; width: 2.5em; text-align: center; box-shadow: .2em .2em .3em black; line-height: 2.7em; font-weight: bold; cursor: pointer;" ui-sref="index.triggers.add"><i class="icon-plus"></i></button>

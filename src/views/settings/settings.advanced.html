@@ -1,0 +1,42 @@
+
+<div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+<div style="position: fixed; right: 1em; top: .5em; font-size: 3em; cursor: pointer" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i></div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+    <h2>Settings / Advanced</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2" style="font-size: 2em;">
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+            <form name="settings">
+              <div class="form-group">
+                <label for="name">Reload Display</label>
+                <button type="submit" class="pull-right btn btn-sm btn-success" ng-click="reload()" style="width: 10em;"><i class="icon-refresh"></i> Reload</button>
+              </div>
+              <div class="form-group">
+                <label for="name">Restart</label>
+                <button type="submit" class="pull-right btn btn-sm btn-warning" ng-click="restart()" style="width: 10em;"><i class="icon-restart"></i> Restart</button>
+              </div>
+              <div class="form-group">
+                <label for="name">Shutdown</label>
+                <button type="submit" class="pull-right btn btn-sm btn-danger" ng-click="shutdown()" style="width: 10em;"><i class="icon-shutdown"></i> Shutdown</button>
+              </div>
+              <div class="form-group">
+                <label for="name">Save Config</label>
+                <button type="submit" class="pull-right btn btn-sm btn-danger" ng-click="write_config()" style="width: 10em;"><i class="icon-save-floppy"></i> Save Config</button>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-sm btn-default" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i> Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+  </div>
+</div>
+</div>
+

@@ -1,0 +1,11 @@
+<div class="room-icon" ng-style="styles" ng-class="{'room-motion': state.is_motion, 'room-light': state.is_light, 'active': state.is_motion || state.is_light || state.is_openclose || tempType}" ng-click="view()">
+  <div class="room-icon-display" ng-show="icon && tempType"><i class="{{icon}}"></i></div>
+  <div class="room-icon-temp" ng-show="tempType">{{temperature}}</div>
+  <span ng-show="icon && !tempType"><i class="{{icon}}"></i></span>
+  <div class="room-icon-status room-icon-loading" ng-class="{'room-loading': state.loading}"><i class="icon-loadingalt spin"></i></div>
+  <div class="room-icon-status room-icon-error" ng-class="{'room-error': state.error}"><i class="icon-warning-sign"></i></div>
+  <div class="room-icon-badge room-icon-openclose" ng-class="{'room-openclose': state.is_openclose}">{{state.is_openclose}}</div>
+  <div class="room-icon-badge room-icon-fan" ng-class="{'room-fan': state.is_fan}"><i class="icon-fan"></i></div>
+  <div class="room-icon-badge room-icon-conditioner" ng-class="{'room-cool': state.is_cool}"><i class="icon-snow"></i></div>
+  <div class="room-icon-badge room-icon-conditioner" ng-class="{'room-heat': state.is_heat}"><i class="icon-fire"></i></div>
+</div>

@@ -1,0 +1,82 @@
+<div class="modal-header">
+<h3 ng-hide="device">Add Action</h3>
+<h3 ng-show="device">{{device.name}}</h3>
+</div>
+
+<div class="modal-body">
+
+  <div class="row">
+    <div class="col-sm-6" style="font-size: 1.5em;">
+      <div class="form-group">
+        <label for="trigger">Type <span ng-show="type">({{selected.object_type | capitalize}})</span></label>
+        <div>
+        <ul class="list-group bg-muted select-list" >
+          <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in action_types" ng-click="changeType(t);" ng-class="{'list-group-item-success': selected.object_type == t.value}">
+            <i class="{{t.icon}}"></i> {{t.name}}
+          </li>
+        </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6" style="font-size: 1.5em;" ng-show="selected.object_type == 'devices'">
+        <label for="trigger">Device <span ng-show="obj">({{obj | capitalize}})</span></label>
+        <ul class="list-group bg-muted select-list" >
+          <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in devices | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': selected.object_id == t._id}">
+            {{t.name}}
+          </li>
+        </ul>
+    </div>
+
+    <div class="col-sm-6" style="font-size: 1.5em;" ng-show="selected.object_type == 'rooms'">
+        <label for="trigger">Room <span ng-show="obj">({{obj | capitalize}})</span></label>
+        <ul class="list-group bg-muted select-list" >
+          <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in rooms | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': selected.object_id == t._id}">
+            {{t.name}}
+          </li>
+        </ul>
+    </div>
+
+    <div class="col-sm-6" style="font-size: 1.5em;" ng-show="selected.object_type == 'scenes'">
+        <label for="trigger">Scene <span ng-show="obj">({{obj | capitalize}})</span></label>
+        <ul class="list-group bg-muted select-list" >
+          <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in scenes | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': selected.object_id == t._id}">
+            {{t.name}}
+          </li>
+        </ul>
+    </div>
+
+  </div>
+
+  <div ng-show="selected.object_id">
+    <div class="row">
+      <div class="col-sm-8 col-sm-offset-2" ng-hide="controls.length == 0">
+        <label for="enabled" style="font-size: 2em;">Setting: </label>
+        <div ng-repeat="control in controls" ng-include="control.view" class="row" > </div>
+      </div>
+    </div>
+    <div>&nbsp;</div>
+    <div class="row">
+      <div class="col-xs-4">
+        <label style="font-size: 2em;">Stages: </label>
+        <div style="width: 1em;font-size: 2.5em;">
+          <div><i class="icon-chevron-up" style="cursor: pointer;" ng-click="stages_up()"></i></div>
+          <div style="text-align: center;">{{selected.stages}}</div>
+          <div><i class="icon-chevron-down" style="cursor: pointer;" ng-click="stages_down()"></i></div>
+        </div>
+      </div>
+      <div class="col-sm-8">
+
+          <label for="enabled" style="font-size: 2em;">Duration (hh:mm:ss) </label>
+          <epochduration time="selected.duration" style="font-size: 2.5em; "></epochduration>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-footer">
+    <button class="btn btn-warning btn-sm" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary btn-sm" type="button" ng-click="add()" ng-show="device"><i class="icon-plus-sign"></i> Add</button>
+</div>

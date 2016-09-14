@@ -1,0 +1,110 @@
+
+<div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+<div style="position: fixed; right: 1em; top: .5em; font-size: 3em; cursor: pointer" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i></div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+    <h2>Settings / General</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2" style="font-size: 2em;">
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <form name="settings">
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="config.name">
+              </div>
+
+              <div class="form-group">
+                <label for="name">Location</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="name" placeholder="Latitude" required="" ng-model="config.location.lat">
+                  <span class="input-group-addon">Lat </span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="input-group">
+                  <input type="text" class="form-control" id="name" placeholder="Longitude" required="" ng-model="config.location.long">
+                  <span class="input-group-addon">Long</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="web.address">Web Bind Address:</label>
+                <input type="text" class="form-control" id="web.address" placeholder="Web Bind Address" required="" ng-model="config.web.address">
+              </div>
+
+              <div class="form-group">
+                <label for="web.port">Web Port:</label>
+                <input type="text" class="form-control" id="web.port" placeholder="Web Port" required="" ng-model="config.web.port">
+              </div>
+
+              <div class="form-group">
+                <label for="web.ssl_port">Web SSL Port:</label>
+                <input type="text" class="form-control" id="web.ssl_port" placeholder="Web SSL Port" required="" ng-model="config.web.ssl_port">
+              </div>
+
+              <div class="form-group">
+                <label for="web.secureProtocol">Web Secure Protocol:</label>
+                <input type="text" class="form-control" id="web.secureProtocol" placeholder="Web Secure Protocol" required="" ng-model="config.web.secureProtocol">
+              </div>
+
+              <div class="form-group">
+                <label for="web.ciphers">Web Secure Ciphers:</label>
+                <input type="text" class="form-control" id="web.ciphers" placeholder="Web Secure Ciphers" required="" ng-model="config.web.ciphers">
+              </div>
+
+              <div class="form-group">
+                <label for="web.access_log">Web Access Log:</label>
+                <input type="text" class="form-control" id="web.access_log" placeholder="Web Access Log" required="" ng-model="config.web.access_log">
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">Debug: </label>
+                <toggle value="config.debug" class="pull-right"></toggle>
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">Web Debug: </label>
+                <toggle value="config.web.debug" class="pull-right"></toggle>
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">Devices Debug: </label>
+                <toggle value="config.devices.debug" class="pull-right"></toggle>
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">Scenes Debug: </label>
+                <toggle value="config.scenes.debug" class="pull-right"></toggle>
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">Rooms Debug: </label>
+                <toggle value="config.rooms.debug" class="pull-right"></toggle>
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">Trigger Debug: </label>
+                <toggle value="config.triggers.debug" class="pull-right"></toggle>
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">Time Debug: </label>
+                <toggle value="config.time.debug" class="pull-right"></toggle>
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()"><i class="icon-savetodrive"></i> Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+  </div>
+</div>
+</div>
+
