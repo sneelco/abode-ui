@@ -85,10 +85,11 @@ home.directive('controller', [function () {
       action: '@'
     },
     templateUrl: '/views/home/controller.html',
-    controller: ['$scope', '$timeout', '$interval', 'devices', 'scenes', function ($scope, $timeout, $interval, devices, scenes) {
+    controller: ['$scope', '$timeout', '$interval', 'Devices', 'Scenes', 'Rooms', function ($scope, $timeout, $interval, Devices, Scenes, Rooms) {
       var types = {
-        'device': devices,
-        'scene': scenes
+        'device': Devices,
+        'room': Rooms,
+        'scene': Scenes
       };
 
       $scope.title = $scope.title || $scope.name;
@@ -101,7 +102,7 @@ home.directive('controller', [function () {
 
       $scope.load = function () {
         $scope.loading = true;
-        types[$scope.type].get($scope.name, $scope.source).then(function (obj) {
+        types[$scope.type].get({'id': $scope.name}).$promise.then(function (obj) {
           $scope.obj = obj;
           $scope.loading = false;
           $scope.error = false;
@@ -128,13 +129,13 @@ home.directive('controller', [function () {
         } else if ($scope.action === 'off') {
           func = $scope.obj.$off;
         } else if ($scope.action === 'toggle') {
-          func = ($scope.obj._on) ? $scope.obj.$off : $scope.obj.$on;
+          func = ($scope.obj._on || $scope.obj._lights_on) ? $scope.obj.$off : $scope.obj.$on;
         } else {
           func = $scope.obj.$open;
         }
 
         $scope.pending = true;
-        var result = func()
+        var result = func.apply($scope.obj);
         if (result.then) {
             result.then(function () {
             $scope.pending = false;

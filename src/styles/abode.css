@@ -87,7 +87,7 @@ body {
 }
 
 @media (min-width: 768px) {
-  .content {
+  .main-content {
     padding-left: 200px;
   }
 

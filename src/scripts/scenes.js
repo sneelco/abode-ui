@@ -41,6 +41,52 @@ scenes.config(function($stateProvider, $urlRouterProvider) {
   });
 });
 
+scenes.factory('Scenes', ['$resource', '$http', '$q', 'abode', function($resource, $http, $q, abode) {
+
+  var Scenes = $resource(abode.url('/api/scenes/:id'),{
+    'id': '@_id'
+  },{
+    'update': {'method': 'PUT'},
+  });
+
+  Scenes.prototype.$on = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/scenes/' + this._id + '/on').value();
+
+    $http.post(url).then(function (response) {
+      self._on = true;
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  Scenes.prototype.$off = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/scenes/' + this._id + '/off').value();
+
+    $http.post(url).then(function (response) {
+      self._on = false;
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  Scenes.prototype.$open = function () {
+
+  };
+
+  return Scenes;
+
+}]);
+
 scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
   var model = $resource(abode.url('/api/scenes/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },

@@ -78,6 +78,52 @@ devices.config(function($stateProvider, $urlRouterProvider) {
   });
 });
 
+devices.factory('Devices', ['$resource', '$http', '$q', 'abode', function($resource, $http, $q, abode) {
+
+  var Devices = $resource(abode.url('/api/devices/:id'),{
+    'id': '@_id'
+  },{
+    'update': {'method': 'PUT'},
+  });
+
+  Devices.prototype.$on = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/devices/' + this._id + '/on').value();
+
+    $http.post(url).then(function (response) {
+      self._on = true;
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  Devices.prototype.$off = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/devices/' + this._id + '/off').value();
+
+    $http.post(url).then(function (response) {
+      self._on = false;
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  Devices.prototype.$open = function () {
+
+  };
+
+  return Devices;
+
+}]);
+
 devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout, $resource, abode) {
   var model = $resource(abode.url('/api/devices/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },
