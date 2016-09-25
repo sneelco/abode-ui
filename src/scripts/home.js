@@ -99,6 +99,7 @@ home.directive('controller', [function () {
       $scope.pending = false;
       $scope.type = $scope.type || 'device';
       $scope.action = $scope.action || 'open';
+      $scope.icon = $scope.icon || 'icon-lightbulb-idea';
 
       $scope.load = function () {
         $scope.loading = true;
