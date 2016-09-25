@@ -31,6 +31,7 @@
                       <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="addRoom.$invalid"><i class="icon-savetodrive"></i> Save</button>
                       <button type="submit" class="btn btn-sm btn-default" ng-click="remove()" ng-disabled="addRoom.$invalid"><i class="icon-circledelete"></i> Remove</button>
                     </div>
+                    <room-icon room="{{room._id}}" temp-type="cycle"></room-icon>
                   </div>
                   <div ng-show="section=='devices'">
                     <div ng-show="loading"><i class="icon-refresh spin"></i> Loading Devices</div>

@@ -79,7 +79,7 @@ devices.config(function($stateProvider, $urlRouterProvider) {
 });
 
 devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout, $resource, abode) {
-  var model = $resource(abode.url('/api/:source/devices/:id/:action'), {id: '@_id'}, {
+  var model = $resource(abode.url('/api/devices/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },
     'on': { method: 'POST', params: {'action': 'on'}},
     'off': { method: 'POST', params: {'action': 'off'}}

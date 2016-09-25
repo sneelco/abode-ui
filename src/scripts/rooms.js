@@ -33,9 +33,9 @@ rooms.config(function($stateProvider, $urlRouterProvider) {
   });
 });
 
-rooms.factory('Rooms', ['$resource', 'abode', function ($resource, abode) {
+rooms.factory('Rooms', ['$resource', 'abode', 'RoomDevices', 'RoomScenes', function ($resource, abode, RoomDevices, RoomScenes) {
 
-  return $resource(abode.url('/api/rooms/:id/:action'), {id: '@_id'}, {
+  var rooms = $resource(abode.url('/api/rooms/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },
     'get_temperature': { method: 'GET' , params: { action: 'get_temperature'}},
     'get_humidity': { method: 'GET' , params: { action: 'get_humidity'}},
@@ -66,9 +66,17 @@ rooms.factory('Rooms', ['$resource', 'abode', function ($resource, abode) {
     'set_point': { method: 'POST' , params: { action: 'set_point'}},
     'status': { method: 'POST' , params: { action: 'status'}},
     'play': { method: 'POST' , params: { action: 'play'}},
-    'devices': { method: 'GET' , params: { action: 'devices'}},
   });
 
+  rooms.prototype.$devices = function () {
+    return RoomDevices.query({'room': this.name});
+  };
+
+  rooms.prototype.$scenes = function () {
+    return RoomScenes.query({'room': this.name});
+  };
+
+  return rooms;
 }]);
 
 rooms.factory('RoomDevices', ['$resource', 'abode', function ($resource, abode) {
@@ -582,10 +590,10 @@ rooms.controller('roomsEdit', function ($scope, $state, $uibModal, abode, rooms,
 
   var getDevices = function () {
     $scope.loading = true;
-    rooms.getDevices(room.name).then(function(devices) {
+    room.$devices().$promise.then(function (devices) {
       $scope.devices = devices;
       $scope.loading = false;
-    }, function () {
+    }, function (error) {
       $scope.loading = false;
     });
   };

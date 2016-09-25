@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+    <div>&nbsp;</div>
+    <div class="row well">
+      <div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-0">
+        <img src="images/home.png"  class="img-responsive img-rounded">
+      </div>
+
+      <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-0">
+        <p class="text-center"><strong>You need to login to continue:</strong></p>
+        <form name="loginFrm">
+          <div class="form-group">
+            <label for="user">Server</label>
+
+            <div class="input-group">
+              <input type="text" class="form-control" id="server" ng-model="config.server" disabled>
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="state.go('welcome')">Change</button>
+              </span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="user">Username</label>
+            <input type="text" class="form-control" id="user" placeholder="Username" ng-model="auth.user" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Password" ng-model="auth.password" required>
+          </div>
+          <button class="btn btn-success" ng-disabled="loginFrm.$invalid" ng-click="do_login()"><span class="glyphicon glyphicon-log-in"></span> Login</button>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+</div>

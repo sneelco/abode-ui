@@ -21,14 +21,14 @@ settings.config(function($stateProvider, $urlRouterProvider) {
     templateUrl: '/views/settings/settings.list.html',
     controller: function ($scope) {
       $scope.settings = [
-        {'name': 'General', 'route': 'index.settings.general'},
-        {'name': 'Home', 'route': 'index.settings.home'},
-        {'name': 'Sources', 'route': 'index.settings.sources'},
-        {'name': 'Sensors', 'route': 'index.settings.sensors'},
-        {'name': 'Providers', 'route': 'index.settings.providers'},
-        {'name': 'Display', 'route': 'index.settings.display'},
-        {'name': 'Networking', 'route': 'index.settings.networking'},
-        {'name': 'Advanced', 'route': 'index.settings.advanced'}
+        {'name': 'General', 'route': 'main.settings.general'},
+        {'name': 'Home', 'route': 'main.settings.home'},
+        {'name': 'Sources', 'route': 'main.settings.sources'},
+        {'name': 'Sensors', 'route': 'main.settings.sensors'},
+        {'name': 'Providers', 'route': 'main.settings.providers'},
+        {'name': 'Display', 'route': 'main.settings.display'},
+        {'name': 'Networking', 'route': 'main.settings.networking'},
+        {'name': 'Advanced', 'route': 'main.settings.advanced'}
       ];
     }
   })
@@ -46,11 +46,6 @@ settings.config(function($stateProvider, $urlRouterProvider) {
     url: '/home',
     templateUrl: '/views/settings/settings.home.html',
     controller: 'homeSettings',
-    resolve: {
-      view: function (settings) {
-        return settings.get_view();
-      }
-    }
   })
   .state('main.settings.sources', {
     url: '/sources',
@@ -305,22 +300,34 @@ settings.controller('addSourceSettings', function ($scope, $state, abode, settin
 
 });
 
-settings.controller('homeSettings', function ($scope, $state, abode, settings, view) {
-  $scope.view = view;
+settings.controller('homeSettings', function ($scope, $state, abode, settings, Interfaces) {
+  $scope.interface = '';
+  $scope.interfaces = Interfaces.query();
+
+  $scope.$watch('interface', function () {
+    if ($scope.interface !== '') {
+      Interfaces.get($scope.interface).then(function (view) {
+        $scope.view = view;
+      });
+    } else {
+      $scope.view = '';
+    }
+  })
   var notifier = abode.message;
 
   $scope.saveView = function () {
 
-    settings.save_view($scope.view).then(function () {
 
-      notifier.notify({
-        'status': 'success',
+    Interfaces.save($scope.interface, $scope.view).then(function () {
+
+      notifier({
+        'type': 'success',
         'message': 'Home Template Saved'
       });
 
     }, function (err) {
-      notifier.notify({
-        'status': 'failed',
+      notifier({
+        'type': 'failed',
         'message': 'Failed to Save Home Template',
         'details': err
       });

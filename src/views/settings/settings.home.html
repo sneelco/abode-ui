@@ -14,11 +14,15 @@
             <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
             <form name="settings">
               <div class="form-group">
+                <label for="name">Interface</label>
+                <select class="form-control" ng-model="interface" ng-options="o as o for o in interfaces" ng-change="select_interface()"></select>
+              </div>
+              <div class="form-group" ng-hide="interface == ''">
                 <label for="name">Template</label>
                 <textarea class="form-control" id="name" placeholder="Template" required="" ng-model="view" style="height: 18em;"></textarea>
               </div>
               <div class="form-group">
-                <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="saveView()"><i class="icon-savetodrive"></i> Save</button>
+                <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="saveView()" ng-disabled="interface == ''"><i class="icon-savetodrive"></i> Save</button>
                 <button type="submit" class="btn btn-sm btn-default" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i> Cancel</button>
               </div>
             </form>

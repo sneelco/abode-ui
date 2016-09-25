@@ -551,3 +551,72 @@ body {
 .section-nav li:hover.active {
   background-color: #375A7F;
 }
+
+
+
+.controller {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+.controller-icon {
+  height: 3em;
+  width: 3em;
+  border: .25em solid #444;
+  border-radius: 1.5em;
+  line-height: 2.5em;
+  text-align: center;
+  background-color: #222;
+  transition: 1s ease;
+  text-shadow: 0em 0em .2em black;
+  cursor: pointer;
+  color: #777;
+  margin: 0em .1em;
+  box-shadow: 0em 0em .2em black;
+}
+.controller-title {
+  font-size: .5em;
+  position: absolute;
+  bottom: -1.5em;
+  left: 0em;
+  right: 0em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+
+.controller-status {
+  position: absolute;
+  top: 0em;
+  right: 0em;
+  font-size: .5em;
+  height: 2em;
+  width: 2em;
+  line-height: 2em;
+  background-color: #333;
+  border-radius: 1em;
+  text-align: center;
+  text-shadow: 0em 0em .3em black;
+  color: white;
+  opacity: .5;
+  transition: .5s ease;
+}
+
+ .controller-pending {
+    background-color: rgba(194, 123, 10, 0);
+    animation: bg-pulse 2s linear infinite;
+ }
+
+ .controller-success {
+   background-color: rgba(0, 188, 140, 255)
+ }
+
+ .controller-failed {
+   background-color: rgba(231, 76, 60, 255)
+ }
+
+  @keyframes bg-pulse {
+    0% { background-color: rgba(194, 123, 10, 0); }
+    50% { background-color: rgba(194, 123, 10, 100); }
+    100% { background-color: rgba(194, 123, 10, 0); }
+  }

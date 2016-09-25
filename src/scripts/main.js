@@ -99,7 +99,8 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
 
   this.url = function (uri, source) {
     var url = {};
-    url.value = function() {return self.config.server + uri; };
+
+    url.value = function() {self.load(); return self.config.server + uri; };
     url.split = function (separator,limit) { return url.value().split(separator,limit); };
     url.replace = function (match, other) { return url.value().replace(match, other); };
     url.toString = function() { return url.value(); };
@@ -190,7 +191,10 @@ abode.controller('rootController', ['$rootScope', '$state', 'abode', function ($
 
 }]);
 
-abode.controller('mainController', ['$scope', '$state', 'abode', function ($scope, $state, abode) {
+abode.controller('mainController', ['$scope', '$state', 'abode', 'Interfaces', function ($scope, $state, abode, Interfaces) {
+
+  $scope.interfaces = Interfaces.query();
+
   $scope.logout = function () {
     abode.auth.$logout().then(function () {
       console.log('success');
