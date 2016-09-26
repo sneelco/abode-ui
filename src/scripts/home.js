@@ -94,7 +94,7 @@ home.directive('controller', [function () {
       };
 
       $scope.title = $scope.title || $scope.name;
-      $scope.loading = true;
+      $scope.loading = false;
       $scope.failed = false;
       $scope.error = false;
       $scope.pending = false;
@@ -103,6 +103,10 @@ home.directive('controller', [function () {
       $scope.icon = $scope.icon || 'icon-lightbulb-idea';
 
       $scope.load = function () {
+        if ($scope.loading) {
+          return;
+        }
+
         $scope.loading = true;
         types[$scope.type].get({'id': $scope.name}).$promise.then(function (obj) {
           $scope.obj = obj;
@@ -170,5 +174,5 @@ home.directive('controller', [function () {
       });
 
     }]
-  }
+  };
 }]);

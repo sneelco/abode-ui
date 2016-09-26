@@ -312,7 +312,7 @@ settings.controller('homeSettings', function ($scope, $state, abode, settings, I
     } else {
       $scope.view = '';
     }
-  })
+  });
   var notifier = abode.message;
 
   $scope.saveView = function () {

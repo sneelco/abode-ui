@@ -619,6 +619,11 @@ body {
    color: white;
  }
 
+ .controller-on {
+   background-color: rgba(194, 123, 10, 1000);
+   color: white;
+ }
+
  .controller-pending {
     background-color: rgba(194, 123, 10, 0);
     animation: bg-pulse 2s linear infinite;
