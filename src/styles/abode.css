@@ -559,6 +559,8 @@ body {
   display: inline-block;
   vertical-align: middle;
   margin-bottom: 1.25em;
+  margin-left: .25em;
+  margin-right: .25em;
 }
 .controller-icon {
   height: 3em;
