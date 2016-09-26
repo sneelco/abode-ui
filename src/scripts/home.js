@@ -129,6 +129,8 @@ home.directive('controller', [function () {
           func = $scope.obj.$on;
         } else if ($scope.action === 'off') {
           func = $scope.obj.$off;
+        } else if ($scope.action === 'camera') {
+          func = $scope.obj.$camera;
         } else if ($scope.action === 'toggle') {
           func = ($scope.obj._on || $scope.obj._lights_on) ? $scope.obj.$off : $scope.obj.$on;
         } else {
@@ -137,7 +139,7 @@ home.directive('controller', [function () {
 
         $scope.pending = true;
         var result = func.apply($scope.obj);
-        if (result.then) {
+        if (result && result.then) {
             result.then(function () {
             $scope.pending = false;
             $scope.success = true;

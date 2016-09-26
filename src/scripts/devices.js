@@ -78,7 +78,7 @@ devices.config(function($stateProvider, $urlRouterProvider) {
   });
 });
 
-devices.factory('Devices', ['$resource', '$http', '$q', 'abode', function($resource, $http, $q, abode) {
+devices.factory('Devices', ['$resource', '$http', '$q', 'abode', 'devices', function($resource, $http, $q, abode, devices) {
 
   var Devices = $resource(abode.url('/api/devices/:id'),{
     'id': '@_id'
@@ -117,7 +117,15 @@ devices.factory('Devices', ['$resource', '$http', '$q', 'abode', function($resou
   };
 
   Devices.prototype.$open = function () {
+    var self = this;
 
+    devices.openDevice(self);
+  };
+
+  Devices.prototype.$camera = function () {
+    var self = this;
+
+    devices.openCamera(self);
   };
 
   return Devices;
@@ -275,9 +283,9 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
         };
 
         if (device.config.video_url) {
-          $scope.camera_url = source_uri + '/devices/' + device._id + '/video';
+          $scope.camera_url = abode.url(source_uri + '/devices/' + device._id + '/video').value();
         } else {
-          $scope.camera_url = source_uri + '/devices/' + device._id + '/image';
+          $scope.camera_url = abode.url(source_uri + '/devices/' + device._id + '/image').value();
         }
       }
     });
