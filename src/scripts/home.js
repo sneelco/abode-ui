@@ -80,6 +80,7 @@ home.directive('controller', [function () {
       name: '@',
       title: '@',
       icon: '@',
+      spin: '@',
       showTitle: '@',
       source: '@',
       action: '@'

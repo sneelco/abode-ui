@@ -605,13 +605,24 @@ body {
   transition: .5s ease;
 }
 
+ .controller-cool {
+    background-color: rgba(0, 172, 230, 255);
+    color: white;
+ }
+
+ .controller-heat {
+   background-color: rgba(231, 76, 60, 255);
+   color: white;
+ }
+
  .controller-pending {
     background-color: rgba(194, 123, 10, 0);
     animation: bg-pulse 2s linear infinite;
  }
 
  .controller-success {
-   background-color: rgba(0, 188, 140, 255)
+   background-color: rgba(0, 188, 140, 255);
+   color: white;
  }
 
  .controller-failed {
