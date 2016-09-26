@@ -158,7 +158,9 @@ home.directive('controller', [function () {
 
       $scope.load();
 
-      $scope.loader = $interval($scope.load, 5000);
+      if ($scope.action === 'toggle') {
+        $scope.loader = $interval($scope.load, 5000);
+      }
 
       $scope.$on('$destroy', function () {
         $interval.cancel($scope.loader);
