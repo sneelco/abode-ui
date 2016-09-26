@@ -1,7 +1,7 @@
 <div class="controller" ng-click="do_action()">
   <div class="controller-icon" ng-class="{'controller-pending': pending, 'controller-success': success, 'controller-failed': failed, 'controller-success': (obj._on || obj._lights_on) && action == 'toggle', 'controller-cool': obj._mode == 'COOL', 'controller-heat': obj._mode == 'HEAT', 'spin': obj._on && spin}">
     <span ng-show="icon && !obj._temperature"><i class="{{icon}}"></i></span>
-    <span ng-show="obj._temperature">{{obj._temperature}}</span>
+    <span ng-show="obj._temperature">{{obj._temperature | number:0}}</span>
   </div>
   <div class="controller-status" ng-show="loading"><i class="icon-loadingalt spin"></i></div>
   <div class="controller-status" ng-show="error"><i class="icon-warning-sign"></i></div>
