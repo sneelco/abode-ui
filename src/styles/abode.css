@@ -28,6 +28,10 @@ body {
   animation: spin-stop 2s ease-out;
 }
 
+.bg-muted {
+  background-color: #777;
+}
+
 .pointer {
   cursor: pointer;
 }

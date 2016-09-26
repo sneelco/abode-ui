@@ -1,10 +1,10 @@
 <div class="container-fluid">
-  <div class="col-xs-5" style="padding-top: 0em;">
+  <div class="col-xs-5" style="padding-top: 0em; font-size: .7em;">
     <div class="img-circle" ng-click="set_mode('HEAT')" ng-class="{'bg-muted': device._mode == 'HEAT', 'bg-danger': (device._mode == 'HEAT' && device._on)}" style="cursor: pointer; margin: .5em; margin-left: -.5em; width: 1.7em; padding-top: .2em; text-align: center; vertical-align: middle; font-size: 3em;"><i class="icon-fire"></i></div>
     <div class="img-circle" ng-click="set_mode('COOL')"  ng-class="{'bg-muted': device._mode == 'COOL', 'bg-info': (device._mode == 'COOL' && device._on)}" style="cursor: pointer; margin: .5em; margin-left: -.5em; width: 1.7em; padding-top: .2em; text-align: center; vertical-align: middle; font-size: 3em;"><i class="icon-snow"></i></div>
     <div class="img-circle" ng-click="set_mode('OFF')"  ng-class="{'bg-muted': device._mode == 'OFF'}" style="cursor: pointer; margin: .5em; margin-left: -.5em; width: 1.7em; padding-top: .2em; text-align: center; vertical-align: middle; font-size: 3em;"><i class="glyphicon glyphicon-off"></i></div>
   </div>
-  <div class="col-xs-7 text-center" style="font-size: 5em;padding-top: 0em;">
+  <div class="col-xs-7 text-center" style="font-size: 4em;padding-top: 0em;">
     <div><i class="icon-chevron-up" style="cursor: pointer;" ng-click="temp_up()"></i></div>
     <div>{{device._set_point}}</div>
     <div><i class="icon-chevron-down" style="cursor: pointer;" ng-click="temp_down()"></i></div>
