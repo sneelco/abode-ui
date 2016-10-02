@@ -22,7 +22,7 @@ settings.config(function($stateProvider, $urlRouterProvider) {
     controller: function ($scope) {
       $scope.settings = [
         {'name': 'General', 'route': 'main.settings.general'},
-        {'name': 'Home', 'route': 'main.settings.home'},
+        {'name': 'Interfaces', 'route': 'main.settings.interfaces'},
         {'name': 'Sources', 'route': 'main.settings.sources'},
         {'name': 'Sensors', 'route': 'main.settings.sensors'},
         {'name': 'Providers', 'route': 'main.settings.providers'},
@@ -42,10 +42,10 @@ settings.config(function($stateProvider, $urlRouterProvider) {
       }
     }
   })
-  .state('main.settings.home', {
-    url: '/home',
-    templateUrl: '/views/settings/settings.home.html',
-    controller: 'homeSettings',
+  .state('main.settings.interfaces', {
+    url: '/interfaces',
+    templateUrl: '/views/settings/settings.interfaces.html',
+    controller: 'interfacesSettings',
   })
   .state('main.settings.sources', {
     url: '/sources',
@@ -300,9 +300,59 @@ settings.controller('addSourceSettings', function ($scope, $state, abode, settin
 
 });
 
-settings.controller('homeSettings', function ($scope, $state, abode, settings, Interfaces) {
+settings.controller('interfacesSettings', function ($scope, $state, abode, settings, Interfaces) {
   $scope.interface = '';
   $scope.interfaces = Interfaces.query();
+  var notifier = abode.message;
+
+  $scope.select_interface = function (interface) {
+    $scope.interface = interface;
+  };
+
+  $scope.create_interface = function () {
+    var interface,
+      name = prompt('Enter the interface name');
+    if (name) {
+      interface = new Interfaces({'name': name});
+      console.dir(interface);
+      interface.$create().then(function (data) {
+        console.dir(data);
+        notifier({
+          'type': 'success',
+          'message': 'Interface Created'
+        });
+        $scope.interface = name;
+        $scope.interfaces = Interfaces.query();
+      }, function () {
+        notifier({
+          'type': 'failed',
+          'message': 'Failed to Create Interface',
+          'details': err
+        });
+      });
+    }
+  };
+
+  $scope.delete_interface = function (interface) {
+    if (confirm('Are you sure?')) {
+      interface = new Interfaces({'name': interface});
+      interface.$delete().then(function () {
+        notifier({
+          'type': 'success',
+          'message': 'Interface Created'
+        });
+        $scope.interface = '';
+        $scope.interfaces = Interfaces.query();
+      }, function (err) {
+        console.dir(err);
+        notifier({
+          'type': 'failed',
+          'message': 'Failed to Create Interface',
+          'details': err
+        });
+      });
+    }
+  };
 
   $scope.$watch('interface', function () {
     if ($scope.interface !== '') {
@@ -313,7 +363,6 @@ settings.controller('homeSettings', function ($scope, $state, abode, settings, I
       $scope.view = '';
     }
   });
-  var notifier = abode.message;
 
   $scope.saveView = function () {
 
