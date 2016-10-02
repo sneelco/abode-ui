@@ -1,0 +1,47 @@
+
+<div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+<div style="position: fixed; right: 1em; top: .5em; font-size: 3em; cursor: pointer" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i></div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+    <h2>Settings / Interfaces</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12" style="font-size: 2em;">
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+            <form name="settings">
+              <div class="form-group">
+                <label for="name">Interface</label>
+                <div>
+                  <div class="btn-group" uib-dropdown is-open="interfacestatus.isopen">
+                    <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+                      <span ng-hide="interface">Select an Interface</span>
+                      <span ng-show="interface">{{interface}}</span> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                      <li role="menuitem" ng-repeat="i in interfaces"><a ng-click="select_interface(i)">{{i}}</a></li>
+                      <li class="divider"></li>
+                      <li role="menuitem"><a ng-click="create_interface()">Create New Interface</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group" ng-hide="interface == ''">
+                <label for="name">Template <button ng-click="delete_interface(interface)">Delete</button></label>
+                <textarea class="form-control" id="name" placeholder="Template" required="" ng-model="view" style="height: 18em;"></textarea>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="saveView()" ng-disabled="interface == ''"><i class="icon-savetodrive"></i> Save</button>
+                <button type="submit" class="btn btn-sm btn-default" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i> Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+  </div>
+</div>
+</div>
+
