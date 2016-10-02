@@ -191,9 +191,9 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
     }, 1000 * 15);
   };
 
-  angular.element($window).on('click', breakIdle);
-  angular.element($window).on('mousemove', breakIdle);
-  angular.element($window).on('keypress', breakIdle);
+  $window.addEventListener('click', breakIdle);
+  $window.addEventListener('mousemove', breakIdle);
+  $window.addEventListener('keypress', breakIdle);
 
   breakIdle();
 
