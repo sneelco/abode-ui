@@ -41,15 +41,55 @@ scenes.config(function($stateProvider, $urlRouterProvider) {
   });
 });
 
-scenes.factory('Scenes', ['$resource', '$http', '$q', 'abode', function($resource, $http, $q, abode) {
+scenes.factory('Scenes', ['$resource', '$http', '$q', 'abode', 'scenes', function($resource, $http, $q, abode, scenes) {
 
-  var Scenes = $resource(abode.url('/api/scenes/:id'),{
+  var model = $resource(abode.url('/api/scenes/:id'),{
     'id': '@_id'
   },{
     'update': {'method': 'PUT'},
   });
 
-  Scenes.prototype.$on = function () {
+  angular.merge(model.prototype, scenes.methods);
+
+  return model;
+
+}]);
+
+rooms.factory('RoomScenes', ['$resource', 'abode', function ($resource, abode) {
+
+  var model = $resource(abode.url('/api/rooms/:room/scenes/:id'), {id: '@_id'}, {});
+
+  angular.merge(model.prototype, scenes.methods);
+
+  return model;
+
+}]);
+
+scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
+  var model = $resource(abode.url('/api/scenes/:id/:action'), {id: '@_id'}, {
+    'update': { method: 'PUT' },
+    'on': { method: 'POST', params: {'action': 'on'}},
+    'off': { method: 'POST', params: {'action': 'off'}}
+  });
+
+  var methods = {};
+
+  methods.$refresh = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/scenes/' + this._id).value();
+
+    $http.get(url).then(function (response) {
+      angular.merge(self, response.data);
+      defer.resolve(response.data.room);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  methods.$on = function () {
     var self = this,
       defer = $q.defer(),
       url = abode.url('/api/scenes/' + this._id + '/on').value();
@@ -64,7 +104,7 @@ scenes.factory('Scenes', ['$resource', '$http', '$q', 'abode', function($resourc
     return defer.promise;
   };
 
-  Scenes.prototype.$off = function () {
+  methods.$off = function () {
     var self = this,
       defer = $q.defer(),
       url = abode.url('/api/scenes/' + this._id + '/off').value();
@@ -79,20 +119,9 @@ scenes.factory('Scenes', ['$resource', '$http', '$q', 'abode', function($resourc
     return defer.promise;
   };
 
-  Scenes.prototype.$open = function () {
+  methods.$open = function () {
 
   };
-
-  return Scenes;
-
-}]);
-
-scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
-  var model = $resource(abode.url('/api/scenes/:id/:action'), {id: '@_id'}, {
-    'update': { method: 'PUT' },
-    'on': { method: 'POST', params: {'action': 'on'}},
-    'off': { method: 'POST', params: {'action': 'off'}}
-  });
 
   var loadScenes = function (source) {
     var defer = $q.defer();
@@ -292,7 +321,8 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
     'remove': removeScene,
     'getRooms': getSceneRooms,
     'addRoom': addSceneRoom,
-    'removeRoom': removeSceneRoom
+    'removeRoom': removeSceneRoom,
+    'methods': methods
   };
 });
 

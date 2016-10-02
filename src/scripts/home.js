@@ -118,6 +118,22 @@ home.directive('controller', [function () {
         });
       };
 
+      $scope.refresh = function () {
+        if (!$scope.obj || $scope.loading) {
+          return;
+        }
+
+        $scope.loading = true;
+        $scope.obj.$refresh().then(function (obj) {
+          //$scope.obj = obj;
+          $scope.loading = false;
+          $scope.error = false;
+        }, function () {
+          $scope.loading = false;
+          $scope.error = true;
+        });
+      };
+
       $scope.do_action = function () {
         if (!$scope.obj || $scope.failed) {
           $scope.failed = true;
@@ -166,7 +182,7 @@ home.directive('controller', [function () {
       $scope.load();
 
       if ($scope.action === 'toggle') {
-        $scope.loader = $interval($scope.load, 5000);
+        $scope.loader = $interval($scope.refresh, 5000);
       }
 
       $scope.$on('$destroy', function () {

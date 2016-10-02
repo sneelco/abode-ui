@@ -31,7 +31,7 @@ abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function(
       templateUrl: "views/main/index.html",
       controller: 'mainController',
       resolve: {
-        auth: ['$q', 'abode', 'Auth', function ($q, abode, Auth) {
+        auth: ['$q', '$uibModal', 'abode', 'Auth', function ($q, $uibModal, abode, Auth) {
           var defer = $q.defer();
 
           if (!abode.config.server) {
@@ -50,8 +50,11 @@ abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function(
               abode.save();
 
               defer.reject({'state': 'welcome', 'message': 'Login Expired'});
+            } else if (response.status === 401) {
+              defer.reject({'state': 'welcome', 'message': 'Login Expired'});
             } else {
               defer.reject({'message': 'Server has gone away'});
+
             }
 
           });

@@ -33,21 +33,43 @@ rooms.config(function($stateProvider, $urlRouterProvider) {
   });
 });
 
-rooms.factory('Rooms', ['$resource', '$q', '$http', 'abode', 'RoomDevices', 'RoomScenes', function ($resource, $q, $http, abode, RoomDevices, RoomScenes) {
+rooms.factory('Rooms', ['$resource', '$q', '$http', 'abode', 'rooms', 'RoomDevices', 'RoomScenes', function ($resource, $q, $http, abode, rooms, RoomDevices, RoomScenes) {
 
-  var rooms = $resource(abode.url('/api/rooms/:id/:action'), {id: '@_id'}, {
+  var Rooms = $resource(abode.url('/api/rooms/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },
   });
 
-  rooms.prototype.$devices = function () {
+
+  Rooms.prototype.$open = function () {
+    var self = this;
+
+    rooms.view(self);
+  };
+
+  Rooms.prototype.$refresh = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/rooms/' + this._id + '/status').value();
+
+    $http.get(url).then(function (response) {
+      angular.merge(self, response.data.room);
+      defer.resolve(response.data.room);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  Rooms.prototype.$devices = function () {
     return RoomDevices.query({'room': this.name});
   };
 
-  rooms.prototype.$scenes = function () {
+  Rooms.prototype.$scenes = function () {
     return RoomScenes.query({'room': this.name});
   };
 
-  rooms.prototype.$on = function () {
+  Rooms.prototype.$on = function () {
     var self = this,
       defer = $q.defer(),
       url = abode.url('/api/rooms/' + this._id + '/on').value();
@@ -62,7 +84,7 @@ rooms.factory('Rooms', ['$resource', '$q', '$http', 'abode', 'RoomDevices', 'Roo
     return defer.promise;
   };
 
-  rooms.prototype.$off = function () {
+  Rooms.prototype.$off = function () {
     var self = this,
       defer = $q.defer(),
       url = abode.url('/api/rooms/' + this._id + '/off').value();
@@ -77,24 +99,10 @@ rooms.factory('Rooms', ['$resource', '$q', '$http', 'abode', 'RoomDevices', 'Roo
     return defer.promise;
   };
 
-  return rooms;
+  return Rooms;
 }]);
 
-rooms.factory('RoomDevices', ['$resource', 'abode', function ($resource, abode) {
-
-  return $resource(abode.url('/api/rooms/:room/devices/:id'), {id: '@_id'}, {
-  });
-
-}]);
-
-rooms.factory('RoomScenes', ['$resource', 'abode', function ($resource, abode) {
-
-  return $resource(abode.url('/api/rooms/:room/scenes/:id'), {id: '@_id'}, {
-  });
-
-}]);
-
-rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $timeout, abode, Rooms, RoomScenes, RoomDevices, devices) {
+rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $timeout, abode, RoomScenes, RoomDevices, devices) {
   var rooms = {};
 
   $rootScope.$on('ROOM_CHANGE', function (event, args) {
@@ -199,7 +207,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
   var getRoomScenes = function (room, source) {
     var defer = $q.defer();
 
-    RoomScenes.query({'room': name, 'source': source}).$promise.then(function (results) {
+    RoomScenes.query({'room': room, 'source': source}).$promise.then(function (results) {
 
       results.forEach(function (scene) {
         if (scene._on === true) {
@@ -215,7 +223,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
         }
       });
 
-      defer.resolve(response.data);
+      defer.resolve(results);
     }, function (err) {
       defer.reject(err);
     });
@@ -235,7 +243,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
 
       });
 
-      defer.resolve(devs);
+      defer.resolve(results);
 
     }, function (err) {
       defer.reject(err);
@@ -410,9 +418,8 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
 
           };
 
-          getRoom($scope.room.name, source).then(function (room) {
+          $scope.room.$refresh().then(function (room) {
 
-            $scope.room = room;
             room_devices();
           }, function () {
             errors = true;
@@ -451,11 +458,11 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
         });
       },
       resolve: {
-        room: function () {
+        room: function (Rooms) {
           if (typeof room === 'object') {
             return room;
           } else {
-            return getRoom(room, source);
+            return Rooms.get(room);
           }
         },
         source: function () {
@@ -527,12 +534,12 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
   };
 });
 
-rooms.controller('roomsList', function ($scope, $state, rooms) {
+rooms.controller('roomsList', function ($scope, $state, Rooms) {
   $scope.rooms = [];
   $scope.loading = true;
 
   $scope.view = function (room) {
-    rooms.view(room.name);
+    room.$open();
   };
 
   $scope.edit = function (room) {
@@ -540,8 +547,8 @@ rooms.controller('roomsList', function ($scope, $state, rooms) {
   };
 
   $scope.load = function () {
-    rooms.load().then(function (rooms) {
-      $scope.rooms = rooms;
+    Rooms.query().$promise.then(function (results) {
+      $scope.rooms = results;
       $scope.loading = false;
       $scope.error = false;
     }, function () {
@@ -711,7 +718,7 @@ rooms.directive('roomCameras', function () {
       'source': '=',
     },
     templateUrl: 'views/rooms/rooms.cameras.html',
-    controller: function ($scope, devices) {
+    controller: function ($scope, abode, devices) {
       var source_uri = ($scope.source === undefined) ? '/api' : '/api/sources/' + $scope.source;
       var random = new Date();
 
@@ -727,11 +734,11 @@ rooms.directive('roomCameras', function () {
             var camera = {
               '_id': device._id,
               'name': device.name,
-              'image': source_uri + '/devices/' + device._id + '/image?' + random.getTime()
+              'image': device.$image_url(),
             };
 
             if (device.config.video_url) {
-              camera.video = source_uri + '/devices/' + device._id + '/video?live=true';
+              camera.video = device.$video_url();
             }
 
             cameras.push(camera);
@@ -762,7 +769,7 @@ rooms.directive('roomCameras', function () {
         var device = $scope.devices.filter(function (d) { return d._id === $scope.cameras[$scope.index]._id; });
 
         if (device[0]) {
-          $scope.cameras[$scope.index].image = source_uri + '/devices/' + device[0]._id + '/image?live=true&' + random.getTime();
+          $scope.cameras[$scope.index].image = device[0].$image_url();
         }
       };
 

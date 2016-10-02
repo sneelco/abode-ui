@@ -78,6 +78,16 @@ devices.config(function($stateProvider, $urlRouterProvider) {
   });
 });
 
+devices.factory('RoomDevices', ['$resource', 'abode', 'devices', function ($resource, abode, devices) {
+
+  var model = $resource(abode.url('/api/rooms/:room/devices/:id'), {id: '@_id'}, {});
+
+  angular.merge(model.prototype, devices.methods);
+
+  return model;
+
+}]);
+
 devices.factory('Devices', ['$resource', '$http', '$q', 'abode', 'devices', function($resource, $http, $q, abode, devices) {
 
   var Devices = $resource(abode.url('/api/devices/:id'),{
@@ -86,7 +96,39 @@ devices.factory('Devices', ['$resource', '$http', '$q', 'abode', 'devices', func
     'update': {'method': 'PUT'},
   });
 
-  Devices.prototype.$on = function () {
+  angular.merge(Devices.prototype, devices.methods);
+
+  return Devices;
+
+}]);
+
+devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout, $resource, abode) {
+  var model = $resource(abode.url('/api/devices/:id/:action'), {id: '@_id'}, {
+    'update': { method: 'PUT' },
+    'on': { method: 'POST', params: {'action': 'on'}},
+    'off': { method: 'POST', params: {'action': 'off'}}
+  });
+  var devices = {};
+
+
+  var methods = {};
+
+  methods.$refresh = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/devices/' + this._id).value();
+
+    $http.get(url).then(function (response) {
+      angular.merge(self, response.data);
+      defer.resolve(response.data.room);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  methods.$on = function () {
     var self = this,
       defer = $q.defer(),
       url = abode.url('/api/devices/' + this._id + '/on').value();
@@ -101,7 +143,7 @@ devices.factory('Devices', ['$resource', '$http', '$q', 'abode', 'devices', func
     return defer.promise;
   };
 
-  Devices.prototype.$off = function () {
+  methods.$off = function () {
     var self = this,
       defer = $q.defer(),
       url = abode.url('/api/devices/' + this._id + '/off').value();
@@ -116,29 +158,100 @@ devices.factory('Devices', ['$resource', '$http', '$q', 'abode', 'devices', func
     return defer.promise;
   };
 
-  Devices.prototype.$open = function () {
-    var self = this;
+  methods.$toggle = function () {
+    var action,
+      self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/devices/' + this._id).value();
 
-    devices.openDevice(self);
+    if (self.active) {
+      action = (self._on) ? self.$on : self.$off;
+      action().then(function (response) {
+        defer.resolve(response);
+      }, function (err) {
+        defer.reject(err);
+      });
+    } else {
+      $http.put(url, {'_on': !self._on}).then(function (response) {
+        self._on = !self._on;
+        defer.resolve(response.data);
+      }, function (err) {
+        defer.reject(err.data);
+      });
+    }
+
+    return defer.promise;
   };
 
-  Devices.prototype.$camera = function () {
+  methods.$open = function () {
     var self = this;
 
-    devices.openCamera(self);
+    openDevice(self);
   };
 
-  return Devices;
+  methods.$camera = function () {
+    var self = this;
 
-}]);
+    openCamera(self);
+  };
 
-devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout, $resource, abode) {
-  var model = $resource(abode.url('/api/devices/:id/:action'), {id: '@_id'}, {
-    'update': { method: 'PUT' },
-    'on': { method: 'POST', params: {'action': 'on'}},
-    'off': { method: 'POST', params: {'action': 'off'}}
-  });
-  var devices = {};
+  methods.$set_mode = function (mode) {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/devices/' + this._id + '/set_mode').value();
+
+    $http.post(url, [mode]).then(function (response) {
+      self._mode = mode;
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  methods.$set_temp = function (temp) {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/devices/' + this._id + '/set_point').value();
+
+    $http.post(url, [temp]).then(function (response) {
+      self._set_point = temp;
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  methods.$set_level = function (level) {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/devices/' + this._id + '/set_level').value();
+
+    $http.post(url, [level]).then(function (response) {
+      self._level = level;
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+
+  };
+
+  methods.$image_url = function () {
+    var random = new Date();
+    return (this.config.image_url) ? abode.url('/api/devices/' + this._id + '/image?' + random.getTime()).value() : undefined;
+
+  };
+
+  methods.$video_url = function () {
+    var random = new Date();
+    return (this.config.video_url) ? abode.url('/api/devices/' + this._id + '/video?live=true').value() : undefined;
+
+  };
 
   $rootScope.$on('DEVICE_CHANGE', function (event, args) {
 
@@ -299,6 +412,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
       size: 'sm',
       controller: function ($scope, $uibModalInstance, $interval, $timeout, $state, device, source) {
         var intervals = [];
+        var temp_wait, level_wait;
         var source_uri = (source === undefined) ? '/api' : '/api/sources/' + source;
 
         $scope.device = angular.copy(device);
@@ -348,32 +462,20 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
 
         $scope.reload = function () {
 
+          if ($scope.processing || temp_wait || level_wait) {
+            return;
+          }
+
           $scope.processing = true;
           $scope.errors = false;
 
-          if ($scope.device.active === false) {
-            getDevice(source, $scope.device.name, true).then(function (device) {
-              $scope.device = device;
-            }, function () {
-              $scope.processing = false;
-              $scope.errors = true;
-            });
-          } else {
-            $http.post(source_uri + '/devices/' + $scope.device.name + '/status').then(function (response) {
-              var src_key = source || 'local';
-              if (response.data.device) {
-
-                devices[src_key][response.data.device._id] = makeAges(response.data.device);
-                devices[src_key][response.data.device._id].$updated = new Date();
-                $scope.device = devices[source || 'local'][response.data.device._id];
-              }
-              $scope.processing = false;
-              $scope.errors = false;
-            }, function () {
-              $scope.processing = false;
-              $scope.errors = true;
-            });
-          }
+          $scope.device.$refresh($scope.device.active).then(function () {
+            $scope.processing = false;
+            $scope.errors = false;
+          }, function () {
+            $scope.processing = false;
+            $scope.errors = true;
+          });
 
         };
 
@@ -387,6 +489,15 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           $scope.processing = true;
           $scope.errors = false;
 
+          $scope.device.$toggle().then(function () {
+            $scope.processing = false;
+            $scope.errors = false;
+          }, function (err) {
+            console.log(err);
+            $scope.processing = false;
+            $scope.errors = true;
+          });
+          /*
           if ($scope.device.active === false) {
             if ($scope.device._on) {
               $http.put(source_uri + '/devices/' + $scope.device.name, {'_on': false}).then(function () {
@@ -428,6 +539,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
               });
             }
           }
+          */
         };
 
         $scope.set_mode = function (mode) {
@@ -435,10 +547,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           $scope.processing = true;
           $scope.errors = false;
 
-          $http.post(source_uri + '/devices/' + $scope.device.name + '/set_mode', [mode]).then(function (response) {
-            if (response.data.device) {
-              $scope.device = response.data.device;
-            }
+          $scope.device.$set_mode(mode).then(function () {
             $scope.processing = false;
             $scope.errors = false;
           }, function (err) {
@@ -448,7 +557,6 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           });
         };
 
-        var temp_wait;
 
         $scope.temp_up = function () {
           $scope.processing = true;
@@ -477,10 +585,8 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           $scope.processing = true;
           $scope.errors = false;
 
-          $http.post(source_uri + '/devices/' + $scope.device.name + '/set_point', [$scope.device._set_point]).then(function (response) {
-            if (response.data.device) {
-              $scope.device = response.data.device;
-            }
+          $scope.device.$set_temp($scope.device._set_point).then(function () {
+          //$http.post(source_uri + '/devices/' + $scope.device.name + '/set_point', [$scope.device._set_point]).then(function (response) {
             temp_wait = undefined;
             $scope.processing = false;
             $scope.errors = false;
@@ -490,8 +596,6 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
             $scope.errors = true;
           });
         };
-
-        var level_wait;
 
         $scope.level_up = function () {
           $scope.processing = true;
@@ -525,10 +629,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           $scope.processing = true;
           $scope.errors = false;
 
-          $http.post(source_uri + '/devices/' + $scope.device.name + '/set_level', [$scope.device._level]).then(function (response) {
-            if (response.data.device) {
-              $scope.device = response.data.device;
-            }
+          $scope.device.$set_level($scope.device._level).then(function () {
             level_wait = undefined;
             $scope.processing = false;
             $scope.errors = false;
@@ -539,27 +640,18 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           });
         };
 
-        var device_checker = function () {
-          if (temp_wait || level_wait) {
-            return;
-          }
-          getDevice($scope.device.name, source).then(function (response) {
-            $scope.device = response;
-          });
-        };
-
-        intervals.push($interval(device_checker, 2000));
+        intervals.push($interval($scope.reload, 2000));
 
         $scope.$on('$destroy', function () {
           intervals.forEach($interval.cancel);
         });
       },
       resolve: {
-        device: function () {
+        device: function (Devices) {
           if (typeof device === 'object') {
             return device;
           } else {
-            return getDevice(device, source);
+            return Devices.get(device);
           }
         },
         source: function () {
@@ -654,16 +746,17 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
     'addRoom': addDeviceRoom,
     'removeRoom': removeDeviceRoom,
     'openDevice': openDevice,
-    'openCamera': openCamera
+    'openCamera': openCamera,
+    'methods': methods,
   };
 });
 
-devices.controller('devicesList', function ($scope, $state, devices) {
+devices.controller('devicesList', function ($scope, $state, Devices) {
   $scope.devices = [];
   $scope.loading = true;
 
   $scope.view = function (device) {
-    devices.openDevice(device.name);
+    device.$open();
   };
 
   $scope.edit = function (device) {
@@ -671,8 +764,8 @@ devices.controller('devicesList', function ($scope, $state, devices) {
   };
 
   $scope.load = function () {
-    devices.load().then(function (devices) {
-      $scope.devices = devices;
+    Devices.query().$promise.then(function (results) {
+      $scope.devices = results;
       $scope.loading = false;
       $scope.error = false;
     }, function () {

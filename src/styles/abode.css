@@ -309,6 +309,48 @@ body {
 }
 
 
+.room_filter {
+  font-size: 1.2em;
+  width: 100%;
+  height: 100%;
+  line-height: 1.7em;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  color: white;
+  text-shadow: 0em 0em .2em black;
+  position: relative;
+  border-top-left-radius: .2em;
+  border-top-right-radius: .2em;
+}
+
+.room_filter.selected {
+  background-color: #444;
+  color: #ddd;
+}
+
+.room_filter .on-count {
+  position: absolute;
+  bottom: 1em;
+  right: 3em;
+  font-size: .4em;
+  height: 1.75em;
+  width: 1.75em;
+  background-color: #333;
+  color: #fff;
+  border-radius: .9em;
+  line-height: 1.7em;
+
+}
+
+.room-filter-offset {
+  margin-top: -3.5em;
+
+}
+
+
+
+
 .room-icon {
   position: relative;
   height: 3em;
