@@ -80,8 +80,12 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
       url = abode.url('/api/scenes/' + this._id).value();
 
     $http.get(url).then(function (response) {
-      angular.merge(self, response.data);
-      defer.resolve(response.data.room);
+      for (key in response.data) {
+        if (response.data.hasOwnProperty(key)) {
+          self[key] = response.data[key];
+        }
+      }
+      defer.resolve(self);
     }, function (err) {
       defer.reject(err.data);
     });

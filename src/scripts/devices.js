@@ -119,8 +119,13 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
       url = abode.url('/api/devices/' + this._id).value();
 
     $http.get(url).then(function (response) {
-      angular.merge(self, response.data);
-      defer.resolve(response.data.room);
+
+      for (key in response.data) {
+        if (response.data.hasOwnProperty(key)) {
+          self[key] = response.data[key];
+        }
+      }
+      defer.resolve(self);
     }, function (err) {
       defer.reject(err.data);
     });
@@ -186,7 +191,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
   methods.$open = function () {
     var self = this;
 
-    openDevice(self);
+    return openDevice(self);
   };
 
   methods.$camera = function () {
@@ -392,7 +397,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
         $scope.device = device;
 
         $scope.ok = function () {
-          $uibModalInstance.close();
+          $uibModalInstance.close($scope.device);
         };
 
         if (device.config.video_url) {
@@ -415,7 +420,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
         var temp_wait, level_wait;
         var source_uri = (source === undefined) ? '/api' : '/api/sources/' + source;
 
-        $scope.device = angular.copy(device);
+        $scope.device = device;
         $scope.processing = false;
         $scope.errors = false;
         $scope.source = source;

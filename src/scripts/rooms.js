@@ -52,8 +52,12 @@ rooms.factory('Rooms', ['$resource', '$q', '$http', 'abode', 'rooms', 'RoomDevic
       url = abode.url('/api/rooms/' + this._id + '/status').value();
 
     $http.get(url).then(function (response) {
-      angular.merge(self, response.data.room);
-      defer.resolve(response.data.room);
+      for (key in response.data.room) {
+        if (response.data.room.hasOwnProperty(key)) {
+          self[key] = response.data.room[key];
+        }
+      }
+      defer.resolve(self);
     }, function (err) {
       defer.reject(err.data);
     });

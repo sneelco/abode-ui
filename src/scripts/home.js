@@ -125,7 +125,7 @@ home.directive('controller', [function () {
 
         $scope.loading = true;
         $scope.obj.$refresh().then(function (obj) {
-          //$scope.obj = obj;
+          $scope.obj = obj;
           $scope.loading = false;
           $scope.error = false;
         }, function () {
@@ -174,6 +174,12 @@ home.directive('controller', [function () {
               $scope.failed = false;
             }, 4000);
           });
+        } else if (result && result.closed) {
+            $scope.pending = false;
+            $scope.loading = true;
+            result.closed.then(function (result) {
+              $scope.loading = false;
+            });
         } else {
           $scope.pending = false;
         }
@@ -181,7 +187,7 @@ home.directive('controller', [function () {
 
       $scope.load();
 
-      if ($scope.action === 'toggle') {
+      if ($scope.action === 'toggle' || $scope.action === 'open') {
         $scope.loader = $interval($scope.refresh, 5000);
       }
 
