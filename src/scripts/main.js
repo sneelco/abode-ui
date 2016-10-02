@@ -184,7 +184,10 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
     if (idleTimer) {
       $timeout.cancel(idleTimer);
     }
-    $scope.is_idle = false;
+    if ($scope.is_idle) {
+      $scope.is_idle = false;
+      $scope.$digest();
+    }
 
     idleTimer = $timeout(function () {
       $scope.is_idle = true;
