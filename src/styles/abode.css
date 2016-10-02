@@ -26,13 +26,13 @@ body {
 }
 
 @-moz-keyframes idleShadeActivate {
-  100% { background-color: rgba(0, 0, 0, .5); } 
+  100% { background-color: rgba(0, 0, 0, .75); } 
 }
 @-webkit-keyframes idleShadeActivate { 
-  100% { background-color: rgba(0, 0, 0, .5); } 
+  100% { background-color: rgba(0, 0, 0, .75); } 
 }
 @keyframes idleShadeActivate { 
-  100% { background-color: rgba(0, 0, 0, .5); } 
+  100% { background-color: rgba(0, 0, 0, .75); } 
 }
 
 .spin {
