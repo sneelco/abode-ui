@@ -6,6 +6,34 @@ body {
   margin: 0em;
 }
 
+.idle-shade {
+  position: fixed;
+  top: 0em;
+  bottom: 0em;
+  left: 0em;
+  right: 0em;
+  background-color: rgba(0, 0, 0, 0);
+  transition: all 5s ease;
+  z-index: 9999;
+  display: none;
+}
+
+.idle-shade-active {
+  display: block;
+  -webkit-animation:idleShadeActivate 2s forwards;
+  -moz-animation:idleShadeActivate 2s forwards;
+  animation:idleShadeActivate 2s forwards;
+}
+
+@-moz-keyframes idleShadeActivate {
+  100% { background-color: rgba(0, 0, 0, .5); } 
+}
+@-webkit-keyframes idleShadeActivate { 
+  100% { background-color: rgba(0, 0, 0, .5); } 
+}
+@keyframes idleShadeActivate { 
+  100% { background-color: rgba(0, 0, 0, .5); } 
+}
 
 .spin {
   display: inline-block;

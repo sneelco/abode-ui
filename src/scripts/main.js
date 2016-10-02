@@ -174,7 +174,28 @@ abode.directive('messages', function () {
   };
 });
 
-abode.controller('rootController', ['$rootScope', '$state', 'abode', function ($rootScope, $state, abode) {
+abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window', 'abode', '$timeout', function ($rootScope, $scope, $state, $window, abode, $timeout) {
+
+  var idleTimer;
+
+  $scope.is_idle = false;
+
+  var breakIdle = function () {
+    if (idleTimer) {
+      $timeout.cancel(idleTimer);
+    }
+    $scope.is_idle = false;
+
+    idleTimer = $timeout(function () {
+      $scope.is_idle = true;
+    }, 1000 * 15);
+  };
+
+  angular.element($window).on('click', breakIdle);
+  angular.element($window).on('mousemove', breakIdle);
+  angular.element($window).on('keypress', breakIdle);
+
+  breakIdle();
 
   $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
 

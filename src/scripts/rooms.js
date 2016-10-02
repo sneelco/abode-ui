@@ -52,7 +52,7 @@ rooms.factory('Rooms', ['$resource', '$q', '$http', 'abode', 'rooms', 'RoomDevic
       url = abode.url('/api/rooms/' + this._id + '/status').value();
 
     $http.get(url).then(function (response) {
-      for (key in response.data.room) {
+      for (var key in response.data.room) {
         if (response.data.room.hasOwnProperty(key)) {
           self[key] = response.data.room[key];
         }

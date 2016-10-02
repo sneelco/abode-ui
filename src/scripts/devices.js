@@ -120,7 +120,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
 
     $http.get(url).then(function (response) {
 
-      for (key in response.data) {
+      for (var key in response.data) {
         if (response.data.hasOwnProperty(key)) {
           self[key] = response.data[key];
         }
