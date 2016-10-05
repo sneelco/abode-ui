@@ -180,13 +180,16 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
 
   $scope.is_idle = false;
 
-  var breakIdle = function () {
+  var breakIdle = function ($event) {
     if (idleTimer) {
       $timeout.cancel(idleTimer);
     }
     if ($scope.is_idle) {
-      $scope.is_idle = false;
-      $scope.$digest();
+      $event.preventDefault()
+      $timeout(function () {
+        $scope.is_idle = false;
+        $scope.$digest();
+      }, 250);
     }
 
     idleTimer = $timeout(function () {
