@@ -55,8 +55,12 @@ alarmclock.factory('AlarmClocks', ['$resource', '$uibModal', 'abode', function (
       animation: true,
       templateUrl: 'views/alarmclocks/add.html',
       size: 'lg',
-      controller: function ($scope, $uibModalInstance, AlarmClocks) {
+      controller: function ($scope, $uibModalInstance, AlarmClocks, triggers) {
         $scope.alarm = new AlarmClocks(base);
+        $scope.alarm.actions = $scope.alarm.actions || [];
+        $scope.addAction = triggers.addAction;
+        $scope.editAction = triggers.editAction;
+        $scope.removeAction = triggers.removeAction;
 
         $scope.save = function () {
           $scope.alarm.$save().then(function (response) {
