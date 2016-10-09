@@ -54,6 +54,46 @@ home.directive('interface', ['$sce', 'abode', function ($sce, abode) {
   };
 }]);
 
+home.directive('interfaceList', function () {  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      'show': '@'
+    },
+    templateUrl: 'views/home/interfaceList.html',
+    controller: ['$scope', 'Interfaces', function ($scope, Interfaces) {
+      $scope.interfaces = [];
+
+      Interfaces.query().$promise.then(function (results) {
+        if (!$scope.show) {
+          $scope.interfaces = results;
+        } else {
+          ifaces = $scope.show.split(',');
+          ifaces.forEach(function (show) {
+            match = results.filter(function (iface) { return show === iface.name});
+            if (match.length !== 0) {
+              $scope.interfaces.push(match[0]);
+            }
+          });
+        }
+
+      });
+
+
+    }]
+  };
+});
+
+home.directive('interfaceLink', function () {  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      'interface': '='
+    },
+    templateUrl: 'views/home/interfaceLink.html',
+  };
+});
+
 home.controller('homeController', ['$scope', '$state', '$templateCache', 'abode', function ($scope, $state, $templateCache, abode, Interfaces) {
   $scope.interface = $state.params.interface || abode.config.interface;
   abode.config.interface = $scope.interface;
@@ -458,10 +498,3 @@ home.directive('background', function () {
   };
 
 });
-
-home.directive('interfaceList', function () {  return {
-    restrict: 'E',
-    replace: true,
-    templateUrl: 'views/home/interfaceList.html'
-  };
-})

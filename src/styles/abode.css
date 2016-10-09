@@ -6,6 +6,15 @@ body {
   margin: 0em;
 }
 
+.background {
+  background-size: cover;
+  position: absolute;
+  top: 0em;
+  bottom: 0em;
+  left: 0em;
+  right: 0em;
+}
+
 .idle-shade {
   position: fixed;
   top: 0em;
@@ -26,13 +35,13 @@ body {
 }
 
 @-moz-keyframes idleShadeActivate {
-  100% { background-color: rgba(0, 0, 0, .75); } 
+  100% { background-color: rgba(0, 0, 0, .75); }
 }
-@-webkit-keyframes idleShadeActivate { 
-  100% { background-color: rgba(0, 0, 0, .75); } 
+@-webkit-keyframes idleShadeActivate {
+  100% { background-color: rgba(0, 0, 0, .75); }
 }
-@keyframes idleShadeActivate { 
-  100% { background-color: rgba(0, 0, 0, .75); } 
+@keyframes idleShadeActivate {
+  100% { background-color: rgba(0, 0, 0, .75); }
 }
 
 .spin {
@@ -713,3 +722,52 @@ body {
     50% { background-color: rgba(194, 123, 10, 100); }
     100% { background-color: rgba(194, 123, 10, 0); }
   }
+
+.interface-list {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  font-size: 1.4em;
+}
+
+.interface-link {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  margin: .25em;
+  height: 3em;
+  width: 3em;
+  border: .25em solid #444;
+  border-radius: 1.5em;
+  line-height: 2.5em;
+  text-align: center;
+  background-color: #222;
+  transition: 1s ease;
+  text-shadow: 0em 0em .2em black;
+  cursor: pointer;
+  color: #777;
+  box-shadow: 0em 0em .2em black;
+  cursor: pointer;
+}
+
+.interface-link-active {
+  border-color: #fff !important;
+}
+
+.interface-top {
+  font-size: .5em;
+  line-height: 1em;
+  height: 25%;
+  padding-top: .25em;
+}
+
+.interface-middle {
+  line-height: 1.2em;
+  height: 50%;
+}
+
+.interface-bottom {
+  line-height: 1em;
+  height: 25%;
+  font-size: .5em;
+}
