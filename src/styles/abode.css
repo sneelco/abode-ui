@@ -181,6 +181,14 @@ body {
   height: 1.6em;
 }
 
+.select-list {
+  overflow: auto;
+  height: 8em;
+  padding: .2em;
+  border-radius: .1em;
+  border: 1px solid #aaa;
+}
+
 .interface {
   position: absolute;
   top: 0px;
