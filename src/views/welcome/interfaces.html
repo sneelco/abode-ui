@@ -11,7 +11,7 @@
         <div class="list-group">
           <button type="button" class="list-group-item" disabled ng-show="loading"><i class="icon-loadingalt spin"></i> Looking for Interfaces</button>
           <button type="button" class="list-group-item list-group-item-warning" ng-show="interfaces.length == 0 && !loading" ng-click="load_interfaces()"><i class="icon-warning-sign text-warning"></i> No existing interfaces found. Create a new one below or click here to retry</button>
-          <button type="button" class="list-group-item" ng-repeat="interface in interfaces" ng-click="select(interface)"><i class="{{interface.icon}}"></i> {{interface}}</button>
+          <button type="button" class="list-group-item" ng-repeat="interface in interfaces | orderBy: '+name'" ng-click="select(interface._id)"><i class="{{interface.icon}}"></i> {{interface.name}}</button>
         </div>
         <p class="text-center"><strong>- or -</strong></p>
         <form name="manualFrm">

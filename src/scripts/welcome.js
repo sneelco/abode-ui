@@ -154,7 +154,7 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
   $scope.failed = false;
   $scope.interfaces = [];
   $scope.state = $state;
-  $scope.interface = new Interfaces();
+  $scope.interface = new Interfaces({'icon': 'icon-monitor', 'template': '<div></div>'});
 
   $scope.load_interfaces = function () {
     $scope.loading = true;
@@ -177,8 +177,8 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
   };
 
   $scope.create = function () {
-    $scope.interface.$create().then(function (data) {
-      $scope.select(data.view);
+    $scope.interface.$save().then(function (data) {
+      $scope.select(data._id);
     }, function () {
       console.dir(arguments);
     });

@@ -15,10 +15,10 @@
 
 	<div class="btn-group" uib-dropdown is-open="status.isopen">
 	  <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="disabled">
-	    <i class="icon-map-marker"></i> <span class="caret"></span>
+	    <i class="icon-monitor"></i> Interface <span class="caret"></span>
 	  </button>
 	  <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
-	    <li role="menuitem" ng-repeat="interface in interfaces" ng-click="anav_open=false" ui-sref="main.home({interface: interface})"><a href="#">{{interface}}</a></li>
+	    <li role="menuitem" ng-repeat="interface in interfaces | orderBy: '+name'" ui-sref="main.home({interface: interface.name})" ><a href="#"ng-click="anav_open=false"><i class="{{interface.icon}}"></i> {{interface.name}}</a></li>
 	  </ul>
 	</div>
 
