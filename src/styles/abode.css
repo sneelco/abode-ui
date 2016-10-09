@@ -792,6 +792,12 @@ body {
   box-shadow: 0em 0em .2em black;
   cursor: pointer;
 }
+
+.alarm-link.alarm-enabled {
+  background-color: #c27b0a !important;
+  color: white;
+}
+
 .alarm-weekdays {
   position: absolute;
   left: -.75em;

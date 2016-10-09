@@ -1,5 +1,5 @@
 <div style="text-align: center">
-  <div class="alarm-link" ng-repeat="alarm in alarms" ng-click="open(alarm)">
+  <div class="alarm-link" ng-repeat="alarm in alarms" ng-click="open(alarm)" ng-class="{'alarm-enabled': alarm.enabled}">
     <div class="alarm-time">{{alarm.time | time}}</div>
     <div class="alarm-weekdays">
       <div class="alarm-day" ng-class="{'alarm-day-active': alarm.sunday}">S</div>
