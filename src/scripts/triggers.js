@@ -323,14 +323,14 @@ triggers.service('triggers', function ($http, $q, $uibModal, $resource, abode, c
         action: function () {
           return action;
         },
-        devices: function () {
-          return devices.load();
+        devices: function (Devices) {
+          return Devices.query();
         },
-        rooms: function () {
-          return rooms.load();
+        rooms: function (Rooms) {
+          return Rooms.query();
         },
-        scenes: function () {
-          return scenes.load();
+        scenes: function (Scenes) {
+          return Scenes.query();
         },
         title: function () {
           return title;

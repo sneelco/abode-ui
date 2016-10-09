@@ -1,0 +1,17 @@
+<div style="text-align: center">
+  <div class="alarm-link" ng-repeat="alarm in alarms" ng-click="open(alarm)">
+    <div class="alarm-time">{{alarm.time | time}}</div>
+    <div class="alarm-weekdays">
+      <div class="alarm-day" ng-class="{'alarm-day-active': alarm.sunday}">S</div>
+      <div class="alarm-day" ng-class="{'alarm-day-active': alarm.monday}">M</div>
+      <div class="alarm-day" ng-class="{'alarm-day-active': alarm.tuesday}">T</div>
+      <div class="alarm-day" ng-class="{'alarm-day-active': alarm.wednesday}">W</div>
+      <div class="alarm-day" ng-class="{'alarm-day-active': alarm.thursday}">T</div>
+      <div class="alarm-day" ng-class="{'alarm-day-active': alarm.friday}">F</div>
+      <div class="alarm-day" ng-class="{'alarm-day-active': alarm.saturday}">S</div>
+    </div>
+  </div>
+  <div class="alarm-link" ng-click="add()">
+    <div class="alarm-time-add"><i class="icon-addalarm"></i></div>
+  </div>
+</div>

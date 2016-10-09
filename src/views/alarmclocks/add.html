@@ -1,0 +1,43 @@
+<div class="modal-body">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" ng-model="alarm.name">
+  </div>
+  <div class="form-group">
+    <label for="name">Time</label>
+    <div style="font-size: 2em;">
+    <epochtime time="alarm.time" disabled="false"></epochtime>
+    </div
+  </div>
+  <div class="form-group">
+    <label for="name">Day of Week:</label>
+
+    <div class="alarm-days" style="font-size: 3em;">
+      <div class="alarm-day pointer" ng-class="{'alarm-day-active': alarm.sunday}" ng-click="alarm.sunday = (!alarm.sunday)">S</div>
+      <div class="alarm-day pointer" ng-class="{'alarm-day-active': alarm.monday}" ng-click="alarm.monday = (!alarm.monday)">M</div>
+      <div class="alarm-day pointer" ng-class="{'alarm-day-active': alarm.tuesday}" ng-click="alarm.tuesday = (!alarm.tuesday)">T</div>
+      <div class="alarm-day pointer" ng-class="{'alarm-day-active': alarm.wednesday}" ng-click="alarm.wednesday = (!alarm.wednesday)">W</div>
+      <div class="alarm-day pointer" ng-class="{'alarm-day-active': alarm.thursday}" ng-click="alarm.thursday = (!alarm.thursday)">T</div>
+      <div class="alarm-day pointer" ng-class="{'alarm-day-active': alarm.friday}" ng-click="alarm.friday = (!alarm.friday)">F</div>
+      <div class="alarm-day pointer" ng-class="{'alarm-day-active': alarm.saturday}" ng-click="alarm.saturday = (!alarm.saturday)">S</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="name">Action:</label>
+    <button class="btn btn-default btn-xs pull-right" ng-click="addAction(alarm.actions)"><i class="icon-plus-sign"></i> Add</button>
+    <div>
+      <ul class="list-group bg-muted select-list" ng-show="alarm.actions.length > 0">
+        <li class="list-group-item" style="cursor: pointer;" ng-repeat="action in alarm.actions" ng-click="editAction(action)">
+          {{action.name}}
+          <button class="pull-right btn btn-xs btn-danger" ng-click="removeAction(alarm.actions, $index)" stop-event><i class="icon-trash"></i></button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning btn-sm" type="button" ng-click="save()"><i class="icon-addalarm"></i> Add </button>
+    <button class="btn btn-default btn-sm pull-left" type="button" ng-click="close()" ng-hide="source">Close</button>
+</div>

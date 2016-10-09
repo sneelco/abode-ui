@@ -11,6 +11,7 @@ var abode = angular.module('abode', [
   'abode.triggers',
   'abode.settings',
   'abode.weather',
+  'abode.alarmclock',
 ]);
 
 abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function($state, $urlRouter, abode) {
@@ -359,6 +360,8 @@ abode.directive('epochtime', ['$compile', function () {
         scope.hours =  parseInt(scope.time / 60 / 60);
         scope.minutes =  parseInt(scope.time % (60 * 60) / 60);
         scope.meridian = (scope.hours >= 12) ? 'PM' : 'AM';
+
+        console.log(scope.hours);
         if (scope.meridian === 'PM') {
           scope.hours = scope.hours - 12;
         }

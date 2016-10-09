@@ -771,3 +771,89 @@ body {
   height: 25%;
   font-size: .5em;
 }
+
+.alarm-link {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  margin: .5em;
+  height: 10em;
+  width: 10em;
+  border: .25em solid #444;
+  border-radius: 5em;
+  line-height: 1em;
+  text-align: center;
+  padding-top: .8em;
+  background-color: #222;
+  transition: 1s ease;
+  text-shadow: 0em 0em .2em black;
+  cursor: pointer;
+  color: #777;
+  box-shadow: 0em 0em .2em black;
+  cursor: pointer;
+}
+.alarm-weekdays {
+  position: absolute;
+  left: -.75em;
+  bottom: -.5em;
+  height: 1.5em;
+  width: 11em
+}
+
+.alarm-time {
+  font-size: 3em;
+  line-height: 1em;
+  padding-top: .25em;
+}
+
+.alarm-time-add {
+  font-size: 4em;
+  line-height: 1em;
+  padding-top: .5em;
+}
+
+.alarm-day {
+  display: inline-block;
+  background-color: rgb(100, 100, 100);
+  color: white;
+  width: 1.5em;
+  height: 1.5em;
+  padding-top: .1em;
+  border-radius: 1em;
+  font-size: .8em;
+  text-align: center;
+}
+
+.alarm-day-active {
+  background-color: #00805f;
+}
+
+.epochtime {
+  font-size: .9em;
+}
+.epochtime>div {
+  display: inline-block;
+  vertical-align: middle;
+  height: 6em;
+  width: 2em;
+}
+.epochtime-days input, .epochtime-hours input, .epochtime-minutes input, .epochtime-days button, .epochtime-hours button, .epochtime-minutes button {
+  width: 2em;
+  height: 2em;
+  text-align: center;
+}
+.epochtime-days button, .epochtime-hours button, .epochtime-minutes button {
+  border: 0px;
+  background-color: inherit;
+}
+.epochtime-meridian, .epochtime-label {
+  padding-top: 2em;
+  width: 1em !important;
+  text-align: center;
+}
+.epochtime-meridian button {
+  width: 3em;
+  height: 2em;
+  text-align: center;
+  background-color: #464545;
+}
