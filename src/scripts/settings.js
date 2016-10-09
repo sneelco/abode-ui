@@ -4,6 +4,7 @@ settings.config(function($stateProvider, $urlRouterProvider) {
 
   $urlRouterProvider.when('/settings', '/settings/list');
   $urlRouterProvider.when('/settings/sources', '/settings/sources/list');
+  $urlRouterProvider.when('/settings/interfaces', '/settings/interfaces/list');
 
   $stateProvider
   .state('main.settings', {
@@ -45,7 +46,34 @@ settings.config(function($stateProvider, $urlRouterProvider) {
   .state('main.settings.interfaces', {
     url: '/interfaces',
     templateUrl: '/views/settings/settings.interfaces.html',
-    controller: 'interfacesSettings',
+  })
+  .state('main.settings.interfaces.list', {
+    url: '/list',
+    templateUrl: '/views/settings/settings.interfaces.list.html',
+    controller: 'interfacesList',
+  })
+  .state('main.settings.interfaces.add', {
+    url: '/add',
+    templateUrl: '/views/settings/settings.interfaces.add.html',
+    controller: 'interfacesAdd',
+  })
+  .state('main.settings.interfaces.edit', {
+    url: '/:id',
+    templateUrl: '/views/settings/settings.interfaces.edit.html',
+    controller: 'interfacesEdit',
+    resolve: {
+      iface: ['$q', '$stateParams', 'Interfaces', function ($q, $stateParams, Interfaces) {
+        var defer = $q.defer();
+
+        Interfaces.get($stateParams).$promise.then(function (record) {
+          defer.resolve(record);
+        }, function () {
+          defer.reject({'state': 'main.settings.interfaces', 'message': 'Interface not found'});
+        });
+
+        return defer.promise;
+      }]
+    }
   })
   .state('main.settings.sources', {
     url: '/sources',
@@ -300,90 +328,48 @@ settings.controller('addSourceSettings', function ($scope, $state, abode, settin
 
 });
 
-settings.controller('interfacesSettings', function ($scope, $state, abode, settings, Interfaces) {
-  $scope.interface = '';
+settings.controller('interfacesList', ['$scope', 'Interfaces', function ($scope, Interfaces) {
   $scope.interfaces = Interfaces.query();
-  var notifier = abode.message;
+}]);
 
-  $scope.select_interface = function (interface) {
-    $scope.interface = interface;
-  };
+settings.controller('interfacesAdd', ['$scope', '$state', 'abode', 'Interfaces', function ($scope, $state, abode, Interfaces) {
+  $scope.iface = new Interfaces();
 
-  $scope.create_interface = function () {
-    var interface,
-      name = prompt('Enter the interface name');
-    if (name) {
-      interface = new Interfaces({'name': name});
-      console.dir(interface);
-      interface.$create().then(function (data) {
-        console.dir(data);
-        notifier({
-          'type': 'success',
-          'message': 'Interface Created'
-        });
-        $scope.interface = name;
-        $scope.interfaces = Interfaces.query();
-      }, function () {
-        notifier({
-          'type': 'failed',
-          'message': 'Failed to Create Interface',
-          'details': err
-        });
-      });
-    }
-  };
-
-  $scope.delete_interface = function (interface) {
-    if (confirm('Are you sure?')) {
-      interface = new Interfaces({'name': interface});
-      interface.$delete().then(function () {
-        notifier({
-          'type': 'success',
-          'message': 'Interface Created'
-        });
-        $scope.interface = '';
-        $scope.interfaces = Interfaces.query();
-      }, function (err) {
-        console.dir(err);
-        notifier({
-          'type': 'failed',
-          'message': 'Failed to Create Interface',
-          'details': err
-        });
-      });
-    }
-  };
-
-  $scope.$watch('interface', function () {
-    if ($scope.interface !== '') {
-      Interfaces.get($scope.interface).then(function (view) {
-        $scope.view = view;
-      });
-    } else {
-      $scope.view = '';
-    }
-  });
-
-  $scope.saveView = function () {
-
-
-    Interfaces.save($scope.interface, $scope.view).then(function () {
-
-      notifier({
-        'type': 'success',
-        'message': 'Home Template Saved'
-      });
+  $scope.save = function () {
+    $scope.iface.$save().then(function (record) {
+      abode.message({'type': 'success', 'message': 'Interface Created'});
+      $state.go('^', record);
 
     }, function (err) {
-      notifier({
-        'type': 'failed',
-        'message': 'Failed to Save Home Template',
-        'details': err
-      });
-    });
-
+      abode.message({'type': 'failed', 'message': 'Failed to Create Interface', 'details': err});
+      $scope.errors = err;
+    })
   };
-});
+
+}]);
+
+settings.controller('interfacesEdit', ['$scope', '$state', 'abode', 'iface', function ($scope, $state, abode, iface) {
+  $scope.iface = iface;
+
+  $scope.save = function () {
+    $scope.iface.$update().then(function () {
+      abode.message({'type': 'success', 'message': 'Interface Saved'});
+    }, function (err) {
+      abode.message({'type': 'failed', 'message': 'Failed to save Interface', 'details': err});
+      $scope.errors = err;
+    })
+  };
+
+  $scope.remove = function () {
+    $scope.iface.$delete().then(function () {
+      abode.message({'type': 'success', 'message': 'Interface Deleted'});
+      $state.go('^');
+    }, function (err) {
+      abode.message({'type': 'failed', 'message': 'Failed to save Interface', 'details': err});
+      $scope.errors = err;
+    })
+  };
+}]);
 
 settings.controller('settings', function ($scope, $state, abode, settings, config) {
   var notifier = abode.message;

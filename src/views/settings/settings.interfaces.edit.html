@@ -1,0 +1,39 @@
+
+<div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+  <div style="position: fixed; right: 1em; top: .5em; font-size: 3em; cursor: pointer" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i></div>
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+      <h2>Settings / Interfaces / Edit</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2" style="font-size: 2em;">
+
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <form name="settings">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="iface.name">
+            </div>
+
+            <div class="form-group">
+              <label for="name">Icon</label>
+              <input type="text" class="form-control" id="url" placeholder="URL" required="" ng-model="iface.icon">
+            </div>
+
+            <div class="form-group">
+              <label for="name">Template</label>
+              <textarea class="form-control" id="template" placeholder="Template" required="" ng-model="iface.template" style="height: 18em;"></textarea>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()"><i class="icon-savetodrive"></i> Save</button>
+              <button type="submit" class="btn btn-sm btn-default" ng-click="remove()"><i class="icon-circledelete"></i> Remove</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
