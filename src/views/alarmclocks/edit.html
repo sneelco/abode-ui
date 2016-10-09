@@ -4,6 +4,12 @@
     <input type="text" class="form-control" ng-model="alarm.name">
   </div>
   <div class="form-group">
+    <label for="name">Enabled</label>
+    <div style="font-size: 2em;">
+    <toggle value="alarm.enabled"></toggle>
+    </div>
+  </div>
+  <div class="form-group">
     <label for="name">Time</label>
     <div style="font-size: 2em;">
     <epochtime time="alarm.time" disabled="false"></epochtime>
@@ -39,6 +45,6 @@
 </div>
 <div class="modal-footer">
     <button class="btn btn-warning btn-sm" type="button" ng-click="save()">Save <i class="icon-edit"></i></button>
-    <button class="btn btn-danger btn-sm" type="button" ng-click="delete()">Delete <i class="icon-edit"></i></button>
-    <button class="btn btn-default btn-sm pull-left" type="button" ng-click="close()" ng-hide="source">Close</button>
+    <button class="btn btn-default btn-sm " type="button" ng-click="close()" ng-hide="source">Close</button>
+    <button class="btn btn-danger btn-sm pull-left" type="button" ng-click="delete()">Delete <i class="icon-edit"></i></button>
 </div>

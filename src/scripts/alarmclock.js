@@ -101,7 +101,7 @@ alarmclock.directive('alarmClocks', function () {  return {
       };
 
       $scope.add = function () {
-        AlarmClocks.add({'name': 'Alarm #' + $scope.alarms.length}).result.then(function (result) {
+        AlarmClocks.add({'name': 'Alarm #' + $scope.alarms.length, 'enabled': true}).result.then(function (result) {
             $scope.alarms = AlarmClocks.query();
         })
       }
