@@ -111,14 +111,16 @@ home.directive('controller', [function () {
       spin: '@',
       showTitle: '@',
       source: '@',
-      action: '@'
+      action: '@',
+      onsuccess: '='
     },
     templateUrl: '/views/home/controller.html',
-    controller: ['$scope', '$timeout', '$interval', 'Devices', 'Scenes', 'Rooms', function ($scope, $timeout, $interval, Devices, Scenes, Rooms) {
+    controller: ['$scope', '$timeout', '$interval', 'Devices', 'Scenes', 'Rooms', 'Notifications', function ($scope, $timeout, $interval, Devices, Scenes, Rooms, Notifications) {
       var types = {
         'device': Devices,
         'room': Rooms,
-        'scene': Scenes
+        'scene': Scenes,
+        'notification': Notifications
       };
 
       $scope.title = $scope.title || $scope.name;
@@ -131,7 +133,7 @@ home.directive('controller', [function () {
       $scope.icon = $scope.icon || 'icon-lightbulb-idea';
 
       $scope.load = function () {
-        if ($scope.loading) {
+        if ($scope.loading || !types[$scope.type]) {
           return;
         }
 
@@ -174,12 +176,8 @@ home.directive('controller', [function () {
 
         var func;
 
-        if ($scope.action === 'on') {
-          func = $scope.obj.$on;
-        } else if ($scope.action === 'off') {
-          func = $scope.obj.$off;
-        } else if ($scope.action === 'camera') {
-          func = $scope.obj.$camera;
+        if ($scope.obj['$' + $scope.action]) {
+          func = $scope.obj['$' + $scope.action];
         } else if ($scope.action === 'toggle') {
           func = ($scope.obj._on || $scope.obj._lights_on) ? $scope.obj.$off : $scope.obj.$on;
         } else {
@@ -192,6 +190,9 @@ home.directive('controller', [function () {
             result.then(function () {
             $scope.pending = false;
             $scope.success = true;
+            if ($scope.onsuccess) {
+              $scope.onsuccess();
+            }
             $timeout(function () {
               $scope.success = false;
             }, 4000);
@@ -206,6 +207,9 @@ home.directive('controller', [function () {
             $scope.pending = false;
             $scope.loading = true;
             result.closed.then(function (result) {
+              if ($scope.onsuccess) {
+                $scope.onsuccess();
+              }
               $scope.loading = false;
             });
         } else {

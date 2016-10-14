@@ -12,6 +12,7 @@ var abode = angular.module('abode', [
   'abode.settings',
   'abode.weather',
   'abode.alarmclock',
+  'abode.notifications',
 ]);
 
 abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function($state, $urlRouter, abode) {
@@ -99,7 +100,38 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
   this.auth = {};
   this.messages = [];
   this.message_scope = null;
+  this.event_error;
+  this.event_source;
 
+  this.get_events = function () {
+    var self = this,
+      eventSource;
+
+    self.eventSource = new EventSource('/api/abode/events');
+
+    self.eventSource.addEventListener('message', function (msg) {
+      var event = JSON.parse(msg.data);
+      event.source = source.name;
+
+      if (event.type) {
+        $rootScope.$broadcast(event.type.toUpperCase() + '_CHANGE', event);
+      } else {
+        $rootScope.$broadcast(event.type, event);
+      }
+
+    }, false);
+
+    eventSource.onopen = function () {
+      $timeout.cancel(self.event_error);
+    };
+
+    eventSource.onerror = function (err) {
+      self.event_error = $timeout(function () {
+        self.message({'type': 'failed', 'message': 'Connection to Abode Died.', 'details': err});
+      }, 10 * 1000);
+    };
+
+  }
 
   this.url = function (uri, source) {
     var url = {};

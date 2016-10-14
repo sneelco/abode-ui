@@ -1,0 +1,10 @@
+<div class="notifications" ng-class="{'notifications-open': notifications.length > 0}">
+
+<ul>
+<li ng-repeat="notification in notifications">
+  <h2>{{notification.message}}</h2>
+      <controller ng-repeat="action in notification.actions" title="{{action.title}}" type="{{action.type}}" name="{{action.name}}" action="{{action.action}}" icon="{{action.icon}}" onsuccess="dismiss"></controller>
+</li>
+</ul>
+
+</div>

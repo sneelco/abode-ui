@@ -871,3 +871,19 @@ body {
   text-align: center;
   background-color: #464545;
 }
+
+.notifications {
+  position: fixed;
+  right: 0em;
+  top: 0em;
+  width: 40em;
+  bottom: 0em;
+  background-color: #333;
+  z-index: 8888;
+  transition: 2s all;
+  margin-right: -40em;
+}
+
+.notifications-open {
+  margin-right: 0em;
+}
