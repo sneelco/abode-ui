@@ -916,7 +916,7 @@ body {
 .notification-actions {
   font-size: 1.5em;
   text-align: right;
-  margin: 1em 0em;
+  margin-top: 1em;
 }
 
 .notification-date {
