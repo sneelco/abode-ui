@@ -1,13 +1,26 @@
 var notifications = angular.module('abode.notifications', ['ngResource']);
 
-notifications.factory('Notifications', ['$resource', '$uibModal', 'abode', function ($resource, $uibModal, abode) {
+notifications.factory('Notifications', ['$resource', '$http', '$q', '$uibModal', 'abode', function ($resource, $http, $q, $uibModal, abode) {
 
   var model = $resource(abode.url('/api/notifications/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },
     'refresh': { method: 'GET' },
     'active': { method: 'GET', isArray: true, params: {'id': 'active'} },
-    'deactivate': { method: 'POST', params: {'action': 'deactivate'}}
   });
+
+  model.prototype.$deactivate = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/notifications/' + this._id + '/deactivate').value();
+
+    $http.post(url).then(function () {
+      defer.resolve(self);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
 
   return model;
 
@@ -20,15 +33,21 @@ notifications.directive('notifications', [function () {
     scope: {
       'view': '@'
     },
-    controller: ['$rootScope', '$scope', '$interval', 'abode', 'Notifications', function ($rootScope, $scope, $interval, abode, Notifications) {
+    controller: ['$rootScope', '$scope', '$interval', '$q', 'abode', 'Notifications', function ($rootScope, $scope, $interval, $q, abode, Notifications) {
       $scope.notifications = [];
       $scope.loader = false;
       $scope.loading = false;
       $scope.error = false;
 
       $scope.dismissAll = function () {
+        var defers = [];
+
         $scope.notifications.forEach(function (notification) {
-          notification.$deactivate();
+          defers.push(notification.$deactivate());
+        });
+
+        $q.all(defers).then(function () {
+          $scope.refresh();
         });
       };
 
