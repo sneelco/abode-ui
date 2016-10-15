@@ -176,13 +176,14 @@ home.directive('controller', [function () {
 
         var func;
 
-        if ($scope.obj['$' + $scope.action]) {
-          func = $scope.obj['$' + $scope.action];
-        } else if ($scope.action === 'toggle') {
+        if ($scope.action === 'toggle') {
           func = ($scope.obj._on || $scope.obj._lights_on) ? $scope.obj.$off : $scope.obj.$on;
+        } else if ($scope.obj['$' + $scope.action]) {
+          func = $scope.obj['$' + $scope.action];
         } else {
           func = $scope.obj.$open;
         }
+        console.log(func);
 
         $scope.pending = true;
         var result = func.apply($scope.obj);
