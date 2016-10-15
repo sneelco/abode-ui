@@ -3,7 +3,8 @@
 <ul>
 <li ng-repeat="notification in notifications">
   <h2>{{notification.message}}</h2>
-      <controller ng-repeat="action in notification.actions" title="{{action.title}}" type="{{action.type}}" name="{{action.name}}" action="{{action.action}}" icon="{{action.icon}}" onsuccess="dismiss"></controller>
+  <controller ng-repeat="action in notification.actions" title="{{action.title}}" type="{{action.type}}" name="{{notification.name}}" action="{{action.action}}" icon="{{action.icon}}" onsuccess="dismiss"></controller>
+  <controller title="Ignore" type="notification" name="{{notification._id}}" action="deactivate" icon="icon-circledelete" onsuccess="dismiss"></controller>
 </li>
 </ul>
 
