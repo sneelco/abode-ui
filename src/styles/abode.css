@@ -903,6 +903,10 @@ body {
   border: 1px solid #555;
   border-radius: .2em .2em;
 }
+.notification-title {
+  margin: 0em;
+  padding: 0em;
+}
 
 .notifications-open {
   margin-right: 0em;
@@ -912,4 +916,9 @@ body {
 .notification-actions {
   font-size: 1.5em;
   text-align: right;
+  margin: 1em 0em;
+}
+
+.notification-date {
+  font-size: .8em;
 }
