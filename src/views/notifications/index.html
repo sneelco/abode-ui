@@ -4,7 +4,7 @@
 <li ng-repeat="notification in notifications" class="notifications-item">
   <h2>{{notification.message}}</h2>
   <div class="notification-actions">
-  <controller ng-repeat="action in notification.actions" title="{{action.title}}" type="{{action.type}}" name="{{notification.name}}" action="{{action.action}}" icon="{{action.icon}}" onsuccess="dismiss"></controller>
+  <controller ng-repeat="action in notification.actions" title="{{action.title}}" type="{{action.type}}" name="{{action.name}}" action="{{action.action}}" icon="{{action.icon}}" onsuccess="dismiss"></controller>
   <controller title="Ignore" type="notification" name="{{notification._id}}" action="deactivate" icon="icon-circledelete" onsuccess="dismiss"></controller>
   </div>
   <div class="notification-date">{{notification.active_date | date: 'medium'}}</div>
