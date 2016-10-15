@@ -70,7 +70,7 @@ home.directive('interfaceList', function () {  return {
         } else {
           ifaces = $scope.show.split(',');
           ifaces.forEach(function (show) {
-            match = results.filter(function (iface) { return show === iface.name});
+            match = results.filter(function (iface) { return show === iface.name; });
             if (match.length !== 0) {
               $scope.interfaces.push(match[0]);
             }
@@ -338,7 +338,7 @@ home.directive('background', function () {
           console.log('error loading', next);
           delay = $timeout(function () {
             transition(false);
-          }, 1000 * $scope.interval)
+          }, 1000 * $scope.interval);
         };
 
         transition();

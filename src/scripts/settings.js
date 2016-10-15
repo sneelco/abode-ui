@@ -343,7 +343,7 @@ settings.controller('interfacesAdd', ['$scope', '$state', 'abode', 'Interfaces',
     }, function (err) {
       abode.message({'type': 'failed', 'message': 'Failed to Create Interface', 'details': err});
       $scope.errors = err;
-    })
+    });
   };
 
 }]);
@@ -359,7 +359,7 @@ settings.controller('interfacesEdit', ['$scope', '$state', '$templateCache', 'ab
     }, function (err) {
       abode.message({'type': 'failed', 'message': 'Failed to save Interface', 'details': err});
       $scope.errors = err;
-    })
+    });
   };
 
   $scope.remove = function () {
@@ -369,7 +369,7 @@ settings.controller('interfacesEdit', ['$scope', '$state', '$templateCache', 'ab
     }, function (err) {
       abode.message({'type': 'failed', 'message': 'Failed to save Interface', 'details': err});
       $scope.errors = err;
-    })
+    });
   };
 }]);
 

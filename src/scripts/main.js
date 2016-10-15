@@ -100,8 +100,6 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
   this.auth = {};
   this.messages = [];
   this.message_scope = null;
-  this.event_error;
-  this.event_source;
 
   this.get_events = function () {
     var self = this,
@@ -131,7 +129,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
       }, 10 * 1000);
     };
 
-  }
+  };
 
   this.url = function (uri, source) {
     var url = {};
@@ -218,7 +216,7 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
       $timeout.cancel(idleTimer);
     }
     if ($scope.is_idle) {
-      $event.preventDefault()
+      $event.preventDefault();
       $timeout(function () {
         $scope.is_idle = false;
         $scope.$digest();

@@ -66,7 +66,7 @@ alarmclock.factory('AlarmClocks', ['$resource', '$uibModal', 'abode', function (
           $scope.alarm.$save().then(function (response) {
             $uibModalInstance.close(response);
           }, function () {
-          })
+          });
         };
 
         $scope.close = function () {
@@ -97,14 +97,14 @@ alarmclock.directive('alarmClocks', function () {  return {
           } else {
             alarm.$refresh();
           }
-        })
+        });
       };
 
       $scope.add = function () {
         AlarmClocks.add({'name': 'Alarm #' + $scope.alarms.length, 'enabled': true}).result.then(function (result) {
             $scope.alarms = AlarmClocks.query();
-        })
-      }
+        });
+      };
     }]
   };
 });
