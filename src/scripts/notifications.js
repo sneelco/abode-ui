@@ -26,6 +26,12 @@ notifications.directive('notifications', [function () {
       $scope.loading = false;
       $scope.error = false;
 
+      $scope.dismissAll = function () {
+        $scope.notifications.forEach(function (notification) {
+          notification.$deactivate();
+        });
+      };
+
       $scope.refresh = function () {
         if ($scope.loading) {
           return;

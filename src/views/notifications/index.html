@@ -1,5 +1,8 @@
 <div class="notifications" ng-class="{'notifications-open': notifications.length > 0}">
-
+<div class="notifications-title">
+  Notifications
+  <button class="btn btn-sm btn-default pull-right" ng-click="dismissAll()"><i class="icon-circledelete"></i></button>
+</div>
 <ul class="notifications-list">
 <li ng-repeat="notification in notifications" class="notifications-item">
   <h2>{{notification.message}}</h2>
