@@ -211,12 +211,12 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
 
   $scope.is_idle = false;
 
-  var breakIdle = function ($event) {
+  $rootScope.breakIdle = function ($event) {
     if (idleTimer) {
       $timeout.cancel(idleTimer);
     }
     if ($scope.is_idle) {
-      $event.preventDefault();
+      if ($event) { $event.preventDefault(); }
       $timeout(function () {
         $scope.is_idle = false;
         $scope.$digest();
@@ -228,11 +228,11 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
     }, 1000 * 15);
   };
 
-  $window.addEventListener('click', breakIdle);
-  $window.addEventListener('mousemove', breakIdle);
-  $window.addEventListener('keypress', breakIdle);
+  $window.addEventListener('click', $rootScope.breakIdle);
+  $window.addEventListener('mousemove', $rootScope.breakIdle);
+  $window.addEventListener('keypress', $rootScope.breakIdle);
 
-  breakIdle();
+  $rootScope.breakIdle();
 
   $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
 

@@ -20,7 +20,7 @@ notifications.directive('notifications', [function () {
     scope: {
       'view': '@'
     },
-    controller: ['$scope', '$interval', 'abode', 'Notifications', function ($scope, $interval, abode, Notifications) {
+    controller: ['$rootScope', '$scope', '$interval', 'abode', 'Notifications', function ($rootScope, $scope, $interval, abode, Notifications) {
       $scope.notifications = [];
       $scope.loader = false;
       $scope.loading = false;
@@ -34,6 +34,9 @@ notifications.directive('notifications', [function () {
         $scope.loading = true;
 
         Notifications.active().$promise.then(function (results) {
+          if (results.length !== 0 && results.length !== $scope.notifications.length) {
+            $rootScope.breakIdle();
+          }
           $scope.loading = false;
           $scope.notifications = results;
         }, function () {
