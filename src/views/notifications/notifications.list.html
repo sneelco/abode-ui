@@ -1,0 +1,19 @@
+
+  <div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+    <div class="row">
+      <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+        <h2>Notifications</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-8 col-sm-offset-2" style="font-size: 2em;">
+        <h4 ng-show="loading"><i class="icon-refresh spin"></i> Loading...</h4>
+        <ul class="list-group" ng-hide="loading">
+          <li class="list-group-item" style="cursor: pointer;" ng-click="view(notification)" ng-repeat="notification in notifications | orderBy: '+name'" ui-sref="^.edit({'id': notification._id})">
+            {{notification.name}}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="bg-success img-circle " style="position: fixed; bottom: 1.5em; right: 1.5em; font-size: 2em; height: 2.5em; width: 2.5em; text-align: center; box-shadow: .2em .2em .3em black; line-height: 2.7em; font-weight: bold; cursor: pointer;" ui-sref="^.add"><i class="icon-plus"></i></button>

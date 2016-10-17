@@ -1,0 +1,47 @@
+<div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+  <div style="position: fixed; right: 1em; top: .5em; font-size: 3em; cursor: pointer" ui-sref="^.list"><i class="glyphicon glyphicon-arrow-left"></i></div>
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+      <h2>Add Notification</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+      <div class="panel panel-default">
+        <div class="panel-body">
+
+          <form name="notificationFrm">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="notification.name">
+            </div>
+            <div class="form-group">
+              <label for="name">Message</label>
+              <input type="text" class="form-control" id="message" placeholder="Message" required="" ng-model="notification.message">
+            </div>
+            <div class="form-group">
+              <label for="name">Actions</label>
+              <button class="btn btn-xs btn-primary pull-right"><i class="icon-circleadd"></i></button>
+              <ul class="list-group">
+                <li class="list-group-item" ng-repeat="action in notification.actions"><i class="{{action.icon}}"></i> {{action.name}} {{action.type}} {{action.action}}</li>
+                <li class="list-group-item" ng-show="!notification.actions || notification.actions.length == 0">No actions added</li>
+              </ul>
+            </div>
+            <div class="form-group">
+              <label for="name">Triggers</label>
+              <button class="btn btn-xs btn-primary pull-right"><i class="icon-circleadd"></i></button>
+              <ul class="list-group">
+                <li class="list-group-item" ng-show="!notification.triggers || notification.triggers.length == 0">No actions added</li>
+              </ul>
+            </div>
+
+            <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="add()" ng-disabled="notificationFrm.$invalid || saving">
+              <i class="icon-loadingalt spin" ng-show="saving"></i>
+              <i class="icon-circleadd" ng-hide="saving"></i>
+              Add</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
