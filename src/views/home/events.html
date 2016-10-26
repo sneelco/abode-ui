@@ -1,0 +1,20 @@
+<div class="events">
+<ul class="list-group">
+<li class="list-group-item" ng-repeat="event in events">
+	<h4 class="list-group-item-heading">
+		<i class="{{event.icon}}"></i>
+		<span ng-show="event.show_name">{{event.name}}</span>
+		{{event.message}}
+		{{event.value}}{{event.units}}
+	</h4>
+	<p class="list-group-item-text">
+		<i class="glyphicon glyphicon-home" ng-show="event.type == 'abode'"></i>
+		<i class="glyphicon glyphicon-modal-window" ng-show="event.type == 'room'"></i>
+		<i class="glyphicon glyphicon-oil" ng-show="event.type == 'device'"></i>
+		<i class="icon-picture" ng-show="event.type == 'scene'"></i>
+		<i class="icon-notificationbottom" ng-show="event.type == 'notification'"></i>
+		{{event.type | capitalize}} at {{event.timestamp | date: 'shortTime'}}
+	</p>
+</li>
+</ul>
+</div>

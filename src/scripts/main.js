@@ -95,41 +95,46 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
   var $q = initInjector.get('$q'),
     $http = initInjector.get('$http'),
     $timeout = initInjector.get('$timeout');
+    $rootScope = initInjector.get('$rootScope');
 
   this.config = {};
   this.auth = {};
   this.messages = [];
   this.message_scope = null;
+  this.scope = $rootScope;
 
   this.get_events = function () {
-    var self = this,
-      eventSource;
+    var eventSource;
 
-    self.eventSource = new EventSource('/api/abode/events');
+    self.eventSource = new EventSource(self.url('/api/abode/events').value());
 
     self.eventSource.addEventListener('message', function (msg) {
       var event = JSON.parse(msg.data);
-      event.source = source.name;
 
-      if (event.type) {
-        $rootScope.$broadcast(event.type.toUpperCase() + '_CHANGE', event);
-      } else {
-        $rootScope.$broadcast(event.type, event);
+      if (event.event) {
+        self.scope.$broadcast(event.event, event);
       }
+      self.scope.$broadcast('ABODE_EVENT', event);
+
 
     }, false);
 
-    eventSource.onopen = function () {
+    self.eventSource.onopen = function () {
       $timeout.cancel(self.event_error);
     };
 
-    eventSource.onerror = function (err) {
+    self.eventSource.onerror = function (err) {
       self.event_error = $timeout(function () {
         self.message({'type': 'failed', 'message': 'Connection to Abode Died.', 'details': err});
+        self.scope.$broadcast('EVENTS_DIED');
       }, 10 * 1000);
     };
 
   };
+
+  this.scope.$on('EVENTS_DIED', function () {
+    self.get_events();
+  });
 
   this.url = function (uri, source) {
     var url = {};
@@ -186,6 +191,8 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
       message_scope: function (scope) {
         self.message_scope = scope;
       },
+      get_events: self.get_events,
+      scope: self.scope,
     };
   };
 

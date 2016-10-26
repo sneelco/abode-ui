@@ -922,3 +922,13 @@ body {
 .notification-date {
   font-size: .8em;
 }
+
+
+.events {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+  overflow: auto;
+}
