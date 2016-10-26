@@ -1,0 +1,74 @@
+
+<div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+<div style="position: fixed; right: 1em; top: .5em; font-size: 3em; cursor: pointer" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i></div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+    <h2>Settings / Wunderground</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2" style="font-size: 2em;">
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="form-group">
+              <label for="enabled">Enabled: </label>
+              <toggle value="config.enabled" class="pull-right"></toggle>
+            </div>
+
+            <div class="form-group">
+              <label for="key">API Key</label>
+              <input type="text" class="form-control" id="key" placeholder="API Key" required="" ng-model="config.key">
+            </div>
+
+            <div class="form-group">
+              <label for="server">Server</label>
+              <input type="text" class="form-control" id="server" placeholder="Server" required="" ng-model="config.server">
+            </div>
+
+            <div class="form-group">
+              <label for="interval">Interval (minutes)</label>
+              <input type="text" class="form-control" id="interval" placeholder="Interval" required="" ng-model="config.interval">
+            </div>
+
+            <div class="form-group">
+              <label for="temp_units">Temp Units</label>
+              <input type="text" class="form-control" id="temp_units" placeholder="Temperature Units" required="" ng-model="config.temp_units">
+            </div>
+
+            <div class="form-group">
+              <label for="wind_units">Wind Units</label>
+              <input type="text" class="form-control" id="wind_units" placeholder="Wind Units" required="" ng-model="config.wind_units">
+            </div>
+
+            <div class="form-group">
+              <label for="press_units">Pressure Units</label>
+              <input type="text" class="form-control" id="press_units" placeholder="Pressure Units" required="" ng-model="config.press_units">
+            </div>
+
+            <div class="form-group">
+              <label for="dist_units">Distance Units</label>
+              <input type="text" class="form-control" id="dist_units" placeholder="Distance Units" required="" ng-model="config.dist_units">
+            </div>
+
+            <div class="form-group">
+              <label for="rain_units">Rain Units</label>
+              <input type="text" class="form-control" id="rain_units" placeholder="Rain Units" required="" ng-model="config.rain_units">
+            </div>
+
+            <div class="form-group">
+              <label for="debug">Debug Logging: </label>
+              <toggle value="config.debug" class="pull-right"></toggle>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()"><i class="icon-savetodrive"></i> Save</button>
+            </div>
+
+          </div>
+        </div>
+
+  </div>
+</div>
+</div>
+

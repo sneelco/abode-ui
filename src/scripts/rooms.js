@@ -43,7 +43,7 @@ rooms.factory('Rooms', ['$resource', '$q', '$http', 'abode', 'rooms', 'RoomDevic
   Rooms.prototype.$open = function () {
     var self = this;
 
-    rooms.view(self);
+    return rooms.view(self);
   };
 
   Rooms.prototype.$refresh = function () {
@@ -256,27 +256,25 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
     return defer.promise;
   };
 
-  var viewRoom = function (room, source) {
+  var viewRoom = function (room, devices, scenes) {
 
     return $uibModal.open({
-      animation: true,
+      animation: false,
       templateUrl: 'views/rooms/rooms.view.html',
       size: 'lg',
-      controller: function ($scope, $uibModalInstance, $interval, $timeout, $state, rooms, room, devices, scenes, source) {
+      controller: function ($scope, $uibModalInstance, $interval, $timeout, $state, rooms, room, devices, scenes) {
         var intervals = [];
         var reload_timer;
-        var source_uri = (source === undefined) ? '/api' : '/api/sources/' + source;
 
         $scope.name = room.name;
         $scope.room = room;
-        $scope.devices = [];
-        $scope.scenes = [];
+        $scope.devices = devices;
+        $scope.scenes = scenes;
         $scope.cameras = [];
         $scope.open = devices.openDevice;
         $scope.filter_counts = {};
         $scope.on_counts = {};
         $scope.room_temperature = '?';
-        $scope.source = source;
 
         var filters = {
           'light': ['light'],
@@ -318,7 +316,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
         };
 
         $scope.open = function (device) {
-          var modal = devices.openDevice(device, source);
+          var modal = device.$open();
           modal.result.then(function(config) {
             if (config && config.recurse) {
               $uibModalInstance.close(config);
@@ -395,7 +393,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
           };
 
           var room_scenes = function () {
-            getRoomScenes($scope.room.name, source).then(function (scenes) {
+            $scope.room.$scenes().$promise.then(function (scenes) {
               $scope.scenes = scenes;
               $scope.filter_counts.scenes = $scope.scenes.length;
               $scope.on_counts.scenes = $scope.scenes.filter(function (d) { return d._on; });
@@ -409,7 +407,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
 
           var room_devices = function () {
 
-            getRoomDevices($scope.room.name, source).then(function (devices) {
+            $scope.room.$devices().$promise.then(function (devices) {
               $scope.devices = devices;
               $scope.default_filter();
 
@@ -454,6 +452,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
           }
         };
 
+        $scope.default_filter();
         $scope.reload();
 
         $scope.$on('$destroy', function () {
@@ -466,11 +465,14 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
           if (typeof room === 'object') {
             return room;
           } else {
-            return Rooms.get(room);
+            return Rooms.get({'id': room});
           }
         },
-        source: function () {
-          return source;
+        devices: function () {
+          return devices || room.$devices().$promise;
+        },
+        scenes: function () {
+          return scenes || room.$scenes().$promise;
         }
       },
     });
@@ -566,7 +568,7 @@ rooms.controller('roomsList', function ($scope, $state, Rooms) {
   $scope.load();
 });
 
-rooms.controller('roomsAdd', function ($scope, $state, notifier, Rooms) {
+rooms.controller('roomsAdd', function ($scope, $state, abode, Rooms) {
   $scope.room = new Rooms();
   $scope.alerts = [];
 
@@ -580,10 +582,10 @@ rooms.controller('roomsAdd', function ($scope, $state, notifier, Rooms) {
 
   $scope.add = function () {
     room.$save().then(function () {
-      notifier.notify({'status': 'success', 'message': 'Room Added'});
+      abode.message({'type': 'success', 'message': 'Room Added'});
       $scope.room = {};
     }, function (err) {
-      notifier.notify({'status': 'failed', 'message': 'Failed to add Room', 'details': err});
+      abode.message({'type': 'failed', 'message': 'Failed to add Room', 'details': err});
       $scope.errors = err;
     });
   };
@@ -815,7 +817,7 @@ rooms.directive('roomIcon', function () {
       'source': '@',
     },
     templateUrl: 'views/rooms/room.icon.html',
-    controller: function ($scope, $interval, $timeout, $rootScope, rooms) {
+    controller: function ($scope, $interval, $timeout, $rootScope, rooms, Rooms) {
       var roomTimeout,
         cycle_timeout,
         temp_maps = {},
@@ -868,7 +870,7 @@ rooms.directive('roomIcon', function () {
       if ($scope.icon) { $scope.show_icon = true; }
 
       $scope.view = function () {
-        rooms.view($scope.room, $scope.source);
+        rooms.view($scope.room, $scope.devices);
       };
 
       temp_maps.cycle = function () {
@@ -940,7 +942,7 @@ rooms.directive('roomIcon', function () {
       var getRoom = function () {
 
         $scope.state.loading = true;
-        rooms.getDevices($scope.room, $scope.source).then(function (devices) {
+        $scope.room.$devices().$promise.then(function (devices) {
           $scope.devices = devices;
           $scope.state.is_light = check_state('light', '_on', true);
           $scope.state.is_motion = check_state('motion_sensor', '_on', true);
@@ -974,7 +976,11 @@ rooms.directive('roomIcon', function () {
         }, 30 * 1000);
       };
 
-      getRoom();
+      Rooms.get({'id': $scope.room}).$promise.then(function (obj) {
+        $scope.room = obj;
+        getRoom();
+      });
+
 
       $scope.$on('$destroy', function () {
         $timeout.cancel(roomTimer);

@@ -6,12 +6,12 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-8 col-sm-offset-2" style="font-size: 2em;">
+      <div class="col-sm-8 col-sm-offset-2">
         <h4 ng-show="loading"><i class="icon-refresh spin"></i> Loading...</h4>
         <ul class="list-group" ng-hide="loading">
-          <li class="list-group-item" style="font-size: 1.2em; cursor: pointer;" ng-repeat="trigger in triggers | orderBy: '+name'" ng-click="edit(trigger)">
+          <li class="list-group-item" style="cursor: pointer;" ng-repeat="trigger in triggers | orderBy: '+name'" ng-click="edit(trigger)">
             {{trigger.name}}<button class="pull-right btn btn-xs btn-danger" ng-click="remove(trigger)" stop-event><i class="icon-trash"></i></button>
-            <div style="font-size: .6em;" class="text-muted" ng-class="{'strike-through': !trigger.enabled}">
+            <div style="font-size: .8em;" class="text-muted" ng-class="{'strike-through': !trigger.enabled}">
               <span ng-show="trigger.match">{{trigger.match_type | capitalize}} is
                 <span ng-show="trigger.match_type == 'time'">{{trigger.match | time}} during </span>
                 <span ng-show="trigger.match_type == 'date'">{{trigger.match | date: 'EEE MMM d, yyyy'}} during </span>
@@ -26,4 +26,4 @@
       </div>
     </div>
   </div>
-  <div class="bg-success img-circle " style="position: fixed; bottom: 1.5em; right: 1.5em; font-size: 2em; height: 2.5em; width: 2.5em; text-align: center; box-shadow: .2em .2em .3em black; line-height: 2.7em; font-weight: bold; cursor: pointer;" ui-sref="index.triggers.add"><i class="icon-plus"></i></button>
+  <div class="bg-success img-circle " style="position: fixed; bottom: 1.5em; right: 1.5em; font-size: 1.5em; height: 2.5em; width: 2.5em; text-align: center; box-shadow: .2em .2em .3em black; line-height: 2.7em; font-weight: bold; cursor: pointer;" ui-sref="main.triggers.add"><i class="icon-plus"></i></button>

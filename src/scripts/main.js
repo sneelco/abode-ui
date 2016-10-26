@@ -245,6 +245,7 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
 
     if (error.message || error.state !== 'welcome') {
       abode.message({'message': error.message || 'Error Loading Page', 'type': 'error'});
+      console.dir(error);
     }
     $rootScope.loading = false;
     event.preventDefault();

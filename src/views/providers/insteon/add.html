@@ -1,0 +1,23 @@
+<div ng-controller="insteonAdd">
+  <div class="form-group" ng-hide="type">
+    <h3>Step 1: Device Type</h3>
+    <ul class="insteon-types">
+      <li ng-repeat="t in device_types" ng-click="changeType(t)" ng-class="{'bg-success': type.name == t.name}">{{t.name}}</li>
+    </ul>
+  </div>
+  <div class="form-group" ng-show="type && !device.config.address">
+    <h3>Step 2: Link your Device</h3>
+    <div>&nbsp;</div>
+    <div>Link Status: {{link_status | capitalize}} {{error}}</div>
+    <div>&nbsp;</div>
+    <div>
+    <button ng-click="start_linking()" class="btn btn-primary" ng-disabled="link_status=='linking'">Start Linking</button>
+    <button ng-click="cancel_linking()" class="btn btn-warning" ng-disabled="link_status=='idle'">Cancel Linking</button>
+    </div>
+  </div>
+  <div class="form-group" ng-show="device.config.address">
+    <h3>Step 3: Name Your Device</h3>
+    <label for="name">Name ({{device.config.address}})</label>
+    <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="device.name">
+  </div>
+</div>

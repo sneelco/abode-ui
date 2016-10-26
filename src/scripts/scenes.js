@@ -24,17 +24,9 @@ scenes.config(function($stateProvider, $urlRouterProvider) {
     templateUrl: '/views/scenes/scenes.edit.html',
     controller: 'scenesEdit',
     resolve: {
-      'scene': function ($stateParams, $state, $q, scenes) {
-        var defer = $q.defer();
+      'scene': function ($stateParams, $state, $q, Scenes) {
 
-        scenes.get($stateParams.name).then(function (response) {
-          defer.resolve(response);
-        }, function (err) {
-          defer.reject(err);
-          $state.go('main.scenes');
-        });
-
-        return defer.promise;
+        return Scenes.get({'id': $stateParams.name}).$promise;
 
       }
     }
@@ -57,7 +49,32 @@ scenes.factory('Scenes', ['$resource', '$http', '$q', 'abode', 'scenes', functio
 
 rooms.factory('RoomScenes', ['$resource', 'abode', function ($resource, abode) {
 
-  var model = $resource(abode.url('/api/rooms/:room/scenes/:id'), {id: '@_id'}, {});
+  var model = $resource(abode.url('/api/rooms/:room/scenes/:id'), {id: '@_id'}, {
+    'query': {
+      isArray: true,
+      transformResponse: [
+        function (data, headers, status) {
+          data = angular.fromJson(data);
+
+          data.forEach(function (dev) {
+            if (dev._on === true) {
+              dev.age = new Date() - new Date(dev.last_on);
+            } else {
+              dev.age = new Date() - new Date(dev.last_off);
+            }
+
+            if (!isNaN(dev.age)) {
+              dev.age = dev.age / 1000;
+            } else {
+              dev.age = 0;
+            }
+          });
+
+          return data;
+        }
+      ]
+    }
+  });
 
   angular.merge(model.prototype, scenes.methods);
 
@@ -339,7 +356,7 @@ scenes.controller('scenesList', function ($scope, $state, scenes) {
   };
 
   $scope.edit = function (scene) {
-    $state.go('index.scenes.edit', {'name': scene.name});
+    $state.go('main.scenes.edit', {'name': scene.name});
   };
 
   $scope.load = function () {
@@ -358,8 +375,8 @@ scenes.controller('scenesList', function ($scope, $state, scenes) {
   $scope.load();
 });
 
-scenes.controller('scenesAdd', function ($scope, $state, notifier, scenes) {
-  $scope.scene = {};
+scenes.controller('scenesAdd', function ($scope, $state, abode, Scenes) {
+  $scope.scene = new Scene();
   $scope.alerts = [];
 
   $scope.back = function () {
@@ -371,17 +388,17 @@ scenes.controller('scenesAdd', function ($scope, $state, notifier, scenes) {
   };
 
   $scope.add = function () {
-    scenes.add($scope.scene).then(function () {
-      notifier.notify({'status': 'success', 'message': 'Scene Added'});
-      $scope.scene = {};
+    scenes.$save().then(function () {
+      abode.message({'type': 'success', 'message': 'Scene Added'});
+      $state.go('^.list');
     }, function (err) {
-      notifier.notify({'status': 'failed', 'message': 'Failed to add Scene', 'details': err});
+      abode.message({'type': 'failed', 'message': 'Failed to add Scene', 'details': err});
       $scope.errors = err;
     });
   };
 });
 
-scenes.controller('scenesEdit', function ($scope, $state, $uibModal, notifier, scene, devices, scenes, rooms, confirm) {
+scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devices, scenes, rooms, confirm) {
   $scope.scene = scene;
   $scope.alerts = [];
   $scope.rooms = [];
@@ -855,21 +872,21 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, notifier, s
   };
 
   $scope.save = function () {
-    scenes.save($scope.scene).then(function () {
-      notifier.notify({'status': 'success', 'message': 'Scene Saved'});
+    $scope.scene.$update().then(function () {
+      abode.message({'type': 'success', 'message': 'Scene Saved'});
     }, function (err) {
-      notifier.notify({'status': 'failed', 'message': 'Failed to save Scene', 'details': err});
+      abode.message({'type': 'failed', 'message': 'Failed to save Scene', 'details': err});
       $scope.errors = err;
     });
   };
 
   $scope.remove = function () {
     confirm('Are you sure you want to remove this Scene?').then(function () {
-      scenes.remove(scene._id).then(function () {
-        notifier.notify({'status': 'success', 'message': 'Scene Removed'});
+      $scope.scene.$remove().then(function () {
+        abode.message({'type': 'success', 'message': 'Scene Removed'});
         $state.go('index.scenes');
       }, function (err) {
-        notifier.notify({'status': 'failed', 'message': 'Failed to remove Scene', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to remove Scene', 'details': err});
         $scope.errors = err;
       });
     });
@@ -880,9 +897,9 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, notifier, s
     confirm('Are you sure?').then(function () {
       scenes.removeRoom(scene.name, id).then(function () {
         getRooms();
-        notifier.notify({'status': 'success', 'message': 'Room removed from Scene'});
+        abode.message({'type': 'success', 'message': 'Room removed from Scene'});
       }, function (err) {
-        notifier.notify({'status': 'failed', 'message': 'Failed to remove Room from Scene', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to remove Room from Scene', 'details': err});
       });
     });
 
@@ -931,9 +948,9 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, notifier, s
 
       scenes.addRoom(scene.name, room.name).then(function () {
         getRooms();
-        notifier.notify({'status': 'success', 'message': 'Room added to Scene'});
+        abode.message({'type': 'success', 'message': 'Room added to Scene'});
       }, function () {
-        notifier.notify({'status': 'failed', 'message': 'Failed to add Room to Scene', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to add Room to Scene', 'details': err});
       });
 
     });

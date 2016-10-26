@@ -1,0 +1,46 @@
+
+
+<div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+<div style="position: fixed; right: 1em; top: .5em; font-size: 3em; cursor: pointer" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i></div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+    <h2>Settings / Providers / Video</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2" style="font-size: 2em;">
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+
+            <div class="form-group">
+              <label for="enabled">Enabled: </label>
+              <toggle value="config.enabled" class="pull-right"></toggle>
+            </div>
+
+            <div class="form-group">
+              <label for="player">Player</label>
+              <input type="text" class="form-control" id="Player" placeholder="Player" required="" ng-model="config.player">
+            </div>
+
+            <div class="form-group">
+              <label for="options">Options</label>
+              <input type="text" class="form-control" id="options" placeholder="Options" required="" ng-model="config.options">
+            </div>
+
+            <div class="form-group">
+              <label for="enabled">Debug: </label>
+              <toggle value="config.debug" class="pull-right"></toggle>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()"><i class="icon-savetodrive"></i> Save</button>
+            </div>
+
+          </div>
+        </div>
+
+  </div>
+</div>
+</div>
+

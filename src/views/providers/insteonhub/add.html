@@ -1,0 +1,55 @@
+<div ng-controller="insteonhubAdd">
+  <div class="form-group" ng-hide="type">
+    <h3>Step 1: Device Type</h3>
+    <ul class="insteon-types">
+      <li ng-repeat="t in device_types" ng-click="changeType(t)" ng-class="{'bg-success': type.name == t.name}">{{t.name}}</li>
+    </ul>
+  </div>
+  <div class="form-group" ng-show="type.type == 'devices' && !device.config.DeviceID">
+      <button class="btn btn-primary btn-sm pull-right" ng-hide="errors || processing" ng-click="reload()"><i class="icon-refresh"></i></button>
+      <button class="btn btn-danger btn-sm pull-right" ng-show="errors" ng-click="reload()"><i class="icon-erroralt"></i></button>
+      <button class="btn btn-default btn-sm pull-right" ng-show="processing"><i class="icon-loadingalt spin"></i></button>
+    <h3>Step 2: Select your Device</h3>
+    <div>&nbsp;</div>
+    <div>
+      <ul class="list-group bg-muted select-list">
+        <li class="list-group-item" style="cursor: pointer;" ng-repeat="d in devices" ng-click="selectDevice(d)">
+          {{d.DeviceName}}
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="form-group" ng-show="type.type == 'scenes' && !device.config.SceneID">
+      <button class="btn btn-primary btn-sm pull-right" ng-hide="errors || processing" ng-click="reload()"><i class="icon-refresh"></i></button>
+      <button class="btn btn-danger btn-sm pull-right" ng-show="errors" ng-click="reload()"><i class="icon-erroralt"></i></button>
+      <button class="btn btn-default btn-sm pull-right" ng-show="processing"><i class="icon-loadingalt spin"></i></button>
+    <h3>Step 2: Select your Scene</h3>
+    <div>&nbsp;</div>
+    <div>
+      <ul class="list-group bg-muted select-list">
+        <li class="list-group-item" style="cursor: pointer;" ng-repeat="s in devices" ng-click="selectScene(s)">
+          {{s.SceneName}}
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="form-group" ng-show="type.type == 'rooms' && !device.config.RoomID">
+      <button class="btn btn-primary btn-sm pull-right" ng-hide="errors || processing" ng-click="reload()"><i class="icon-refresh"></i></button>
+      <button class="btn btn-danger btn-sm pull-right" ng-show="errors" ng-click="reload()"><i class="icon-erroralt"></i></button>
+      <button class="btn btn-default btn-sm pull-right" ng-show="processing"><i class="icon-loadingalt spin"></i></button>
+    <h3>Step 2: Select your Room</h3>
+    <div>&nbsp;</div>
+    <div>
+      <ul class="list-group bg-muted select-list">
+        <li class="list-group-item" style="cursor: pointer;" ng-repeat="r in devices" ng-click="selectRoom(r)">
+          {{r.RoomName}}
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="form-group" ng-show="device.config.DeviceID || device.config.SceneID || device.config.RoomID">
+    <h3>Step 3: Confirm Your Device and Type</h3>
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="device.name">
+  </div>
+</div>

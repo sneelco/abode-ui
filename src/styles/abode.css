@@ -228,6 +228,7 @@ body {
   }
   .anav-opener {
     font-size: 60px;
+    line-height: 50px;
   }
 }
 
@@ -394,6 +395,13 @@ body {
 }
 
 
+.on-ok {
+  background-color: #00bc8c !important;
+}
+
+.on-danger {
+  background-color: rgb(231, 76, 60) !important;
+}
 
 
 .room-icon {

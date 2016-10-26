@@ -47,15 +47,15 @@ devices.config(function($stateProvider, $urlRouterProvider) {
     templateUrl: '/views/devices/devices.edit.html',
     controller: 'devicesEdit',
     resolve: {
-      'device': function ($stateParams, $state, abode, devices) {
+      'device': function ($stateParams, $state, abode, Devices) {
 
-        return devices.get($stateParams.name);
+        return Devices.get({'id': $stateParams.name}).$promise;
 
       },
       'providers': function ($q, $http, abode) {
         var defer = $q.defer();
 
-        $http.get(abode.url('api/abode/providers').value()).then(function (response) {
+        $http.get(abode.url('/api/abode/providers').value()).then(function (response) {
           defer.resolve(response.data);
         }, function (err) {
           defer.reject(err);
@@ -66,7 +66,7 @@ devices.config(function($stateProvider, $urlRouterProvider) {
       'capabilities': function ($q, $http, abode) {
         var defer = $q.defer();
 
-        $http.get(abode.url('api/abode/capabilities').value()).then(function (response) {
+        $http.get(abode.url('/api/abode/capabilities').value()).then(function (response) {
           defer.resolve(response.data);
         }, function (err) {
           defer.reject(err);
@@ -80,9 +80,48 @@ devices.config(function($stateProvider, $urlRouterProvider) {
 
 devices.factory('RoomDevices', ['$resource', 'abode', 'devices', function ($resource, abode, devices) {
 
-  var model = $resource(abode.url('/api/rooms/:room/devices/:id'), {id: '@_id'}, {});
+  var model = $resource(abode.url('/api/rooms/:room/devices/:id'), {id: '@_id'}, {
+    'query': {
+      isArray: true,
+      transformResponse: [
+        function (data, headers, status) {
+          data = angular.fromJson(data);
+
+          data.forEach(function (dev) {
+            if (dev._on === true) {
+              dev.age = new Date() - new Date(dev.last_on);
+            } else {
+              dev.age = new Date() - new Date(dev.last_off);
+            }
+
+            if (!isNaN(dev.age)) {
+              dev.age = dev.age / 1000;
+            } else {
+              dev.age = 0;
+            }
+          });
+
+          return data;
+        }
+      ]
+    }
+  });
 
   angular.merge(model.prototype, devices.methods);
+
+  return model;
+
+}]);
+
+devices.factory('DeviceRooms', ['$resource', 'abode', function ($resource, abode) {
+
+  var model = $resource(abode.url('/api/devices/:device/rooms/:id'), {id: '@_id'}, {
+    'query': {
+      isArray: true,
+    }
+  });
+
+  //angular.merge(model.prototype, rooms.methods);
 
   return model;
 
@@ -102,7 +141,7 @@ devices.factory('Devices', ['$resource', '$http', '$q', 'abode', 'devices', func
 
 }]);
 
-devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout, $resource, abode) {
+devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout, $resource, abode, DeviceRooms) {
   var model = $resource(abode.url('/api/devices/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },
     'on': { method: 'POST', params: {'action': 'on'}},
@@ -112,6 +151,11 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
 
 
   var methods = {};
+
+  methods.$rooms = function () {
+    return DeviceRooms.query({'device': this.name});
+
+  };
 
   methods.$refresh = function () {
     var self = this,
@@ -138,6 +182,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
       defer = $q.defer(),
       url = abode.url('/api/devices/' + this._id + '/on').value();
 
+    console.log(this);
     $http.post(url).then(function (response) {
       self._on = true;
       defer.resolve(response.data);
@@ -167,11 +212,11 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
     var action,
       self = this,
       defer = $q.defer(),
-      url = abode.url('/api/devices/' + this._id).value();
+      url = abode.url('/api/devices/' + this.name).value();
 
     if (self.active) {
-      action = (self._on) ? self.$on : self.$off;
-      action().then(function (response) {
+      action = (self._on) ? self.$off : self.$on;
+      action.apply(self).then(function (response) {
         defer.resolve(response);
       }, function (err) {
         defer.reject(err);
@@ -412,7 +457,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
   var openDevice =function (device, source) {
 
     return $uibModal.open({
-      animation: true,
+      animation: false,
       templateUrl: 'views/devices/devices.view.html',
       size: 'sm',
       controller: function ($scope, $uibModalInstance, $interval, $timeout, $state, device, source) {
@@ -434,7 +479,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
 
         $scope.edit = function () {
           $uibModalInstance.close({'recurse': true});
-          $state.go('index.devices.edit', {'name': device.name});
+          $state.go('main.devices.edit', {'name': device.name});
         };
 
         $scope.sensors = $scope.capabilities.filter(function (c) {
@@ -786,7 +831,7 @@ devices.controller('devicesList', function ($scope, $state, Devices) {
   $scope.load();
 });
 
-devices.controller('devicesEdit', function ($scope, $state, $uibModal, notifier, devices, device, confirm, providers, capabilities) {
+devices.controller('devicesEdit', function ($scope, $state, $uibModal, abode, devices, device, confirm, providers, capabilities) {
   $scope.providers = providers;
   $scope.capabilities = capabilities;
   $scope.device = device;
@@ -796,13 +841,14 @@ devices.controller('devicesEdit', function ($scope, $state, $uibModal, notifier,
   $scope.section = 'provider';
   $scope.provider_template = '/views/providers/' + device.provider + '/edit.html';
 
+
   if (!device) {
     $state.go('index.devices.list');
   }
 
   var getRooms = function () {
     $scope.loading = true;
-    devices.getRooms(device.name).then(function(rooms) {
+    $scope.device.$rooms().$promise.then(function(rooms) {
       $scope.rooms = rooms;
       $scope.loading = false;
     }, function () {
@@ -813,7 +859,7 @@ devices.controller('devicesEdit', function ($scope, $state, $uibModal, notifier,
   getRooms();
 
   $scope.back = function () {
-    $state.go('index.devices');
+    $state.go('main.devices.list');
   };
 
   $scope.closeAlert = function(index) {
@@ -821,21 +867,21 @@ devices.controller('devicesEdit', function ($scope, $state, $uibModal, notifier,
   };
 
   $scope.save = function () {
-    devices.save($scope.device).then(function () {
-      notifier.notify({'status': 'success', 'message': 'Device Saved'});
+    $scope.device.$update().then(function () {
+      abode.message({'type': 'success', 'message': 'Device Saved'});
     }, function (err) {
-        notifier.notify({'status': 'failed', 'message': 'Failed to save Device', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to save Device', 'details': err});
       $scope.errors = err;
     });
   };
 
   $scope.remove = function () {
     confirm('Are you sure you want to remove this Device?').then(function () {
-      devices.remove(device._id).then(function () {
-        notifier.notify({'status': 'success', 'message': 'Device Removed'});
+      $scope.device.$remove().then(function () {
+        abode.message({'type': 'success', 'message': 'Device Removed'});
         $state.go('index.devices');
       }, function (err) {
-        notifier.notify({'status': 'failed', 'message': 'Failed to remove Device', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to remove Device', 'details': err});
         $scope.errors = err;
       });
     });
@@ -846,9 +892,9 @@ devices.controller('devicesEdit', function ($scope, $state, $uibModal, notifier,
     confirm('Are you sure?').then(function () {
       devices.removeRoom(device.name, id).then(function () {
         getRooms();
-        notifier.notify({'status': 'success', 'message': 'Room removed from Device'});
+        abode.message({'type': 'success', 'message': 'Room removed from Device'});
       }, function () {
-        notifier.notify({'status': 'failed', 'message': 'Failed to remove Room from Device', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to remove Room from Device', 'details': err});
       });
     });
 
@@ -897,9 +943,9 @@ devices.controller('devicesEdit', function ($scope, $state, $uibModal, notifier,
 
       devices.addRoom(device.name, room.name).then(function () {
         getRooms();
-        notifier.notify({'status': 'success', 'message': 'Room added to Device'});
+        abode.message({'type': 'success', 'message': 'Room added to Device'});
       }, function () {
-        notifier.notify({'status': 'failed', 'message': 'Failed to add Room to Device', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to add Room to Device', 'details': err});
       });
 
     });

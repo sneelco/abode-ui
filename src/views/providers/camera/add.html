@@ -1,0 +1,22 @@
+<div ng-controller="cameraAdd">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="device.name">
+  </div>
+  <div class="form-group">
+    <label for="name">Username</label>
+    <input type="text" class="form-control" id="username" placeholder="Username" ng-model="device.config.username">
+  </div>
+  <div class="form-group">
+    <label for="name">Password</label>
+    <input type="password" class="form-control" id="password" placeholder="Password" ng-model="device.config.password">
+  </div>
+  <div class="form-group">
+    <label for="name">Video URL</label>
+    <input type="text" class="form-control" id="video_url" placeholder="Video URL" ng-model="device.config.video_url">
+  </div>
+  <div class="form-group">
+    <label for="name">Image URL</label>
+    <input type="text" class="form-control" id="image_url" placeholder="Image URL" ng-model="device.config.image_url">
+  </div>
+</div>

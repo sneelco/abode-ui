@@ -1,0 +1,106 @@
+
+<div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+<div style="position: fixed; right: 1em; top: .5em; font-size: 3em; cursor: pointer" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i></div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+    <h2>Settings / Insteon</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2" style="font-size: 2em;">
+<!--
+
+enabled = false
+debug = false
+modem_debug = false
+serial_device = /dev/ttyUSB1
+
+delay = 300
+retries = 3
+
+-->
+        <div class="panel panel-default">
+          <div class="panel-body">
+
+            <div class="form-group">
+              <label for="enabled">Enabled: </label>
+              <toggle value="config.enabled" class="pull-right"></toggle>
+            </div>
+
+            <div class="form-group">
+              <label for="enabled">Serial Device: </label>
+
+
+              <ul class="list-group bg-muted select-list">
+                <li class="list-group-item" style="cursor: pointer;" ng-repeat="d in devices" ng-click="config.serial_device = d" ng-class="{'list-group-item-success': config.serial_device == d}">
+                  {{d}}
+                </li>
+              </ul>
+            </div>
+
+            <div class="form-group">
+              <label for="serial_baudrate">Serial Baudrate</label>
+              <input type="text" class="form-control" id="serial_baudrate" placeholder="Serial Baudrate" required="" ng-model="config.serial_baudrate">
+            </div>
+
+            <div class="form-group">
+              <label for="serial_databits">Serial Databits</label>
+              <input type="text" class="form-control" id="serial_databits" placeholder="Serial Databits" required="" ng-model="config.serial_databits">
+            </div>
+
+            <div class="form-group">
+              <label for="serial_stopbits">Serial Stopbits</label>
+              <input type="text" class="form-control" id="serial_stopbits" placeholder="Serial Stopbits" required="" ng-model="config.serial_stopbits">
+            </div>
+
+            <div class="form-group">
+              <label for="serial_parity">Serial Parity</label>
+              <input type="text" class="form-control" id="serial_parity" placeholder="Serial Parity" required="" ng-model="config.serial_parity">
+            </div>
+
+            <div class="form-group">
+              <label for="serial_flowcontrol">Serial Flowcontrol</label>
+              <input type="text" class="form-control" id="serial_flowcontrol" placeholder="Serial Flowcontrol" required="" ng-model="config.serial_flowcontrol">
+            </div>
+
+            <div class="form-group">
+              <label for="timeout">Timeout (ms)</label>
+              <input type="text" class="form-control" id="timeout" placeholder="Timeout (ms)" required="" ng-model="config.timeout">
+            </div>
+
+            <div class="form-group">
+              <label for="queue_timeout">Queue Timeout (ms)</label>
+              <input type="text" class="form-control" id="queue_timeout" placeholder="Queue Timeout (ms)" required="" ng-model="config.queue_timeout">
+            </div>
+
+            <div class="form-group">
+              <label for="delay">Delay (ms)</label>
+              <input type="text" class="form-control" id="delay" placeholder="Delay (ms)" required="" ng-model="config.delay">
+            </div>
+
+            <div class="form-group">
+              <label for="retries">Retries</label>
+              <input type="text" class="form-control" id="retries" placeholder="Retries" required="" ng-model="config.retries">
+            </div>
+
+            <div class="form-group">
+              <label for="enabled">Debug: </label>
+              <toggle value="config.debug" class="pull-right"></toggle>
+            </div>
+
+            <div class="form-group">
+              <label for="enabled">Modem Debug: </label>
+              <toggle value="config.modem_debug" class="pull-right"></toggle>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()"><i class="icon-savetodrive"></i> Save</button>
+            </div>
+
+          </div>
+        </div>
+
+  </div>
+</div>
+</div>
+

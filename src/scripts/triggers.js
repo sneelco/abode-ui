@@ -18,9 +18,9 @@ triggers.config(function($stateProvider, $urlRouterProvider) {
     templateUrl: '/views/triggers/triggers.add.html',
     controller: 'triggersEdit',
     resolve: {
-      'trigger': function () {
+      'trigger': function (Triggers) {
 
-        return {'enabled': true, 'conditions': [], 'actions': []};
+        return new Triggers({'enabled': true, 'conditions': [], 'actions': []});
 
       },
       'types': function (triggers) {
@@ -35,9 +35,9 @@ triggers.config(function($stateProvider, $urlRouterProvider) {
     templateUrl: '/views/triggers/triggers.edit.html',
     controller: 'triggersEdit',
     resolve: {
-      'trigger': function ($stateParams, $state, triggers) {
+      'trigger': function ($stateParams, $state, Triggers) {
 
-        return triggers.get($stateParams.name);
+        return Triggers.get({'id': $stateParams.name}).$promise;
 
       },
       'types': function (triggers) {
@@ -48,6 +48,18 @@ triggers.config(function($stateProvider, $urlRouterProvider) {
     }
   });
 });
+
+triggers.factory('Triggers', ['$resource', '$http', '$q', '$uibModal', 'abode', function ($resource, $http, $q, $uibModal, abode) {
+
+  var model = $resource(abode.url('/api/triggers/:id'), {id: '@_id'}, {
+    'update': { method: 'PUT' },
+    'refresh': { method: 'GET' },
+  });
+
+  return model;
+
+}]);
+
 
 triggers.service('triggers', function ($http, $q, $uibModal, $resource, abode, confirm, devices, rooms, scenes) {
   var model = $resource(abode.url('/api/triggers/:id/:action'), {id: '@_id'}, {
@@ -69,7 +81,7 @@ triggers.service('triggers', function ($http, $q, $uibModal, $resource, abode, c
   var getTypes = function () {
     var defer = $q.defer();
 
-    $http.get('api/abode/triggers').then(function (response) {
+    $http.get(abode.url('/api/abode/triggers').value()).then(function (response) {
       defer.resolve(response.data);
     }, function (err) {
       defer.reject(err);
@@ -650,16 +662,16 @@ triggers.directive('conditionSide', function ($uibModal, devices, rooms, scenes)
   };
 });
 
-triggers.controller('triggersList', function ($scope, $state, triggers, confirm) {
+triggers.controller('triggersList', function ($scope, $state, Triggers, confirm) {
   $scope.triggers = [];
   $scope.loading = true;
 
   $scope.edit = function (trigger) {
-    $state.go('index.triggers.edit', {name: trigger.name});
+    $state.go('main.triggers.edit', {name: trigger.name});
   };
 
   $scope.load = function () {
-    triggers.load().then(function (triggers) {
+    Triggers.query().$promise.then(function (triggers) {
       $scope.triggers = triggers;
       $scope.loading = false;
       $scope.error = false;
@@ -684,7 +696,7 @@ triggers.controller('triggersList', function ($scope, $state, triggers, confirm)
   $scope.load();
 });
 
-triggers.controller('triggersEdit', function ($scope, $state, notifier, triggers, trigger, devices, rooms, confirm, types) {
+triggers.controller('triggersEdit', function ($scope, $state, abode, triggers, trigger, Devices, Rooms, confirm, types) {
   $scope.trigger = trigger;
   $scope.alerts = [];
   $scope.state = $state;
@@ -712,7 +724,7 @@ triggers.controller('triggersEdit', function ($scope, $state, notifier, triggers
 
   var getDevices = function () {
     $scope.devices_loading = true;
-    devices.load().then(function (devices) {
+    Devices.query().$promise.then(function (devices) {
       $scope.devices = devices;
       $scope.devices_loading = false;
     }, function () {
@@ -723,7 +735,7 @@ triggers.controller('triggersEdit', function ($scope, $state, notifier, triggers
 
   var getRooms = function () {
     $scope.rooms_loading = true;
-    rooms.load().then(function (rooms) {
+    Rooms.query().$promise.then(function (rooms) {
       $scope.rooms = rooms;
       $scope.rooms_loading = false;
     }, function () {
@@ -774,27 +786,27 @@ triggers.controller('triggersEdit', function ($scope, $state, notifier, triggers
   };
 
   $scope.save = function () {
-    triggers.save($scope.trigger).then(function () {
-      notifier.notify({'status': 'success', 'message': 'Trigger Saved'});
+    $scope.trigger.$update().then(function () {
+      abode.message({'type': 'success', 'message': 'Trigger Saved'});
     }, function (err) {
-      notifier.notify({'status': 'failed', 'message': 'Failed to save Trigger', 'details': err});
+      abode.message({'type': 'failed', 'message': 'Failed to save Trigger', 'details': err});
       $scope.errors = err;
     });
   };
 
   $scope.add = function () {
-    triggers.add($scope.trigger).then(function () {
-      $scope.trigger = {'enabled': true};
-      notifier.notify({'status': 'success', 'message': 'Trigger Added'});
+    $scope.trigger.$save().then(function () {
+      abode.message({'type': 'success', 'message': 'Trigger Added'});
+      $state.go('^.list');
     }, function (err) {
-      notifier.notify({'status': 'failed', 'message': 'Failed to add Trigger', 'details': err});
+      abode.message({'type': 'failed', 'message': 'Failed to add Trigger', 'details': err});
       $scope.errors = err;
     });
   };
 
   $scope.remove = function () {
     confirm('Are you sure you want to remove this Trigger?').then(function () {
-      triggers.remove(trigger._id).then(function () {
+      $scope.trigger.$remove().then(function () {
         $state.go('index.triggers');
       }, function (err) {
         $scope.alerts = [{'type': 'danger', 'msg': 'Failed to remove Trigger'}];
