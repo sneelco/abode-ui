@@ -21,17 +21,23 @@
               </div>
               <div class="form-group">
                 <label for="name">Actions</label>
-                <button class="btn btn-xs btn-primary pull-right"><i class="icon-circleadd"></i></button>
+                <button class="btn btn-xs btn-primary pull-right" ng-click="add_action()"><i class="icon-circleadd"></i></button>
                 <ul class="list-group">
-                  <li class="list-group-item" ng-repeat="action in notification.actions"><i class="{{action.icon}}"></i> {{action.name}} {{action.type}} {{action.action}}</li>
+                  <li class="list-group-item" ng-repeat="action in notification.actions" ng-click="edit_action(action)"><i class="{{action.icon}}"></i> {{action.name}} {{action.type}} {{action.action}}
+                    <button class="btn btn-xs btn-danger pull-right" ng-click="remove_action(action)"><i class="icon-circledelete"></i></button></li>
                   <li class="list-group-item" ng-show="!notification.actions || notification.actions.length == 0">No actions added</li>
                 </ul>
               </div>
               <div class="form-group">
                 <label for="name">Triggers</label>
-                <button class="btn btn-xs btn-primary pull-right"><i class="icon-circleadd"></i></button>
-                <ul class="list-group">
-                  <li class="list-group-item" ng-show="!notification.triggers || notification.triggers.length == 0">No actions added</li>
+                <button class="btn btn-xs btn-primary pull-right" ng-click="add_trigger()"><i class="icon-circleadd"></i></button>
+                <h4 ng-show="loading"><i class="icon-refresh spin"></i> Loading...</h4>
+                <ul class="list-group" ng-hide="loading">
+                  <li class="list-group-item" ng-show="!triggers || triggers.length == 0">No actions added</li>
+                  <li class="list-group-item" ng-repeat="trigger in triggers | orderBy: 'name'">
+                    {{trigger.name}}
+                    <button class="btn btn-xs btn-danger pull-right" ng-click="remove_trigger(trigger)"><i class="icon-circledelete"></i></button>
+                  </li>
                 </ul>
               </div>
 

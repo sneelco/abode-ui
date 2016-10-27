@@ -1,0 +1,111 @@
+<div class="modal-header">
+    <h4 class="modal-title">Action Builder</h4>
+</div>
+<div class="modal-body">
+          <form name="actionFrm">
+              <div class="form-group">
+                <label for="name">Title</label>
+                <input type="text" class="form-control" id="title" placeholder="Title" required="" ng-model="action.title">
+              </div>
+              <div class="form-group">
+                <label for="name">Icon</label>
+                <input type="text" class="form-control" id="title" placeholder="Icon" required="" ng-model="action.icon">
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="trigger">Type<span ng-show="action.type">: {{action.type}}</span></label>
+                  <div>
+                  <ul class="list-group bg-muted select-list" >
+                    <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in action_types" ng-click="changeType(t.value);" ng-class="{'list-group-item-success': action.type == t.value}">
+                      <i class="{{t.icon}}"></i> {{t.name}}
+                    </li>
+                  </ul>
+                  </div>
+
+                </div>
+
+                <div class="col-sm-4" ng-show="action.type == 'devices'">
+                    <label for="trigger">Device<span ng-show="action.item">: {{action.item.name}}</span></label>
+                    <ul class="list-group bg-muted select-list" >
+                      <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in devices | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': action.name == t.name}">
+                        {{t.name}}
+                      </li>
+                    </ul>
+                </div>
+
+                <div class="col-sm-4" ng-show="action.type == 'rooms'">
+                    <label for="trigger">Room<span ng-show="action.item">: {{action.item.name}}</span></label>
+                    <ul class="list-group bg-muted select-list" >
+                      <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in rooms | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': action.name == t.name}">
+                        {{t.name}}
+                      </li>
+                    </ul>
+                </div>
+
+                <div class="col-sm-4" ng-show="action.type == 'scenes'">
+                    <label for="trigger">Scene<span ng-show="action.item">: {{action.item.name}}</span></label>
+                    <ul class="list-group bg-muted select-list" >
+                      <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in scenes | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': action.name == t.name}">
+                        {{t.name}}
+                      </li>
+                    </ul>
+                </div>
+                <div class="col-sm-4" ng-show="action.name">
+
+                  <div class="form-group">
+                    <label for="trigger">Action<span ng-show="action.action">: {{action.action}}</span></label>
+                    <div>
+                    <ul class="list-group bg-muted select-list" >
+                      <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in type_actions" ng-click="change_action(t)" ng-show="has_capability(t.capabilities)" ng-class="{'list-group-item-success': action.action == t.value}">
+                        {{t.name}}
+                      </li>
+                    </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row" ng-show="action.name">
+
+                <div class="col-sm-6" ng-show="type_args.indexOf('level') != -1">
+                  <div class="form-group">
+                    <label for="name">Level</label>
+                    <input type="text" class="form-control" id="name" placeholder="Level" ng-model="action.args[0]">
+                  </div>
+                </div>
+
+                <div class="col-sm-6" ng-show="type_args.indexOf('temperature') != -1">
+                  <div class="form-group">
+                    <label for="name">Temperature</label>
+                    <input type="text" class="form-control" id="name" placeholder="Temperature" ng-model="action.args[0]">
+                  </div>
+                </div>
+
+                <div class="col-sm-6" ng-show="type_args.indexOf('mode') != -1">
+                  <div class="form-group">
+                    <label for="name">Mode</label>
+                    <ul class="list-group bg-muted select-list" >
+                      <li class="list-group-item" style="cursor: pointer;" ng-click="action.args[0] = 'COOL'" ng-class="{'list-group-item-success': action.args == 'COOL'}">
+                        <i class="icon-snow"></i> COOL
+                      </li>
+                      <li class="list-group-item" style="cursor: pointer;" ng-click="action.args[0] = 'HEAT'" ng-class="{'list-group-item-success': action.args == 'HEAT'}">
+                        <i class="icon-fire"></i> HEAT
+                      </li>
+                      <li class="list-group-item" style="cursor: pointer;" ng-click="action.args[0] = 'OFF'" ng-class="{'list-group-item-success': action.args == 'OFF'}">
+                        <i class="glyphicon glyphicon-off"></i> OFF
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+
+              <input type="hidden" ng-model="action.type" required>
+              <input type="hidden" ng-model="action.name" required>
+              <input type="hidden" ng-model="action.action" required>
+          </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary btn-sm" type="button" ng-disabled="actionFrm.$invalid" ng-click="save()">Save</button>
+    <button class="btn btn-warning btn-sm" type="button" ng-click="close()">Cancel</button>
+</div>
