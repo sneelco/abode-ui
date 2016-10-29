@@ -8,10 +8,23 @@ home.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRouter
       template: '<interface class="interface"></interface>',
       controller: 'homeController',
       resolve: {
-        'interface': function ($stateParams, abode) {
+        'interface': ['$stateParams', '$q', 'auth', 'abode', function ($stateParams, $q, auth, abode) {
+          var interface,
+            defer = $q.defer();
+
+          if (auth.device && auth.device.config && auth.device.config.interface) {
+            interface = auth.device.config.interface;
+          } else {
+            defer.reject({'state': 'welcome_devices'})
+            return defer.promise;
+          }
+
           abode.config.interface = $stateParams.interface || abode.config.interface;
-          abode.save();
-        }
+
+          defer.resolve();
+
+          return defer.promise;
+        }]
       }
     });
 

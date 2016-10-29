@@ -27,7 +27,7 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" placeholder="Password" ng-model="auth.password" required>
           </div>
-          <button class="btn btn-success" ng-disabled="loginFrm.$invalid" ng-click="do_login()"><span class="glyphicon glyphicon-log-in"></span> Login</button>
+          <button class="btn btn-success" ng-disabled="loginFrm.$invalid || loading" ng-click="do_login()"><span class="glyphicon glyphicon-log-in"></span> Login</button>
         </form>
       </div>
 

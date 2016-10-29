@@ -19,9 +19,9 @@ abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function(
 
   abode.load();
 
-  if (abode.config.interface) {
-    $urlRouter.otherwise('/Home/' + abode.config.interface);
-    $urlRouter.when('', '/Home/' + abode.config.interface);
+  if (abode.config && abode.config.auth && abode.config.auth.device && abode.config.auth.device.config && abode.config.auth.device.config.interface) {
+    $urlRouter.otherwise('/Home/' + abode.config.auth.device.config.interface);
+    $urlRouter.when('', '/Home/' + abode.config.auth.device.config.interface);
   } else {
     $urlRouter.otherwise('/Welcome');
     $urlRouter.when('', '/Welcome');
@@ -41,16 +41,17 @@ abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function(
             return defer.promise;
           }
 
-          Auth.get(function (auth) {
-            abode.auth = auth;
+          Auth.check().$promise.then(function (auth) {
+            abode.config.auth = auth;
+            abode.save(abode.config);
+            abode.load();
             defer.resolve(auth);
-          }).$promise.then(function () {},
+          },
           function (response) {
+            delete abode.config.auth;
+            abode.save();
 
             if (response.status === 403) {
-              delete abode.config.auth;
-              abode.save();
-
               defer.reject({'state': 'welcome', 'message': 'Login Expired'});
             } else if (response.status === 401) {
               defer.reject({'state': 'welcome', 'message': 'Login Expired'});
@@ -68,23 +69,64 @@ abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function(
 
 }]);
 
-abode.factory('Auth', ['$resource', 'abode', function($resource, abode) {
+abode.factory('Auth', ['$resource', '$q', '$http', 'abode', function($resource, $q, $http, abode) {
 
-  return $resource(abode.url('/api/auth'), {}, {
+  var model = $resource(abode.url('/api/auth/:action'), {}, {
     login: {
       method: 'POST',
+      params: {'action': 'login'}
     },
     logout: {
-      method: 'DELETE'
-    },
-    status: {
-      method: 'GET'
-    },
-    changepw: {
       method: 'POST',
-      params: {'action': 'changepw'}
+      params: {'action': 'logout'}
+    },
+    check: {
+      method: 'GET',
+      params: {'action': 'check'}
     },
   });
+
+  model.prototype.$assign = function (device) {
+    var defer = $q.defer(),
+      url = abode.url('/api/auth/assign').value();
+
+    $http.post(url, device).then(function (response) {
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    })
+
+    return defer.promise;
+  };
+
+  return model;
+}]);
+
+abode.factory('AuthDevices', ['$resource', 'abode', function($resource, abode) {
+
+  var model = $resource(abode.url('/api/auth/devices'), {}, {});
+
+  return model;
+}]);
+
+abode.factory('AuthDevice', ['$resource', '$q', '$http', 'abode', function($resource, $q, $http, abode) {
+
+  var model = $resource(abode.url('/api/auth/device'), {}, {});
+
+  model.prototype.$set_interface = function (interface) {
+    var defer = $q.defer(),
+      url = abode.url('/api/auth/device/set_interface').value();
+
+    $http.post(url, {'interface': interface}).then(function (response) {
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  return model;
 }]);
 
 abode.provider('abode', ['$httpProvider', function ($httpProvider) {
@@ -94,7 +136,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
 
   var $q = initInjector.get('$q'),
     $http = initInjector.get('$http'),
-    $timeout = initInjector.get('$timeout');
+    $timeout = initInjector.get('$timeout'),
     $rootScope = initInjector.get('$rootScope');
 
   this.config = {};
@@ -160,13 +202,14 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
   };
 
   this.load = function () {
+
     try {
       this.config = JSON.parse(localStorage.getItem('abode'));
       this.config = this.config || {};
 
       if (this.config.auth) {
-        $httpProvider.defaults.headers.common.client_token = this.config.auth.client_token;
-        $httpProvider.defaults.headers.common.auth_token = this.config.auth.auth_token;
+        $httpProvider.defaults.headers.common.client_token = this.config.auth.token.client_token;
+        $httpProvider.defaults.headers.common.auth_token = this.config.auth.token.auth_token;
       }
     } catch (e) {
       this.config = {};
@@ -179,7 +222,8 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
 
   };
 
-  this.$get = function () {
+  this.$get = function ($resource) {
+    self.$resource = $resource
     return {
       config: self.config,
       load: self.load,
@@ -260,20 +304,21 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
 
 }]);
 
-abode.controller('mainController', ['$scope', '$state', 'abode', 'Interfaces', function ($scope, $state, abode, Interfaces) {
+abode.controller('mainController', ['$scope', '$state', 'abode', 'Interfaces', 'auth', function ($scope, $state, abode, Interfaces, auth) {
 
   $scope.interfaces = Interfaces.query();
 
   $scope.logout = function () {
-    abode.auth.$logout().then(function () {
-      console.log('success');
+    auth.$logout().then(function () {
       abode.save({});
       $state.go('welcome');
     }, function (err) {
       abode.message({'message': err.message || 'Unknown Error Occured', 'type': 'failed'});
+      /*
       abode.config = {};
       abode.save({});
       $state.go('welcome');
+      */
     });
   };
 }]);

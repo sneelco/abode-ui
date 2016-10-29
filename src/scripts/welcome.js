@@ -13,6 +13,11 @@ welcome.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRou
       templateUrl: "views/welcome/login.html",
       controller: 'welcomeLoginController',
     })
+    .state('welcome_devices', {
+      url: '/Welcome/Devices',
+      templateUrl: "views/welcome/devices.html",
+      controller: 'welcomeDevicesController',
+    })
     .state('welcome_interfaces', {
       url: '/Welcome/Interface',
       templateUrl: "views/welcome/interfaces.html",
@@ -92,7 +97,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
     $scope.config.server = url;
     abode.save($scope.config);
 
-    $scope.auth.$status().then(function (status) {
+    $scope.auth.$check().then(function (status) {
       if (status.client_token && status.auth_token) {
         $scope.config.auth = response.data;
         abode.save($scope.config);
@@ -127,26 +132,81 @@ welcome.controller('welcomeLoginController', ['$scope', '$timeout', '$http', '$q
   $scope.state = $state;
   $scope.auth = new Auth();
 
-  $scope.do_login = function () {
+  $scope.do_login = function (supress) {
+    loading = true;
     $scope.auth.$login().then(function (response) {
+      loading = false;
 
-      if (response.client_token && response.auth_token) {
+      if (response.token) {
         $scope.config.auth = $scope.auth;
         abode.save($scope.config);
-        $state.go('welcome_interfaces');
+        $state.go('welcome_devices');
       } else {
-        abode.message({'message': 'Failed to Get Token', 'type': 'failed'});
+        if (!supress) {
+          abode.message({'message': 'Failed to Get Token', 'type': 'failed'});
+        }
       }
 
     }, function (error) {
+      loading = false;
       var msg = (error.data && error.data.message) ? error.data.message : error.data;
-      abode.message({'message': msg || 'Unknown error occured', 'type': 'failed'});
+      if (!supress) {
+        abode.message({'message': msg || 'Unknown error occured', 'type': 'failed'});
+      }
     });
   };
 
+  $scope.do_login(true);
+
 }]);
 
-welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http', '$q', '$state', 'abode', 'Interfaces', function ($scope, $timeout, $http, $q, $state, abode, Interfaces) {
+welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '$q', '$state', 'abode', 'AuthDevices', 'Auth', function ($scope, $timeout, $http, $q, $state, abode, AuthDevices, Auth) {
+
+  abode.load();
+  $scope.config = abode.config;
+  $scope.loading = false;
+  $scope.failed = false;
+  $scope.interfaces = [];
+  $scope.state = $state;
+  $scope.device = new AuthDevices({'capabilties': ['client', 'browser'], 'provider': 'browser'});
+  $scope.auth = new Auth(abode.config.auth);
+
+  $scope.load_devices = function () {
+    $scope.loading = true;
+    $scope.devices = [];
+
+    AuthDevices.query(function (results) {
+      $scope.devices = results;
+      $scope.loading = false;
+    }).$promise.then(undefined, function () {
+    });
+
+  };
+
+  $scope.select = function (device) {
+
+    $scope.auth.$assign(device).then(function (result) {
+      $state.go('welcome_interfaces');
+    }, function (err) {
+      abode.message({'message': err, 'type': 'failed'});
+    });
+
+    //$state.go('main.home', {'interface': interface});
+  };
+
+  $scope.create = function () {
+    $scope.device.$save().then(function (data) {
+      $state.go('welcome_interfaces');
+    }, function (err) {
+      abode.message({'message': err, 'type': 'failed'});
+    });
+  };
+
+  $timeout($scope.load_devices, 100);
+
+}]);
+
+welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http', '$q', '$state', 'abode', 'Interfaces', 'AuthDevice', function ($scope, $timeout, $http, $q, $state, abode, Interfaces, AuthDevice) {
 
   abode.load();
   $scope.config = abode.config;
@@ -155,6 +215,19 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
   $scope.interfaces = [];
   $scope.state = $state;
   $scope.interface = new Interfaces({'icon': 'icon-monitor', 'template': '<div></div>'});
+
+  AuthDevice.get().$promise.then(function (record) {
+    $scope.device = record;
+
+    if (record.config && record.config.interface) {
+      $scope.done(record.config.interface);
+    } else {
+      $timeout($scope.load_interfaces, 100);
+    }
+  }, function (err) {
+    abode.message({'type': 'failed', 'message': err});
+    $staet.go('welcome_devices');
+  });
 
   $scope.load_interfaces = function () {
     $scope.loading = true;
@@ -168,7 +241,7 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
 
   };
 
-  $scope.select = function (interface) {
+  $scope.done = function (interface) {
     $scope.config.interface = interface;
 
     abode.save($scope.config);
@@ -176,14 +249,23 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
     $state.go('main.home', {'interface': interface});
   };
 
+  $scope.select = function (interface) {
+
+    $scope.device.$set_interface(interface).then(function () {
+      $scope.done(interface);
+    }, function (err) {
+      abode.message({'type': 'failed', 'message': err});
+    });
+
+  };
+
   $scope.create = function () {
     $scope.interface.$save().then(function (data) {
-      $scope.select(data._id);
+      $scope.select(data.name);
     }, function () {
       console.dir(arguments);
     });
   };
 
-  $timeout($scope.load_interfaces, 100);
 
 }]);
