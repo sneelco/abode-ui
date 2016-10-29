@@ -101,7 +101,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
       if (status.client_token && status.auth_token) {
         $scope.config.auth = response.data;
         abode.save($scope.config);
-        $staet.go('welcome_interfaces');
+        $staet.go('welcome_devices');
       } else {
         abode.save($scope.config);
         $state.go('welcome_login');
@@ -111,6 +111,10 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
       if (error.status === 401) {
         abode.save($scope.config);
         $state.go('welcome_login');
+      }
+      if (error.status === 403) {
+        abode.save($scope.config);
+        $state.go('welcome_devices');
       }
     });
 
