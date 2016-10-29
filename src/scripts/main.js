@@ -310,7 +310,7 @@ abode.controller('mainController', ['$scope', '$state', 'abode', 'Interfaces', '
 
   $scope.logout = function () {
     auth.$logout().then(function () {
-      abode.save({});
+      abode.save({'server': abode.config.server});
       $state.go('welcome');
     }, function (err) {
       abode.message({'message': err.message || 'Unknown Error Occured', 'type': 'failed'});

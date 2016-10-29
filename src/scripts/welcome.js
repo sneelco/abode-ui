@@ -37,11 +37,15 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
 
   abode.load();
   $scope.config = abode.config;
+  if ($scope.config.server) {
+    $state.go('welcome_login');
+  }
   $scope.loading = false;
   $scope.failed = false;
   $scope.sources = [];
   $scope.state = $state;
   $scope.auth = new Auth();
+
 
   $scope.load = function () {
     var attempt_defers = [];
@@ -136,6 +140,11 @@ welcome.controller('welcomeLoginController', ['$scope', '$timeout', '$http', '$q
   $scope.state = $state;
   $scope.auth = new Auth();
 
+  $scope.reset_server = function () {
+    abode.save({});
+    $state.go('welcome');
+  };
+
   $scope.do_login = function (supress) {
     loading = true;
     $scope.auth.$login().then(function (response) {
@@ -174,6 +183,11 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
   $scope.state = $state;
   $scope.device = new AuthDevices({'capabilities': ['client', 'browser'], 'provider': 'browser'});
   $scope.auth = new Auth(abode.config.auth);
+
+  $scope.reset_server = function () {
+    abode.save({});
+    $state.go('welcome');
+  };
 
   $scope.load_devices = function () {
     $scope.loading = true;
@@ -232,6 +246,11 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
     abode.message({'type': 'failed', 'message': err});
     $staet.go('welcome_devices');
   });
+
+  $scope.reset_server = function () {
+    abode.save({});
+    $state.go('welcome');
+  };
 
   $scope.load_interfaces = function () {
     $scope.loading = true;
