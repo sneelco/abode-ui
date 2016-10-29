@@ -168,7 +168,7 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
   $scope.failed = false;
   $scope.interfaces = [];
   $scope.state = $state;
-  $scope.device = new AuthDevices({'capabilties': ['client', 'browser'], 'provider': 'browser'});
+  $scope.device = new AuthDevices({'capabilities': ['client', 'browser'], 'provider': 'browser'});
   $scope.auth = new Auth(abode.config.auth);
 
   $scope.load_devices = function () {
@@ -198,7 +198,7 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
     $scope.device.$save().then(function (data) {
       $state.go('welcome_interfaces');
     }, function (err) {
-      abode.message({'message': err, 'type': 'failed'});
+      abode.message({'message': err.data.message || err.data, 'type': 'failed'});
     });
   };
 
