@@ -13,21 +13,23 @@
       </div>
 
       <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-0">
-        <p class="text-center"><strong>Select an Interface</strong></p>
-        <div class="list-group">
-          <button type="button" class="list-group-item" disabled ng-show="loading"><i class="icon-loadingalt spin"></i> Looking for Interfaces</button>
-          <button type="button" class="list-group-item list-group-item-warning" ng-show="interfaces.length == 0 && !loading" ng-click="load_interfaces()"><i class="icon-warning-sign text-warning"></i> No existing interfaces found. Create a new one below or click here to retry</button>
-          <button type="button" class="list-group-item" ng-repeat="interface in interfaces | orderBy: '+name'" ng-click="select(interface._id)"><i class="{{interface.icon}}"></i> {{interface.name}}</button>
-        </div>
-        <p class="text-center"><strong>- or -</strong></p>
-        <form name="manualFrm">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Create a New Interface" ng-model="interface.name">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="button" ng-click="create()"><i class="icon-plus-sign"></i> <span class="hidden-xs">Create</span></button>
-            </span>
+
+          <p class="text-center"><strong>Select an Interface</strong></p>
+          <div class="list-group">
+            <button type="button" class="list-group-item" disabled ng-show="loading"><i class="icon-loadingalt spin"></i> Looking for Interfaces</button>
+            <button type="button" class="list-group-item " ng-show="checking_device"><i class="icon-loadingalt spin"></i> Looking for an existing interface...</button>
+            <button type="button" class="list-group-item list-group-item-primary" ng-show="interfaces.length == 0 && !loading && !checking_device" ng-click="load_interfaces()"><i class="icon-warning-sign text-warning"></i> No existing interfaces found. Create a new one below or click here to retry</button>
+            <button type="button" class="list-group-item" ng-repeat="interface in interfaces | orderBy: '+name'" ng-click="select(interface._id)"><i class="{{interface.icon}}"></i> {{interface.name}}</button>
           </div>
-        </form>
+          <p class="text-center" ng-hide="checking_device"><strong>- or -</strong></p>
+          <form name="manualFrm">
+            <div class="input-group" ng-hide="checking_device">
+              <input type="text" class="form-control" placeholder="Create a New Interface" ng-model="interface.name">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="create()"><i class="icon-plus-sign"></i> <span class="hidden-xs">Create</span></button>
+              </span>
+            </div>
+          </form>
       </div>
 
     </div>

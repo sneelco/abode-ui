@@ -44,8 +44,6 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
   $scope.failed = false;
   $scope.sources = [];
   $scope.state = $state;
-  $scope.auth = new Auth();
-
 
   $scope.load = function () {
     var attempt_defers = [];
@@ -98,9 +96,11 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
   };
 
   $scope.connect = function (url) {
-    $scope.config.server = url;
-    abode.save($scope.config);
+    abode.config.server = url;
+    abode.config.auth = {};
+    abode.save(abode.config);
 
+    $scope.auth = new Auth();
     $scope.auth.$check().then(function (status) {
       if (status.client_token && status.auth_token) {
         $scope.config.auth = response.data;
@@ -115,10 +115,11 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
       if (error.status === 401) {
         abode.save($scope.config);
         $state.go('welcome_login');
-      }
-      if (error.status === 403) {
+      } else if (error.status === 403) {
         abode.save($scope.config);
         $state.go('welcome_devices');
+      } else {
+        abode.message({'type': 'failed', 'message': 'Failed to connect'});
       }
     });
 
@@ -139,6 +140,7 @@ welcome.controller('welcomeLoginController', ['$scope', '$timeout', '$http', '$q
   $scope.login = {};
   $scope.state = $state;
   $scope.auth = new Auth();
+  $scope.checking_login = true
 
   $scope.reset_server = function () {
     abode.save({});
@@ -155,6 +157,7 @@ welcome.controller('welcomeLoginController', ['$scope', '$timeout', '$http', '$q
         abode.save($scope.config);
         $state.go('welcome_devices');
       } else {
+        $scope.checking_login = false
         if (!supress) {
           abode.message({'message': 'Failed to Get Token', 'type': 'failed'});
         }
@@ -232,6 +235,7 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
   $scope.failed = false;
   $scope.interfaces = [];
   $scope.state = $state;
+  $scope.checking_device = true;
   $scope.interface = new Interfaces({'icon': 'icon-monitor', 'template': '<div></div>'});
 
   AuthDevice.get().$promise.then(function (record) {
@@ -240,9 +244,11 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
     if (record.config && record.config.interface) {
       $scope.done(record.config.interface);
     } else {
+      $scope.checking_device = false;
       $timeout($scope.load_interfaces, 100);
     }
   }, function (err) {
+    $scope.checking_device = false;
     abode.message({'type': 'failed', 'message': err});
     $staet.go('welcome_devices');
   });

@@ -19,15 +19,18 @@
               </span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="list-group">
+            <button type="button" class="list-group-item " ng-show="checking_login"><i class="icon-loadingalt spin"></i> Looking for an existing login...</button>
+          </div>
+          <div class="form-group" ng-hide="checking_login">
             <label for="user">Username</label>
             <input type="text" class="form-control" id="user" placeholder="Username" ng-model="auth.user" required>
           </div>
-          <div class="form-group">
+          <div class="form-group" ng-hide="checking_login">
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" placeholder="Password" ng-model="auth.password" required>
           </div>
-          <button class="btn btn-success" ng-disabled="loginFrm.$invalid || loading" ng-click="do_login()"><span class="glyphicon glyphicon-log-in"></span> Login</button>
+          <button class="btn btn-success" ng-disabled="loginFrm.$invalid || loading" ng-click="do_login()" ng-hide="checking_login"><span class="glyphicon glyphicon-log-in"></span> Login</button>
         </form>
       </div>
 
