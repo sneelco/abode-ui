@@ -151,6 +151,7 @@ welcome.controller('welcomeLoginController', ['$scope', '$timeout', '$http', '$q
     loading = true;
     $scope.auth.$login().then(function (response) {
       loading = false;
+      $scope.checking_login = false;
 
       if (response.token) {
         $scope.config.auth = $scope.auth;
@@ -165,6 +166,8 @@ welcome.controller('welcomeLoginController', ['$scope', '$timeout', '$http', '$q
 
     }, function (error) {
       loading = false;
+      $scope.checking_login = false;
+
       var msg = (error.data && error.data.message) ? error.data.message : error.data;
       if (!supress) {
         abode.message({'message': msg || 'Unknown error occured', 'type': 'failed'});
