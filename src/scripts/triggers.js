@@ -61,7 +61,7 @@ triggers.factory('Triggers', ['$resource', '$http', '$q', '$uibModal', 'abode', 
 }]);
 
 
-triggers.service('triggers', function ($http, $q, $uibModal, $resource, abode, confirm, devices, rooms, scenes) {
+triggers.service('triggers', function ($http, $q, $uibModal, $resource, abode, confirm, Devices, Rooms, Scenes) {
   var model = $resource(abode.url('/api/triggers/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },
   });
@@ -443,13 +443,13 @@ triggers.service('triggers', function ($http, $q, $uibModal, $resource, abode, c
       },
       resolve: {
         devices: function () {
-          return devices.load();
+          return Devices.query();
         },
         rooms: function () {
-          return rooms.load();
+          return Rooms.query();
         },
         scenes: function () {
-          return scenes.load();
+          return Scenes.query();
         },
         title: function () {
           return title;
