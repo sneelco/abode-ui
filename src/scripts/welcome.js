@@ -269,6 +269,8 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
       $scope.interfaces = results;
       $scope.loading = false;
     }).$promise.then(undefined, function () {
+      $scope.loading = false;
+      abode.message({'type': 'failed', 'message': 'Failed to load interfaces'});
     });
 
   };
