@@ -15,7 +15,7 @@ home.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRouter
           if (auth.device && auth.device.config && auth.device.config.interface) {
             interface = auth.device.config.interface;
           } else {
-            defer.reject({'state': 'welcome_devices'})
+            defer.reject({'state': 'welcome_devices'});
             return defer.promise;
           }
 
@@ -132,7 +132,7 @@ home.directive('events', [function () {
         'LUMACITY_UP': {'icon': 'wi wi-day-sunny wi-fw', 'message': 'lumens went up to', 'key': '_lumens', 'units': '%'},
         'LUMACITY_DOWN': {'icon': 'wi wi-day-sunny wi-fw', 'message': 'lumens went down to', 'key': '_lumens', 'units': '%'},
         'UPDATED': {'icon': 'icon-edit', 'message': ' has been updated', 'key': ''},
-      }
+      };
 
       var excluded_tag = function (tags) {
         tags = tags || [];
@@ -146,7 +146,7 @@ home.directive('events', [function () {
       };
 
       var process_event = function (msg) {
-        var details = (event_details[msg.event]) ? event_details[msg.event] : event_details['UNKNOWN'];
+        var details = (event_details[msg.event]) ? event_details[msg.event] : event_details.UNKNOWN;
 
         msg.icon = details.icon;
         msg.message = details.message || msg.event;
@@ -163,7 +163,7 @@ home.directive('events', [function () {
             $scope.events.pop();
           }
         }
-      }
+      };
 
       var start_listener = function () {
 
@@ -181,7 +181,7 @@ home.directive('events', [function () {
       });
 
     }]
-  }
+  };
 }]);
 
 home.directive('interfaceList', function () {  return {

@@ -427,7 +427,7 @@ triggers.service('triggers', function ($http, $q, $uibModal, $resource, abode, c
               return;
             }
           } else {
-            if (!$scope.condition.left_key === undefined || !$scope.condition.right_key === undefined || !$scope.condition.condition === undefined) {
+            if ($scope.condition.left_key === undefined || $scope.condition.right_key === undefined || $scope.condition.condition === undefined) {
               console.dir($scope.condition);
               alert('All condition values required');
               return;

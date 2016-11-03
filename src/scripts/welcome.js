@@ -140,7 +140,7 @@ welcome.controller('welcomeLoginController', ['$scope', '$timeout', '$http', '$q
   $scope.login = {};
   $scope.state = $state;
   $scope.auth = new Auth();
-  $scope.checking_login = true
+  $scope.checking_login = true;
 
   $scope.reset_server = function () {
     abode.save({});
@@ -158,7 +158,7 @@ welcome.controller('welcomeLoginController', ['$scope', '$timeout', '$http', '$q
         abode.save($scope.config);
         $state.go('welcome_devices');
       } else {
-        $scope.checking_login = false
+        $scope.checking_login = false;
         if (!supress) {
           abode.message({'message': 'Failed to Get Token', 'type': 'failed'});
         }

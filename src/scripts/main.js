@@ -94,7 +94,7 @@ abode.factory('Auth', ['$resource', '$q', '$http', 'abode', function($resource, 
       defer.resolve(response.data);
     }, function (err) {
       defer.reject(err.data);
-    })
+    });
 
     return defer.promise;
   };
@@ -146,9 +146,22 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
   this.scope = $rootScope;
 
   this.get_events = function () {
-    var eventSource;
+    var expires,
+      auth_query,
+      eventSource;
 
-    self.eventSource = new EventSource(self.url('/api/abode/events').value());
+    if (self.config && self.config.auth && self.config.auth.token) {
+
+      expires = new Date(); expires.setDate(expires.getDate() + 1);
+      auth_query = [
+        'auth_token=' + self.config.auth.token.auth_token,
+        'client_token=' + self.config.auth.token.client_token,
+      ];
+
+      auth_query = auth_query.join('&');
+    }
+
+    self.eventSource = new EventSource(self.url('/api/abode/events?' + auth_query).value());
 
     self.eventSource.addEventListener('message', function (msg) {
       var event = JSON.parse(msg.data);
@@ -222,8 +235,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
 
   };
 
-  this.$get = function ($resource) {
-    self.$resource = $resource
+  this.$get = function () {
     return {
       config: self.config,
       load: self.load,

@@ -275,6 +275,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
         $scope.filter_counts = {};
         $scope.on_counts = {};
         $scope.room_temperature = '?';
+        $scope.destroyed = false;
 
         var filters = {
           'light': ['light'],
@@ -389,6 +390,9 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
             $scope.errors = errors;
             $scope.processing = false;
 
+            if ($scope.destroyed) {
+              return;
+            }
             reload_timer = $timeout($scope.reload, 5000);
           };
 
@@ -456,6 +460,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
         $scope.reload();
 
         $scope.$on('$destroy', function () {
+          $scope.destroyed = true;
           $timeout.cancel(reload_timer);
           intervals.forEach($interval.cancel);
         });

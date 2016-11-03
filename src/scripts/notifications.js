@@ -353,7 +353,7 @@ notifications.controller('notificationsEdit', ['$scope', '$state', '$uibModal', 
       abode.message({'type': 'success', 'message': 'Action Removed'});
     }, function (err) {
       abode.message({'type': 'failed', 'message': 'Failed to remove action'});
-    })
+    });
   };
 
   $scope.add_trigger = function () {
@@ -403,7 +403,7 @@ notifications.controller('notificationsEdit', ['$scope', '$state', '$uibModal', 
       abode.message({'type': 'success', 'message': 'Trigger Removed'});
     }, function (err) {
       abode.message({'type': 'failed', 'message': 'Failed to remove trigger'});
-    })
+    });
   };
 
   $scope.save = function () {
