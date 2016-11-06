@@ -23,6 +23,7 @@ settings.config(function($stateProvider, $urlRouterProvider) {
     controller: function ($scope) {
       $scope.settings = [
         {'name': 'General', 'route': 'main.settings.general'},
+        {'name': 'Client', 'route': 'main.settings.client'},
         {'name': 'Interfaces', 'route': 'main.settings.interfaces'},
         {'name': 'Sources', 'route': 'main.settings.sources'},
         {'name': 'Sensors', 'route': 'main.settings.sensors'},
@@ -41,6 +42,21 @@ settings.config(function($stateProvider, $urlRouterProvider) {
       config: function (settings) {
         return settings.get_config();
       }
+    }
+  })
+  .state('main.settings.client', {
+    url: '/client',
+    templateUrl: '/views/settings/settings.client.html',
+    controller: 'settings',
+    controller: 'clientEdit',
+    resolve: {
+      interfaces: ['Interfaces', function (Interfaces) {
+
+        return Interfaces.query().$promise;
+      }],
+      device: ['abode', 'AuthDevice', function (abode, AuthDevice) {
+        return AuthDevice.get().$promise;
+      }]
     }
   })
   .state('main.settings.interfaces', {
@@ -131,6 +147,20 @@ settings.config(function($stateProvider, $urlRouterProvider) {
     url: '/advanced',
     templateUrl: '/views/settings/settings.advanced.html',
   });
+});
+
+settings.controller('clientEdit', function ($scope, abode, interfaces, device) {
+  $scope.interfaces = interfaces;
+  $scope.device = device;
+
+  $scope.save = function () {
+    $scope.device.$update().then(function (result) {
+      abode.config.auth.device = result;
+      abode.message({'type': 'success', 'message': 'Client Saved'});
+    }, function (err) {
+      abode.message({'type': 'failed', 'message': err.data });
+    })
+  }
 });
 
 settings.service('settings', function ($q, $http, $templateCache, abode) {

@@ -1,0 +1,54 @@
+
+<div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+<div style="position: fixed; right: 1em; top: .5em; font-size: 3em; cursor: pointer" ng-click="state.go('^')"><i class="glyphicon glyphicon-arrow-left"></i></div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+    <h2>Settings / Client</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2">
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <form name="settings">
+
+              <div class="form-group">
+                <label for="enabled">Client Name: </label>
+                <input type="text" class="form-control" ng-model="device.name">
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">Default Interface: </label>
+                <select class="form-control" ng-model="device.config.interface" ng-options="iface._id as iface.name for iface in interfaces | orderBy:'name'"></select>
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">Push Notifications: </label>
+                <toggle value="device.config.push_notifications" class="pull-right"></toggle>
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">Dim Display: </label>
+                <toggle value="device.config.dim_display" class="pull-right"></toggle>
+              </div>
+
+              <div class="form-group" ng-show="device.config.dim_display">
+                <label for="enabled">Dim After: </label>
+                <input class="form-control" type="number" placeholder="Seconds" ng-model="device.config.dim_after"></toggle>
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">Night Mode (changes text to red at night): </label>
+                <toggle value="device.config.night_mode" class="pull-right"></toggle>
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()"><i class="icon-savetodrive"></i> Save</button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+  </div>
+</div>

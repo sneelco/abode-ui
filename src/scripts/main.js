@@ -104,14 +104,17 @@ abode.factory('Auth', ['$resource', '$q', '$http', 'abode', function($resource, 
 
 abode.factory('AuthDevices', ['$resource', 'abode', function($resource, abode) {
 
-  var model = $resource(abode.url('/api/auth/devices'), {}, {});
+  var model = $resource(abode.url('/api/auth/devices'), {}, {
+  });
 
   return model;
 }]);
 
 abode.factory('AuthDevice', ['$resource', '$q', '$http', 'abode', function($resource, $q, $http, abode) {
 
-  var model = $resource(abode.url('/api/auth/device'), {}, {});
+  var model = $resource(abode.url('/api/auth/device'), {}, {
+    'update': {'method': 'PUT'}
+  });
 
   model.prototype.$set_interface = function (interface) {
     var defer = $q.defer(),
@@ -275,9 +278,11 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
   $scope.is_idle = false;
 
   $rootScope.breakIdle = function ($event) {
+    var delay = abode.config.auth.device.config.dim_after || 15;
     if (idleTimer) {
       $timeout.cancel(idleTimer);
     }
+
     if ($scope.is_idle) {
       if ($event) { $event.preventDefault(); }
       $timeout(function () {
@@ -286,9 +291,12 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
       }, 250);
     }
 
-    idleTimer = $timeout(function () {
-      $scope.is_idle = true;
-    }, 1000 * 15);
+    if (abode.config.auth.device.config.dim_display) {
+      idleTimer = $timeout(function () {
+        $scope.is_idle = true;
+      }, 1000 * delay);
+
+    }
   };
 
   $window.addEventListener('click', $rootScope.breakIdle);
