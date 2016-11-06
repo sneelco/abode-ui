@@ -56,7 +56,7 @@ abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function(
             } else if (response.status === 401) {
               defer.reject({'state': 'welcome', 'message': 'Login Expired'});
             } else {
-              defer.reject({'message': 'Server has gone away'});
+              defer.reject({'message': 'Server has gone away', 'action': 'serverGone'});
 
             }
 
@@ -268,7 +268,7 @@ abode.directive('messages', function () {
   };
 });
 
-abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window', 'abode', '$timeout', function ($rootScope, $scope, $state, $window, abode, $timeout) {
+abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window', 'abode', '$timeout', '$uibModal', function ($rootScope, $scope, $state, $window, abode, $timeout, $uibModal) {
 
   var idleTimer;
 
@@ -297,8 +297,45 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
 
   $rootScope.breakIdle();
 
+  $scope.serverGone_modal = false;
+  $scope.serverGone = function (toState, toParams) {
+
+    if ($scope.serverGone_modal) {
+      return;
+    }
+
+    $scope.serverGone_modal = true;
+    return $uibModal.open({
+      animation: false,
+      keyboard: false,
+      backdrop: 'static',
+      templateUrl: 'views/main/server_gone.html',
+      size: 'lg',
+      controller: ['$scope', '$uibModalInstance', '$state', function (scope, $uibModalInstance, $state) {
+
+        scope.retry = function () {
+          $scope.serverGone_modal = false;
+          $uibModalInstance.close();
+          $state.go(toState, toParams);
+        };
+
+        scope.select = function () {
+          $scope.serverGone_modal = false;
+          abode.save({});
+
+          $uibModalInstance.close();
+          $state.go('welcome');
+        };
+      }]
+    });
+  };
+
   $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
 
+    if (error.action && $scope[error.action]) {
+      $scope[error.action](toState, toParams);
+      return;
+    }
     if (error.message || error.state !== 'welcome') {
       abode.message({'message': error.message || 'Error Loading Page', 'type': 'error'});
       console.dir(error);
