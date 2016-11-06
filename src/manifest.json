@@ -9,5 +9,6 @@
     "src": "images/home.png",
     "sizes": "256x256",
     "type": "image/png"
-  }]
+  }],
+  "gcm_sender_id": "3263224406"
 }

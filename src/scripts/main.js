@@ -278,7 +278,13 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
   $scope.is_idle = false;
 
   $rootScope.breakIdle = function ($event) {
-    var delay = abode.config.auth.device.config.dim_after || 15;
+    var dim,
+      delay;
+
+    if (abode.config && abode.config.auth && abode.config.auth.device) {
+      dim = abode.config.auth.device.config.dim_display;
+      delay = abode.config.auth.device.config.dim_after || 15;
+    }
     if (idleTimer) {
       $timeout.cancel(idleTimer);
     }
@@ -291,7 +297,7 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
       }, 250);
     }
 
-    if (abode.config.auth.device.config.dim_display) {
+    if (dim) {
       idleTimer = $timeout(function () {
         $scope.is_idle = true;
       }, 1000 * delay);

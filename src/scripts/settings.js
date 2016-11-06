@@ -206,6 +206,7 @@ settings.controller('clientEdit', function ($scope, abode, interfaces, device) {
           $scope.save();
         })
         .catch(function(e) {
+          abode.message({'type': 'failed', 'message': 'Failed to get push subscription: ' + e});
           console.log('Failed to get subscription:', e);
         });
     });
