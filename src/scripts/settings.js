@@ -215,22 +215,12 @@ settings.controller('clientEdit', function ($scope, abode, interfaces, device) {
 
   $scope.unsubscribe = function () {
 
-    navigator.serviceWorker.ready.then(function(reg) {
-      reg.pushManager.getSubscription().then(
-        function(subscription) {
-          var endpoint = subscription.endpoint;
+    $scope.device.config.push_notifications = false;
+    delete $scope.device.config.push_endpoint;
+    delete $scope.device.config.push_key;
+    delete $scope.device.config.push_auth;
 
-          $scope.device.config.push_notifications = false;
-          delete $scope.device.config.push_endpoint;
-          delete $scope.device.config.push_key;
-          delete $scope.device.config.push_auth;
-
-          $scope.save();
-        }).catch(function(e) {
-          console.log('Error thrown while unsubscribing from ' +
-            'push messaging.', e);
-        });
-    });
+    $scope.save();
   };
 
   $scope.save = function () {

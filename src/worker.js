@@ -9,7 +9,6 @@ self.addEventListener('push', function(event) {
     console.dir(e);
   }
 
-  console.dir(notification);
   if (!notification.type) {
     console.error('Notification type not specified');
     return;
@@ -27,37 +26,57 @@ self.addEventListener('push', function(event) {
 });
 
 self.addEventListener('notificationclick', function(event) {
+  var headers = {};
+  var config = {};
+  var server;
 
+  try {
+    config = JSON.parse(localStorage.getItem('abode'));
+    config = config || {};
+
+    server = config.server;
+    if (config.auth && config.auth.token) {
+      headers = {
+        'client_token': config.auth.token.client_token,
+        'auth_token': config.auth.token.auth_token,
+      }
+    }
+  } catch (e) {}
+
+  console.dir(config);
   if (event.action) {
-    fetch('/api/action/' + event.action, {'method': 'POST'});
+    fetch(server + '/api/notifications/' + event.notification + '/do_action/' + event.action, {'method': 'POST', 'headers': headers});
   }
 
-  fetch('/api/acknowledge/' + event.notification.tag, {'method': 'POST'});
+  fetch(server + '/api/notifications/' + event.notification + '/deactivate', {'method': 'POST'});
 
   event.notification.close();
 });
 
 function new_notification(event, notification) {
+  var actions = [];
+
+  notification.actions = notification.actions || [];
+  notification.actions.forEach(function (action) {
+    actions.push({
+      'action': action._id,
+      'title': action.title,
+      'args': action.args,
+      'notification': notification._id,
+    })
+  });
+
   event.waitUntil(
     self.registration.showNotification('Abode Notification', {
       body: notification.message || 'Test Notification',
-      tag: 'test-notify',
-      actions: [
-        {
-          'action': 'action1',
-          'title': 'Action1',
-        },
-        {
-          'action': 'action2',
-          'title': 'Action2',
-        }
-      ]
+      tag: notification._id || 'test-notification',
+      actions: actions
     })
   );
 };
 
 function clear_notification(event, notification) {
-  self.registration.getNotifications({ tag : notification.tag }).then(function (notifications) {
+  self.registration.getNotifications({ tag : notification.notification._id || 'test-notification' }).then(function (notifications) {
     notifications.forEach(function (item) {
       item.close();
     });
