@@ -76,7 +76,7 @@ function new_notification(event, notification) {
 };
 
 function clear_notification(event, notification) {
-  self.registration.getNotifications({ tag : notification.notification._id || 'test-notification' }).then(function (notifications) {
+  self.registration.getNotifications({ tag : notification._id || 'test-notification' }).then(function (notifications) {
     notifications.forEach(function (item) {
       item.close();
     });
