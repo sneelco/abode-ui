@@ -243,7 +243,7 @@ home.directive('controller', [function () {
       showTitle: '@',
       source: '@',
       action: '@',
-      args: '=?bind',
+      args: '=?',
       onsuccess: '=',
     },
     templateUrl: '/views/home/controller.html',
@@ -251,8 +251,8 @@ home.directive('controller', [function () {
       var types = {
         'devices': Devices, 'device': Devices,
         'rooms': Rooms, 'room': Rooms,
-        'scenes': Scenes, 'scenes': Scenes,
-        'notification': Notifications
+        'scenes': Scenes, 'scene': Scenes,
+        'notifications': Notifications, 'notification': Notifications
       };
 
       $scope.title = $scope.title || $scope.name;
