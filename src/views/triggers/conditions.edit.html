@@ -21,7 +21,7 @@
         <h5>When ALL of the match
           <button class="btn btn-default btn-xs pull-right" ng-click="addCondition(condition.and)"><i class="icon-plus-sign"></i> Add</button>
         </h5>
-        <ul class="list-group bg-muted select-list" style="font-size: 1.5em;">
+        <ul class="list-group bg-muted select-list">
           <li class="list-group-item" style="cursor: pointer;" ng-repeat="c in condition.and" ng-click="editCondition(c)" ng-class="{'or-conditions': c.or.length, 'and-conditions': c.and.length}">
             <i class="glyphicon glyphicon-th-large" ng-class="{'text-warning': c.or.length, 'text-success': c.and.length}" ng-show="c.or.length || c.and.length"></i>
             {{c | conditionReadable}}
@@ -34,7 +34,7 @@
         <h5>When ANY of the match
           <button class="btn btn-default btn-xs pull-right" ng-click="addCondition(condition.or)"><i class="icon-plus-sign"></i> Add</button>
         </h5>
-        <ul class="list-group bg-muted select-list" style="font-size: 1.5em;">
+        <ul class="list-group bg-muted select-list">
           <li class="list-group-item" style="cursor: pointer;" ng-repeat="c in condition.or" ng-click="editCondition(c)" ng-class="{'or-conditions': c.or.length, 'and-conditions': c.and.length}">
             <i class="glyphicon glyphicon-th-large" ng-class="{'text-warning': c.or.length, 'text-success': c.and.length}" ng-show="c.or.length || c.and.length"></i>
             {{c | conditionReadable}}
@@ -51,7 +51,7 @@
 
       <div class="row">
 
-        <div class="col-sm-4" style="font-size: 1.5em;">
+        <div class="col-sm-4">
             <label for="trigger">Condition<span ng-show="builder.item">: {{condition.condition}}</span></label>
             <ul class="list-group bg-muted select-list" >
               <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in condition_options" ng-click="changeCondition(t);" ng-class="{'list-group-item-success': condition.condition == t.value}">

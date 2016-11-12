@@ -9,7 +9,7 @@
   </div>
   <div class="row" ng-show="expanded">
 
-    <div class="col-sm-4" style="font-size: 1.5em;">
+    <div class="col-sm-4">
       <div class="form-group">
         <label for="trigger">Type <span ng-show="type">({{type | capitalize}})</span></label>
         <div>
@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="col-sm-4" style="font-size: 1.5em;" ng-show="type == 'devices'">
+    <div class="col-sm-4" ng-show="type == 'devices'">
         <label for="trigger">Device <span ng-show="obj">({{obj | capitalize}})</span></label>
         <ul class="list-group bg-muted select-list" >
           <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in devices | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': obj == t.name}">
@@ -31,7 +31,7 @@
         </ul>
     </div>
 
-    <div class="col-sm-4" style="font-size: 1.5em;" ng-show="type == 'rooms'">
+    <div class="col-sm-4" ng-show="type == 'rooms'">
         <label for="trigger">Room <span ng-show="obj">({{obj | capitalize}})</span></label>
         <ul class="list-group bg-muted select-list" >
           <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in rooms | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': obj == t.name}">
@@ -40,7 +40,7 @@
         </ul>
     </div>
 
-    <div class="col-sm-4" style="font-size: 1.5em;" ng-show="type == 'scenes'">
+    <div class="col-sm-4" ng-show="type == 'scenes'">
         <label for="trigger">Scene <span ng-show="obj">({{obj | capitalize}})</span></label>
         <ul class="list-group bg-muted select-list" >
           <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in scenes | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': obj == t.name}">
@@ -49,7 +49,7 @@
         </ul>
     </div>
 
-    <div class="col-sm-4" style="font-size: 1.5em;" ng-if="type == 'boolean'">
+    <div class="col-sm-4" ng-if="type == 'boolean'">
         <label for="trigger">Boolean</label>
         <ul class="list-group bg-muted select-list" >
           <li class="list-group-item" style="cursor: pointer;" ng-click="watched.key = true" ng-class="{'list-group-item-success': watched.key}">True</li>
@@ -57,22 +57,22 @@
         </ul>
     </div>
 
-    <div class="col-sm-4" style="font-size: 1.5em;" ng-if="type == 'timeofday'">
+    <div class="col-sm-4" ng-if="type == 'timeofday'">
         <label for="trigger">Time</label>
         <epochtime time="watched.key" disabled="false"></epochtime>
     </div>
 
-    <div class="col-sm-4" style="font-size: 1.5em;" ng-if="type == 'string'">
+    <div class="col-sm-4" ng-if="type == 'string'">
         <label for="trigger">String</label>
         <input type="input" ng-model="watched.key">
     </div>
 
-    <div class="col-sm-4" style="font-size: 1.5em;" ng-if="type == 'number'">
+    <div class="col-sm-4" ng-if="type == 'number'">
         <label for="trigger">Number</label>
         <input type="input" ng-model="watched.key">
     </div>
 
-    <div class="col-sm-4" style="font-size: 1.5em;" ng-if="capabilities.length > 0">
+    <div class="col-sm-4" ng-if="capabilities.length > 0">
 
       <div class="form-group">
         <label for="trigger">Key  <span ng-show="key">({{key | capitalize}})</span></label>
