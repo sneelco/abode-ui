@@ -687,7 +687,7 @@ triggers.controller('triggersList', function ($scope, $state, Triggers, confirm)
 
   $scope.remove = function (trigger) {
     confirm('Are you sure you want to remove this Trigger?').then(function () {
-      triggers.remove(trigger._id).then(function () {
+      trigger.$remove().then(function () {
         $scope.load();
       }, function (err) {
         $scope.alerts = [{'type': 'danger', 'msg': 'Failed to remove Trigger'}];
