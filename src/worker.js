@@ -68,7 +68,7 @@ function new_notification(event, notification) {
   }
 
   event.waitUntil(
-    self.registration.showNotification('Abode Notification', {
+    self.registration.showNotification('Abode', {
       icon: notification.icon || '/images/home.png',
       body: notification.message || 'Test Notification',
       tag: notification._id || 'test-notification',
