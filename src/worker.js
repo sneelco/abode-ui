@@ -26,11 +26,26 @@ self.addEventListener('push', function(event) {
 });
 
 self.addEventListener('notificationclick', function(event) {
-  
-  if (event.action) {
-    fetch(event.url + '/api/notifications/action/' + event.token, {'method': 'POST'});
+
+  //Default to a dismiss_token
+  var action_url = event.action;
+
+  if (!event.action) {
+    event.notification.actions.forEach(function (action) {
+      if (action.title === 'Dismiss') {
+        action_url = action.action
+      }
+    });
   }
 
+  //If we have a action_token and url, send out request
+  if (action_url) {
+    fetch(action_url, {'method': 'POST'});
+  } else {
+    console.log('no action and/or url');
+  }
+
+  //And then close our notification
   event.notification.close();
 });
 
@@ -40,20 +55,24 @@ function new_notification(event, notification) {
   notification.actions = notification.actions || [];
   notification.actions.forEach(function (action) {
     actions.push({
-      'action': action._id,
+      'action': notification.url + '/api/notifications/action/' + action.token,
       'title': action.title,
-      'args': action.args,
-      'token': action.token,
-      'url': notification.url,
-      'notification': notification._id,
     })
   });
 
+  if (notification.deactive_token) {
+    actions.push({
+      'action': notification.url + '/api/notifications/action/' + notification.deactive_token,
+      'title': 'Dismiss',
+    });
+  }
+
   event.waitUntil(
     self.registration.showNotification('Abode Notification', {
+      icon: notification.icon || '/images/home.png',
       body: notification.message || 'Test Notification',
       tag: notification._id || 'test-notification',
-      actions: actions
+      actions: actions,
     })
   );
 };
