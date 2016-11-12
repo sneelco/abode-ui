@@ -940,3 +940,32 @@ body {
   left: 0px;
   overflow: auto;
 }
+
+.icon-selector {
+  overflow: auto;
+  max-height: 6em;
+}
+.icon-selector ul {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+.icon-selector ul li {
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  border: 1px solid #666;
+  overflow: hidden;
+  line-height: 2em;
+  text-align: center;
+  border-radius: 3px;
+  cursor: pointer;
+  text-shadow: 0px 0px 1px black;
+  margin: 2px;
+  background-color: rgb(50, 56, 62);
+}
+
+.icon-selector ul li.icon-selected {
+  background-color: #444;
+}

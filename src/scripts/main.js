@@ -15,6 +15,114 @@ var abode = angular.module('abode', [
   'abode.notifications',
 ]);
 
+abode.directive('iconSelector', ['$compile', function () {
+  return {
+    restrict: 'E',
+    replace: 'true',
+    scope: {
+      value: '='
+    },
+    templateUrl: 'views/main/icons.html',
+    controller: ['$scope', function ($scope) {
+
+      $scope.selectIcon = function (icon) {
+        $scope.value = icon.class;
+      };
+
+      $scope.icons = [
+        {
+          'name': 'Power ',
+          'class': 'icon-off'
+        },
+        {
+          'name': 'Window',
+          'class': 'fi-window'
+        },
+        {
+          'name': 'Door Open',
+          'class': 'fi-door-open'
+        },
+        {
+          'name': 'Door Closed',
+          'class': 'fi-door-closed'
+        },
+        {
+          'name': 'Motion',
+          'class': 'fi-motion'
+        },
+        {
+          'name': 'Light',
+          'class': 'icon-lightbulb-idea'
+        },
+        {
+          'name': 'Fan',
+          'class': 'icon-fan'
+        },
+        {
+          'name': 'Heat',
+          'class': 'icon-fire'
+        },
+        {
+          'name': 'Cool',
+          'class': 'icon-snow'
+        },
+        {
+          'name': 'Monitor',
+          'class': 'icon-monitor'
+        },
+        {
+          'name': 'Security',
+          'class': 'icon-securityalt-shieldalt'
+        },
+        {
+          'name': 'Controller',
+          'class': 'icon-controlpanelalt'
+        },
+        {
+          'name': 'Scene',
+          'class': 'icon-picture'
+        },
+        {
+          'name': 'Home',
+          'class': 'icon-home'
+        },
+        {
+          'name': 'Notification',
+          'class': 'icon-commenttyping'
+        },
+        {
+          'name': 'Laptop',
+          'class': 'icon-laptop'
+        },
+        {
+          'name': 'Computer',
+          'class': 'icon-server'
+        },
+        {
+          'name': 'Laptop',
+          'class': 'icon-iphone'
+        },
+        {
+          'name': 'Browser',
+          'class': 'icon-browser'
+        },
+        {
+          'name': 'Alarm',
+          'class': 'icon-alarm'
+        },
+        {
+          'name': 'Alarm Off',
+          'class': 'icon-turnoffalarm'
+        },
+        {
+          'name': 'Garage',
+          'class': 'icon-garage'
+        },
+      ];
+    }]
+  };
+}]);
+
 abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function($state, $urlRouter, abode) {
 
   abode.load();
