@@ -277,6 +277,7 @@ home.directive('controller', [function () {
 
         $scope.loading = true;
         types[$scope.type].get({'id': $scope.name}).$promise.then(function (result) {
+          $scope.obj = result;
           $scope.loading = false;
           $scope.error = false;
         }, function () {
