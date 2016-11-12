@@ -26,29 +26,10 @@ self.addEventListener('push', function(event) {
 });
 
 self.addEventListener('notificationclick', function(event) {
-  var headers = {};
-  var config = {};
-  var server;
-
-  try {
-    config = JSON.parse(localStorage.getItem('abode'));
-    config = config || {};
-
-    server = config.server;
-    if (config.auth && config.auth.token) {
-      headers = {
-        'client_token': config.auth.token.client_token,
-        'auth_token': config.auth.token.auth_token,
-      }
-    }
-  } catch (e) {}
-
-  console.dir(config);
+  
   if (event.action) {
-    fetch(server + '/api/notifications/' + event.notification + '/do_action/' + event.action, {'method': 'POST', 'headers': headers});
+    fetch(event.url + '/api/notifications/action/' + event.token, {'method': 'POST'});
   }
-
-  fetch(server + '/api/notifications/' + event.notification + '/deactivate', {'method': 'POST'});
 
   event.notification.close();
 });
@@ -62,6 +43,8 @@ function new_notification(event, notification) {
       'action': action._id,
       'title': action.title,
       'args': action.args,
+      'token': action.token,
+      'url': notification.url,
       'notification': notification._id,
     })
   });

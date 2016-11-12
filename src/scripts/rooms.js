@@ -586,9 +586,9 @@ rooms.controller('roomsAdd', function ($scope, $state, abode, Rooms) {
   };
 
   $scope.add = function () {
-    room.$save().then(function () {
+    $scope.room.$save().then(function () {
       abode.message({'type': 'success', 'message': 'Room Added'});
-      $scope.room = {};
+      $scope.room = new Rooms();
     }, function (err) {
       abode.message({'type': 'failed', 'message': 'Failed to add Room', 'details': err});
       $scope.errors = err;
