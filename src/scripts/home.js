@@ -243,7 +243,8 @@ home.directive('controller', [function () {
       showTitle: '@',
       source: '@',
       action: '@',
-      onsuccess: '='
+      onsuccess: '=',
+      args: '=',
     },
     templateUrl: '/views/home/controller.html',
     controller: ['$scope', '$timeout', '$interval', 'Devices', 'Scenes', 'Rooms', 'Notifications', function ($scope, $timeout, $interval, Devices, Scenes, Rooms, Notifications) {
@@ -259,6 +260,7 @@ home.directive('controller', [function () {
       $scope.failed = false;
       $scope.error = false;
       $scope.pending = false;
+      $scope.args = $scope.args || [];
       $scope.type = $scope.type || 'device';
       $scope.action = $scope.action || 'open';
       $scope.icon = $scope.icon || 'icon-lightbulb-idea';
@@ -317,7 +319,7 @@ home.directive('controller', [function () {
         console.log(func);
 
         $scope.pending = true;
-        var result = func.apply($scope.obj);
+        var result = func.apply($scope.obj, $scope.args);
         if (result && result.then) {
             result.then(function () {
             $scope.pending = false;
