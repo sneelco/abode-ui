@@ -967,5 +967,5 @@ body {
 }
 
 .icon-selector ul li.icon-selected {
-  background-color: #444;
+  background-color: rgba(0, 188, 140, 255);
 }

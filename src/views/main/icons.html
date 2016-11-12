@@ -1,5 +1,5 @@
 <div class="icon-selector bg-muted">
 <ul>
-	<li ng-repeat="icon in icons | orderBy: 'name'" ng-class="{'bg-success': icon.class == value}" ng-click="selectIcon(icon)"><i class="{{icon.class}}"></i></li>
+	<li ng-repeat="icon in icons | orderBy: 'name'" ng-class="{'icon-selected': icon.class == value}" ng-click="selectIcon(icon)"><i class="{{icon.class}}"></i></li>
 <ul>
 </div>
