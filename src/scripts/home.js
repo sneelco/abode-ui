@@ -243,15 +243,15 @@ home.directive('controller', [function () {
       showTitle: '@',
       source: '@',
       action: '@',
+      args: '=?bind',
       onsuccess: '=',
-      args: '=',
     },
     templateUrl: '/views/home/controller.html',
     controller: ['$scope', '$timeout', '$interval', 'Devices', 'Scenes', 'Rooms', 'Notifications', function ($scope, $timeout, $interval, Devices, Scenes, Rooms, Notifications) {
       var types = {
-        'device': Devices,
-        'room': Rooms,
-        'scene': Scenes,
+        'devices': Devices, 'device': Devices,
+        'rooms': Rooms, 'room': Rooms,
+        'scenes': Scenes, 'scenes': Scenes,
         'notification': Notifications
       };
 
@@ -260,19 +260,23 @@ home.directive('controller', [function () {
       $scope.failed = false;
       $scope.error = false;
       $scope.pending = false;
-      $scope.args = $scope.args || [];
       $scope.type = $scope.type || 'device';
       $scope.action = $scope.action || 'open';
+      $scope.args = $scope.args || [];
       $scope.icon = $scope.icon || 'icon-lightbulb-idea';
 
       $scope.load = function () {
-        if ($scope.loading || !types[$scope.type]) {
+        if (!types[$scope.type]) {
+          console.log('Invalid type: ', $scope.type);
+          $scope.error = true;
+          return;
+        }
+        if ($scope.loading) {
           return;
         }
 
         $scope.loading = true;
-        types[$scope.type].get({'id': $scope.name}).$promise.then(function (obj) {
-          $scope.obj = obj;
+        types[$scope.type].get({'id': $scope.name}).$promise.then(function (result) {
           $scope.loading = false;
           $scope.error = false;
         }, function () {
@@ -287,8 +291,7 @@ home.directive('controller', [function () {
         }
 
         $scope.loading = true;
-        $scope.obj.$refresh().then(function (obj) {
-          $scope.obj = obj;
+        $scope.obj.$refresh().then(function () {
           $scope.loading = false;
           $scope.error = false;
         }, function () {
@@ -316,7 +319,6 @@ home.directive('controller', [function () {
         } else {
           func = $scope.obj.$open;
         }
-        console.log(func);
 
         $scope.pending = true;
         var result = func.apply($scope.obj, $scope.args);
