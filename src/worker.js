@@ -40,7 +40,14 @@ self.addEventListener('notificationclick', function(event) {
 
   //If we have a action_token and url, send out request
   if (action_url) {
-    fetch(action_url, {'method': 'POST'});
+    fetch(action_url, {'method': 'POST'})
+    .catch(function (err) {
+      self.registration.showNotification('Abode', {
+        icon: '/images/home.png',
+        body: 'An error occured sending notification resonse to ' + action_url + ' : ' + err.message,
+        tag: 'error'
+      });
+    });
   } else {
     console.log('no action and/or url');
   }
