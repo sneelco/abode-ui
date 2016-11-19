@@ -6,6 +6,36 @@ body {
   margin: 0em;
 }
 
+.view {
+  position: absolute;
+  top: 0em;
+  bottom: 0em;
+  left: 0em;
+  right: 0em;
+}
+
+.view>div {
+  position: relative;
+  padding-top: 2em;
+}
+
+.status-bar {
+  font-size: 1.5em;
+  text-align: right; 
+  background-color: rgba(0,0,0,.5); 
+  position: absolute; 
+  top: 0em; 
+  right: 0em; 
+  left: 0em; 
+  height: 2em; 
+  line-height: 2em; 
+  padding: 0em 1em;
+}
+
+.status-bar>div {
+  display: inline-block;
+}
+
 .background {
   background-size: cover;
   position: absolute;
@@ -191,7 +221,7 @@ body {
 
 .interface {
   position: absolute;
-  top: 0px;
+  top: 4em;
   bottom: 0px;
   left: 0px;
   right: 0px;
@@ -204,9 +234,6 @@ body {
   .anav-drawer {
     font-size: 12px;
   }
-  .anav-opener {
-    font-size: 45px;
-  }
 }
 @media (min-width: 480px) {
   .interface {
@@ -215,9 +242,6 @@ body {
   .anav-drawer {
     font-size: 11px;
   }
-  .anav-opener {
-    font-size: 50px;
-  }
 }
 @media (min-width: 768px) {
   .interface {
@@ -225,10 +249,6 @@ body {
   }
   .anav-drawer {
     font-size: 14px;
-  }
-  .anav-opener {
-    font-size: 60px;
-    line-height: 50px;
   }
 }
 
@@ -319,13 +339,7 @@ body {
     left: 0em;
   }
   .anav-opener {
-    background-color: transparent;
-    text-shadow: 0px 0px .1em #000;
-    margin: 0em;
-    padding: 0em;
-    border: 0px;
-    margin-top: -0.07em;
-    margin-left: .3em;
+    cursor: pointer;
     z-index: 1000;
   }
   .anav {
@@ -931,7 +945,23 @@ body {
   font-size: .8em;
 }
 
+.notification-status {
+  position: relative;
+  cursor: pointer;
+}
 
+.notification-status-badge {
+  font-size: .5em;
+  position: absolute;
+  border-radius: 1em;
+  height: 1.5em;
+  width: 1.5em;
+  line-height: 1.5em;
+  text-align: center;
+  text-shadow: 0em 0em .1em black;
+  right: -.5em;
+  bottom: .5em;
+}
 .events {
   position: absolute;
   top: 0px;

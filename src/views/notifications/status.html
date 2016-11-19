@@ -1,0 +1,4 @@
+<div class="notification-status" ng-click="showNotifications()" ng-class="{'text-muted': notifications.notifications.length == 0}">
+	<i class="icon-flag"></i>
+	<span class="notification-status-badge bg-danger" ng-show="notifications.notifications.length > 0">{{notifications.notifications.length}}</span>
+</div>

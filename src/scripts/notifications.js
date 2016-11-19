@@ -131,7 +131,23 @@ notifications.factory('Notifications', ['$resource', '$http', '$q', '$uibModal',
 
 }]);
 
+notifications.directive('notificationsStatus', [function () {
 
+  return {
+    restrict: 'E',
+    replace: true,
+    templateUrl: 'views/notifications/status.html',
+    controller: ['$rootScope', '$scope', function ($rootScope, $scope) {
+      $rootScope.notifications = $rootScope.notifications || {'hidden': false, 'notifications': []};
+      $scope.notifications = $rootScope.notifications;
+
+      $scope.showNotifications = function () {
+        $rootScope.notifications.hidden = false;
+      };
+    }] 
+  };
+
+}]);
 
 notifications.directive('notifications', [function () {
   return {
@@ -141,15 +157,17 @@ notifications.directive('notifications', [function () {
       'view': '@'
     },
     controller: ['$rootScope', '$scope', '$interval', '$q', 'abode', 'Notifications', function ($rootScope, $scope, $interval, $q, abode, Notifications) {
-      $scope.notifications = [];
+      $rootScope.notifications = $rootScope.notifications || {'hidden': false, 'notifications': []};
       $scope.loader = false;
       $scope.loading = false;
       $scope.error = false;
 
+      $scope.notifications = $rootScope.notifications;
+
       $scope.dismissAll = function () {
         var defers = [];
 
-        $scope.notifications.forEach(function (notification) {
+        $rootScope.notifications.notifications.forEach(function (notification) {
           defers.push(notification.$deactivate());
         });
 
@@ -157,6 +175,22 @@ notifications.directive('notifications', [function () {
           $scope.refresh();
         });
       };
+
+      var notificationExists = function (notification) {
+        var match = $rootScope.notifications.notifications.filter(function (n) {
+          return (n._id === notification._id);
+        });
+
+        return (match.length > 0) ;
+      };
+
+      var notificationInResults = function (notification, results) {
+        var match = results.filter(function (n) {
+          return (n._id === notification._id);
+        });
+
+        return (match.length > 0) ;
+      }
 
       $scope.refresh = function () {
         if ($scope.loading) {
@@ -166,11 +200,33 @@ notifications.directive('notifications', [function () {
         $scope.loading = true;
 
         Notifications.active().$promise.then(function (results) {
-          if (results.length !== 0 && results.length !== $scope.notifications.length) {
+          var i,
+            changes = false;
+
+          if (results.length !== 0 && results.length !== $rootScope.notifications.notifications.length) {
             $rootScope.breakIdle();
           }
           $scope.loading = false;
-          $scope.notifications = results;
+
+          //Check if existing notifications are still active
+          for (i=$rootScope.notifications.notifications.length; i > 0; i-- ) {
+            if (!notificationInResults($rootScope.notifications.notifications[i - 1], results)) {
+              $rootScope.notifications.notifications.splice(i - 1, 1);
+              changes = true;
+            }
+          }
+
+          results.forEach(function (notification) {
+            if (!notificationInResults(notification, $rootScope.notifications.notifications)) {
+              $rootScope.notifications.notifications.unshift(notification);
+              changes = true;
+            }
+          });
+
+          if (changes) {
+            $rootScope.notifications.hidden = false;
+          }
+
         }, function () {
           $scope.loading = false;
         });
@@ -178,6 +234,10 @@ notifications.directive('notifications', [function () {
 
       $scope.dismiss = function () {
         $scope.refresh();
+      };
+
+      $scope.hide = function () {
+        $rootScope.notifications.hidden = true;
       };
 
       $scope.loader = $interval($scope.refresh, 5000);

@@ -1,10 +1,10 @@
-<div class="notifications" ng-class="{'notifications-open': notifications.length > 0}">
+<div class="notifications" ng-class="{'notifications-open': notifications.notifications.length > 0 && !notifications.hidden}">
 <div class="notifications-title">
   <small><i class="icon-notificationbottom"></i></small> Notifications
-  <button class="btn btn-sm btn-default pull-right" ng-click="dismissAll()"><i class="icon-circledelete"></i></button>
+  <button class="btn btn-sm btn-default pull-right" ng-click="hide()"><i class="icon-fastright"></i></button>
 </div>
 <ul class="notifications-list">
-<li ng-repeat="notification in notifications" class="notifications-item">
+<li ng-repeat="notification in notifications.notifications" class="notifications-item">
   <h2 class="notification-title">{{notification.message}}</h2>
   <div class="notification-actions">
 	  <controller ng-repeat="action in notification.actions" title="{{action.title}}" type="{{action.type}}" name="{{action.name}}" action="{{action.action}}" icon="{{action.icon}}" args="action.args" onsuccess="dismiss"></controller>
