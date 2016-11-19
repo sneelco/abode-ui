@@ -56,6 +56,49 @@ triggers.factory('Triggers', ['$resource', '$http', '$q', '$uibModal', 'abode', 
     'refresh': { method: 'GET' },
   });
 
+  model.prototype.$notifications = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/triggers/' + this._id + '/notifications').value();
+
+    $http.get(url).then(function (results) {
+      defer.resolve(results.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  model.prototype.$add_notification = function (notification) {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/triggers/' + this._id + '/notifications').value();
+
+    $http.post(url, {'_id': notification._id || notification}).then(function (results) {
+      defer.resolve();
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  model.prototype.$remove_notification = function (notification) {
+    var self = this,
+      defer = $q.defer(),
+      notification_id = notification._id || notification;
+      url = abode.url('/api/triggers/' + this._id + '/notifications/' + notification_id).value();
+
+    $http.delete(url).then(function (results) {
+      defer.resolve();
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
   return model;
 
 }]);
@@ -700,7 +743,7 @@ triggers.controller('triggersList', function ($scope, $state, Triggers, confirm)
   $scope.load();
 });
 
-triggers.controller('triggersEdit', function ($scope, $state, abode, triggers, trigger, Devices, Rooms, confirm, types) {
+triggers.controller('triggersEdit', function ($scope, $state, $uibModal, abode, triggers, trigger, Devices, Rooms, confirm, types) {
   $scope.trigger = trigger;
   $scope.alerts = [];
   $scope.state = $state;
@@ -725,6 +768,69 @@ triggers.controller('triggersEdit', function ($scope, $state, abode, triggers, t
     {name: 'String', value: 'string', icon: 'icon-quote'},
     {name: 'Number', value: 'number', icon: 'icon-infinityalt'}
   ];
+
+  $scope.load_notifications = function () {
+    $scope.loading = true;
+    $scope.trigger.$notifications().then(function (results) {
+      $scope.loading = false;
+      $scope.notifications = results;
+
+    }, function () {
+      $scope.loading = false;
+    });
+  };
+
+  $scope.load_notifications();
+
+  $scope.add_notification = function () {
+    var picker = $uibModal.open({
+      animation: false,
+      templateUrl: 'views/triggers/notifications.picker.html',
+      size: 'sm',
+      controller: ['$scope', '$uibModalInstance', 'Notifications', 'trigger', function ($scope, $uibModalInstance, Notifications, trigger) {
+        $scope.loading = true;
+        $scope.notifications = [];
+        $scope.trigger = trigger;
+
+        $scope.close = function () {
+          $uibModalInstance.dismiss();
+        };
+
+        $scope.select = function(notification) {
+          $scope.trigger.$add_notification(notification).then(function () {
+            $uibModalInstance.close(notification);
+          }, function () {
+            abode.message({'type': 'failed', 'message': 'Failed to add notification'});
+          });
+        };
+
+        Notifications.query().$promise.then(function (results) {
+          $scope.notifications = results;
+          $scope.loading = false;
+        });
+      }],
+      resolve: {
+        trigger: function () {
+          return $scope.trigger;
+        }
+      }
+    });
+
+    picker.result.then(function (notification) {
+      $scope.trigger.notifications.push(notification._id);
+      $scope.load_notifications();
+    });
+  };
+
+  $scope.remove_notification = function (notification) {
+    $scope.trigger.$remove_notification(notification).then(function () {
+      $scope.trigger.notifications.splice($scope.trigger.notifications.indexOf(notification._id), 1);
+      $scope.load_notifications();
+      abode.message({'type': 'success', 'message': 'Notification Removed'});
+    }, function (err) {
+      abode.message({'type': 'failed', 'message': 'Failed to remove notification'});
+    });
+  };
 
   var getDevices = function () {
     $scope.devices_loading = true;

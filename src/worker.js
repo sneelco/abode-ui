@@ -27,20 +27,9 @@ self.addEventListener('push', function(event) {
 
 self.addEventListener('notificationclick', function(event) {
 
-  //Default to a dismiss_token
-  var action_url = event.action;
-
-  if (!event.action) {
-    event.notification.actions.forEach(function (action) {
-      if (action.title === 'Dismiss') {
-        action_url = action.action
-      }
-    });
-  }
-
-  //If we have a action_token and url, send out request
-  if (action_url) {
-    fetch(action_url, {'method': 'POST'})
+  //If we have an action, send our request
+  if (event.action) {
+    fetch(event.action, {'method': 'POST'})
     .catch(function (err) {
       self.registration.showNotification('Abode', {
         icon: '/images/home.png',
@@ -75,7 +64,7 @@ function new_notification(event, notification) {
   }
 
   event.waitUntil(
-    self.registration.showNotification('Abode', {
+    self.registration.showNotification(notification.name || 'Abode', {
       icon: notification.icon || '/images/home.png',
       body: notification.message || 'Test Notification',
       tag: notification._id || 'test-notification',

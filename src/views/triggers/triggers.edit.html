@@ -15,6 +15,7 @@
                 <ul class="section-nav">
                   <li ng-click="section='general'" ng-class="{active: section == 'general'}">General</li>
                   <li ng-click="section='conditions'" ng-class="{active: section == 'conditions'}">Conditions</li>
+                  <li ng-click="section='notifications'" ng-class="{active: section == 'notifications'}">Notifications</li>
                   <li ng-click="section='delay'" ng-class="{active: section == 'delay'}">Delay</li>
                   <li ng-click="section='actions'" ng-class="{active: section == 'actions'}">Actions</li>
                   <li ng-click="section='duration'" ng-class="{active: section == 'duration'}">Duration</li>
@@ -96,6 +97,7 @@
                         </div>
                       </div>
                     </div>
+
                     <div class="form-group">
                       <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="editTrigger.$invalid"><i class="icon-savetodrive"></i> Save</button>
                       <button class="btn btn-warning btn-sm pull-left" type="button" ng-click="state.go('^')">Cancel</button>
@@ -122,6 +124,23 @@
                       <button class="btn btn-warning btn-sm pull-left" type="button" ng-click="state.go('^')">Cancel</button>
                     </div>
 
+                  </div>
+
+                  <div ng-show="section=='notifications'">
+
+                    <div class="form-group">
+                      <label for="name">Notifications</label>
+                      <button class="btn btn-xs btn-primary pull-right" ng-click="add_notification()"><i class="icon-circleadd"></i></button>
+                      <h4 ng-show="loading"><i class="icon-refresh spin"></i> Loading...</h4>
+                      <ul class="list-group" ng-hide="loading">
+                        <li class="list-group-item" ng-show="!notifications || notifications.length == 0">No notifications added</li>
+                        <li class="list-group-item" ng-repeat="notification in notifications | orderBy: 'name'">
+                          {{notification.name}}
+                          <button class="btn btn-xs btn-danger pull-right" ng-click="remove_notification(notification)"><i class="icon-circledelete"></i></button>
+                        </li>
+                      </ul>
+                    </div>
+                    
                   </div>
 
                   <div ng-show="section=='delay'">
