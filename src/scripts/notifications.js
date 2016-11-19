@@ -264,7 +264,7 @@ notifications.controller('notificationsList', ['$scope', 'Notifications', functi
 notifications.controller('notificationsAdd', ['$scope', '$state', 'abode', 'Notifications', function ($scope, $state, abode, Notifications) {
 
   $scope.saving = false;
-  $scope.notification = new Notifications({'actions': [], 'triggers': [], 'check_threshold': 1, 'hold_off_time': 10});
+  $scope.notification = new Notifications({'actions': [], 'triggers': [], 'check_threshold': 1, 'hold_off_time': 10, 'expire_after': 0});
 
 
   $scope.add = function () {
