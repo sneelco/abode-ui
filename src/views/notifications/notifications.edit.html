@@ -22,10 +22,17 @@
               <div class="form-group">
                 <label for="check_threshold">Check Threshold</label>
                 <input type="number" class="form-control" id="check_threshold" placeholder="Check Threshold" required="" ng-model="notification.check_threshold">
+                <h6 class="text-muted"><i class="icon-info-sign"></i> Require this many successful triggers before activating the notification</h6>
               </div>
               <div class="form-group">
                 <label for="hold_off_time">Hold Off Time (minutes)</label>
                 <input type="number" class="form-control" id="hold_off_time" placeholder="Hold Off Time" required="" ng-model="notification.hold_off_time">
+                <h6 class="text-muted"><i class="icon-info-sign"></i> Wait this long before allowing the notification to activate again</h6>
+              </div>
+              <div class="form-group">
+                <label for="expire_after">Expire After (minutes)</label>
+                <input type="number" class="form-control" id="expire_after" placeholder="Expire After" required="" ng-model="notification.expire_after">
+                <h6 class="text-muted"><i class="icon-info-sign"></i> A value of 0 means the notification will not expire automatically</h6>
               </div>
               <div class="form-group">
                 <label for="name">Actions</label>
