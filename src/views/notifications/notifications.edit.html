@@ -20,6 +20,14 @@
                 <input type="text" class="form-control" id="message" placeholder="Message" required="" ng-model="notification.message">
               </div>
               <div class="form-group">
+                <label for="check_threshold">Check Threshold</label>
+                <input type="number" class="form-control" id="check_threshold" placeholder="Check Threshold" required="" ng-model="notification.check_threshold">
+              </div>
+              <div class="form-group">
+                <label for="hold_off_time">Hold Off Time (minutes)</label>
+                <input type="number" class="form-control" id="hold_off_time" placeholder="Hold Off Time" required="" ng-model="notification.hold_off_time">
+              </div>
+              <div class="form-group">
                 <label for="name">Actions</label>
                 <button class="btn btn-xs btn-primary pull-right" ng-click="add_action()"><i class="icon-circleadd"></i></button>
                 <ul class="list-group">
