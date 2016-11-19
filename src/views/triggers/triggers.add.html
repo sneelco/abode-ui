@@ -15,6 +15,7 @@
                 <ul class="section-nav">
                   <li ng-click="section='general'" ng-class="{active: section == 'general'}">General</li>
                   <li ng-click="section='conditions'" ng-class="{active: section == 'conditions'}">Conditions</li>
+                  <li ng-click="section='notifications'" ng-class="{active: section == 'notifications'}">Notifications</li>
                   <li ng-click="section='delay'" ng-class="{active: section == 'delay'}">Delay</li>
                   <li ng-click="section='actions'" ng-class="{active: section == 'actions'}">Actions</li>
                   <li ng-click="section='duration'" ng-class="{active: section == 'duration'}">Duration</li>
@@ -122,6 +123,23 @@
                       <button class="btn btn-warning btn-sm pull-left" type="button" ng-click="state.go('^')">Cancel</button>
                     </div>
 
+                  </div>
+
+                  <div ng-show="section=='notifications'">
+
+                    <div class="form-group">
+                      <label for="name">Notifications</label>
+                      <button class="btn btn-xs btn-primary pull-right" ng-click="add_notification()"><i class="icon-circleadd"></i></button>
+                      <h4 ng-show="loading"><i class="icon-refresh spin"></i> Loading...</h4>
+                      <div class="well well-sm" ng-show="!notifications || notifications.length == 0">No notifications added</div>
+                      <ul class="list-group" ng-hide="loading || notifications.length == 0">
+                        <li class="list-group-item" ng-repeat="notification in notifications | orderBy: 'name'">
+                          {{notification.name}}
+                          <button class="btn btn-xs btn-danger pull-right" ng-click="remove_notification(notification)"><i class="icon-circledelete"></i></button>
+                        </li>
+                      </ul>
+                    </div>
+                    
                   </div>
 
                   <div ng-show="section=='delay'">

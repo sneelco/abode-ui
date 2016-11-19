@@ -20,7 +20,7 @@ triggers.config(function($stateProvider, $urlRouterProvider) {
     resolve: {
       'trigger': function (Triggers) {
 
-        return new Triggers({'enabled': true, 'conditions': [], 'actions': []});
+        return new Triggers({'enabled': true, 'conditions': [], 'actions': [], 'notifications': []});
 
       },
       'types': function (triggers) {
@@ -754,6 +754,7 @@ triggers.controller('triggersEdit', function ($scope, $state, $uibModal, abode, 
   $scope.duration = ($scope.trigger.duration && $scope.trigger.duration.time > 0) ? true : false;
   $scope.devices_loading = true;
   $scope.section = 'general';
+  $scope.notifications = [];
 
   $scope.addAction = triggers.addAction;
   $scope.editAction = triggers.editAction;
@@ -797,11 +798,15 @@ triggers.controller('triggersEdit', function ($scope, $state, $uibModal, abode, 
         };
 
         $scope.select = function(notification) {
-          $scope.trigger.$add_notification(notification).then(function () {
+          if (!$scope.trigger._id) {
             $uibModalInstance.close(notification);
-          }, function () {
-            abode.message({'type': 'failed', 'message': 'Failed to add notification'});
-          });
+          } else {
+            $scope.trigger.$add_notification(notification).then(function () {
+              $uibModalInstance.close(notification);
+            }, function () {
+              abode.message({'type': 'failed', 'message': 'Failed to add notification'});
+            });
+          }
         };
 
         Notifications.query().$promise.then(function (results) {
@@ -818,18 +823,29 @@ triggers.controller('triggersEdit', function ($scope, $state, $uibModal, abode, 
 
     picker.result.then(function (notification) {
       $scope.trigger.notifications.push(notification._id);
-      $scope.load_notifications();
+      $scope.notifications.push(notification);
     });
   };
 
   $scope.remove_notification = function (notification) {
-    $scope.trigger.$remove_notification(notification).then(function () {
+    if (!$scope.trigger._id) {
+      
       $scope.trigger.notifications.splice($scope.trigger.notifications.indexOf(notification._id), 1);
-      $scope.load_notifications();
-      abode.message({'type': 'success', 'message': 'Notification Removed'});
-    }, function (err) {
-      abode.message({'type': 'failed', 'message': 'Failed to remove notification'});
-    });
+      $scope.notifications = $scope.notifications.filter(function (item) {
+        return (item._id !== notification._id);
+      });
+
+    } else {
+
+      $scope.trigger.$remove_notification(notification).then(function () {
+        $scope.trigger.notifications.splice($scope.trigger.notifications.indexOf(notification._id), 1);
+        $scope.load_notifications();
+        abode.message({'type': 'success', 'message': 'Notification Removed'});
+      }, function (err) {
+        abode.message({'type': 'failed', 'message': 'Failed to remove notification'});
+      });
+
+    }
   };
 
   var getDevices = function () {
