@@ -176,21 +176,13 @@ notifications.directive('notifications', [function () {
         });
       };
 
-      var notificationExists = function (notification) {
-        var match = $rootScope.notifications.notifications.filter(function (n) {
-          return (n._id === notification._id);
-        });
-
-        return (match.length > 0) ;
-      };
-
       var notificationInResults = function (notification, results) {
         var match = results.filter(function (n) {
           return (n._id === notification._id);
         });
 
-        return (match.length > 0) ;
-      }
+        return (match.length > 0);
+      };
 
       $scope.refresh = function () {
         if ($scope.loading) {
