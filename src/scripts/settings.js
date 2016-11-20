@@ -26,10 +26,10 @@ settings.config(function($stateProvider, $urlRouterProvider) {
         {'name': 'Client', 'route': 'main.settings.client'},
         {'name': 'Interfaces', 'route': 'main.settings.interfaces'},
         {'name': 'Sources', 'route': 'main.settings.sources'},
-        {'name': 'Sensors', 'route': 'main.settings.sensors'},
-        {'name': 'Providers', 'route': 'main.settings.providers'},
-        {'name': 'Display', 'route': 'main.settings.display'},
-        {'name': 'Networking', 'route': 'main.settings.networking'},
+        //{'name': 'Sensors', 'route': 'main.settings.sensors'},
+        //{'name': 'Providers', 'route': 'main.settings.providers'},
+        //{'name': 'Display', 'route': 'main.settings.display'},
+        //{'name': 'Networking', 'route': 'main.settings.networking'},
         {'name': 'Advanced', 'route': 'main.settings.advanced'}
       ];
     }
@@ -238,7 +238,7 @@ settings.service('settings', function ($q, $http, $templateCache, abode) {
   var get_sources = function () {
     var defer = $q.defer();
 
-    $http.get(abode.url('/api/sources').value).then(function (response) {
+    $http.get(abode.url('/api/sources').value()).then(function (response) {
       defer.resolve(response.data);
     }, function (err) {
       defer.reject(err);
@@ -250,7 +250,7 @@ settings.service('settings', function ($q, $http, $templateCache, abode) {
   var get_source = function (name) {
     var defer = $q.defer();
 
-    $http.get('/api/sources/' + name).then(function (response) {
+    $http.get(abode.url('/api/sources/' + name).value()).then(function (response) {
       defer.resolve(response.data);
     }, function (err) {
       defer.reject(err);
@@ -262,7 +262,7 @@ settings.service('settings', function ($q, $http, $templateCache, abode) {
   var save_source = function (source) {
     var defer = $q.defer();
 
-    $http.put('/api/sources/' + source._id, source).then(function () {
+    $http.put(abode.url('/api/sources/' + source._id).value(), source).then(function () {
       defer.resolve();
     }, function () {
       defer.reject();
@@ -274,7 +274,7 @@ settings.service('settings', function ($q, $http, $templateCache, abode) {
   var add_source = function (source) {
     var defer = $q.defer();
 
-    $http.post('/api/sources', source).then(function () {
+    $http.post(abode.url('/api/sources/'), source).then(function () {
       defer.resolve();
     }, function () {
       defer.reject();
@@ -286,7 +286,7 @@ settings.service('settings', function ($q, $http, $templateCache, abode) {
   var remove_source = function (source) {
     var defer = $q.defer();
 
-    $http.delete('/api/sources/' + source._id).then(function () {
+    $http.delete(abode.url('/api/sources/' + source._id).value()).then(function () {
       defer.resolve();
     }, function () {
       defer.reject();
@@ -380,7 +380,7 @@ settings.controller('sourceSettings', function ($scope, $state, abode, settings,
   $scope.sources = sources;
 
   $scope.view = function (source) {
-    $state.go('index.settings.sources.edit', {'name': source.name});
+    $state.go('main.settings.sources.edit', {'name': source.name});
   };
 
 });
@@ -392,10 +392,10 @@ settings.controller('addSourceSettings', function ($scope, $state, abode, settin
 
   $scope.add = function () {
     settings.add_source($scope.source).then(function () {
-      notifier.notify({'status': 'success', 'message': 'Source Added'});
+      abode.message({'type': 'success', 'message': 'Source Added'});
       $scope.source = {};
     }, function (err) {
-        notifier.notify({'status': 'failed', 'message': 'Failed to add Source', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to add Source', 'details': err});
       $scope.errors = err;
     });
   };
@@ -407,9 +407,9 @@ settings.controller('addSourceSettings', function ($scope, $state, abode, settin
 
   $scope.save = function () {
     settings.save_source($scope.source).then(function () {
-      notifier.notify({'status': 'success', 'message': 'Source Saved'});
+      abode.message({'type': 'success', 'message': 'Source Saved'});
     }, function (err) {
-        notifier.notify({'status': 'failed', 'message': 'Failed to save Source', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to save Source', 'details': err});
       $scope.errors = err;
     });
   };
@@ -417,10 +417,10 @@ settings.controller('addSourceSettings', function ($scope, $state, abode, settin
   $scope.remove = function () {
     confirm('Are you sure you want to remove this Source?').then(function () {
       settings.remove_source($scope.source).then(function () {
-        notifier.notify({'status': 'success', 'message': 'Source Removed'});
-        $state.go('index.settings.sources.list');
+        abode.message({'type': 'success', 'message': 'Source Removed'});
+        $state.go('main.settings.sources.list');
       }, function (err) {
-        notifier.notify({'status': 'failed', 'message': 'Failed to remove Source', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to remove Source', 'details': err});
         $scope.errors = err;
       });
     });
