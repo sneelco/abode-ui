@@ -30,13 +30,18 @@
               </div>
 
               <div class="form-group">
+                <label for="enabled">Show events in Browser: </label>
+                <toggle value="device.config.show_events" class="pull-right"></toggle>
+              </div>
+
+              <div class="form-group">
                 <label for="enabled">Dim Display: </label>
                 <toggle value="device.config.dim_display" class="pull-right"></toggle>
               </div>
 
               <div class="form-group" ng-show="device.config.dim_display">
                 <label for="enabled">Dim After: </label>
-                <input class="form-control" type="number" placeholder="Seconds" ng-model="device.config.dim_after"></toggle>
+                <input class="form-control" type="number" placeholder="Seconds" ng-model="device.config.dim_after">
               </div>
 
               <div class="form-group">
