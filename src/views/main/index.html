@@ -1,7 +1,7 @@
 <div class="view" ui-view>
 
 </div>
-<div class="anav-shade" ng-click="anav_open = false" ng-show="anav_open"></div>
+<div class="anav-shade" ng-click="anav_open = false; notifications.hidden = true" ng-show="anav_open || !notifications.hidden"></div>
 
 <div class="anav-drawer" ng-class="{'anav-visible': anav_open}">
 	<div class="anav-opener">

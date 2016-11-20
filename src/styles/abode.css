@@ -227,6 +227,78 @@ body {
   right: 0px;
 }
 
+
+.notifications {
+  font-size: 12px;
+  position: fixed;
+  right: 0em;
+  top: 0em;
+  width: 26em;
+  bottom: 0em;
+  background-color: #333;
+  z-index: 10000;
+  transition: all .25s ease-out;
+  margin-right: -40em;
+  overflow: auto;
+}
+
+.notifications-title {
+  background-color: #222;
+  font-size: 2em;
+  padding: .25em 1em;
+  border-bottom: 1px solid #444;
+}
+.notifications-list {
+  list-style: none;
+  padding: 0em;
+}
+
+.notifications-item {
+  margin: 2em;
+  background-color: #444;
+  padding: 1.5em;
+  border: 1px solid #555;
+  border-radius: .2em .2em;
+}
+.notification-title {
+  margin: 0em;
+  padding: 0em;
+  font-size: 1.5em;
+}
+
+.notifications-open {
+  margin-right: 0em;
+}
+
+
+.notification-actions {
+  font-size: 1.5em;
+  text-align: right;
+  margin-top: 1em;
+}
+
+.notification-date {
+  font-size: .8em;
+}
+
+.notification-status {
+  position: relative;
+  cursor: pointer;
+}
+
+.notification-status-badge {
+  font-size: .5em;
+  position: absolute;
+  border-radius: 1em;
+  height: 1.5em;
+  width: 1.5em;
+  line-height: 1.5em;
+  text-align: center;
+  text-shadow: 0em 0em .1em black;
+  right: -.5em;
+  bottom: .5em;
+}
+
 @media (min-width: 360px) {
   .interface {
     font-size: 7px;
@@ -248,6 +320,9 @@ body {
     font-size: 11px;
   }
   .anav-drawer {
+    font-size: 14px;
+  }
+  .notifications {
     font-size: 14px;
   }
 }
@@ -892,77 +967,6 @@ body {
   height: 2em;
   text-align: center;
   background-color: #464545;
-}
-
-.notifications {
-  font-size: 12px;
-  position: fixed;
-  right: 0em;
-  top: 0em;
-  width: 26em;
-  bottom: 0em;
-  background-color: #333;
-  z-index: 10000;
-  transition: 2s all;
-  margin-right: -40em;
-  overflow: auto;
-}
-
-.notifications-title {
-  background-color: #222;
-  font-size: 2em;
-  padding: .25em 1em;
-  border-bottom: 1px solid #444;
-}
-.notifications-list {
-  list-style: none;
-  padding: 0em;
-}
-
-.notifications-item {
-  margin: 2em;
-  background-color: #444;
-  padding: 1.5em;
-  border: 1px solid #555;
-  border-radius: .2em .2em;
-}
-.notification-title {
-  margin: 0em;
-  padding: 0em;
-  font-size: 1.5em;
-}
-
-.notifications-open {
-  margin-right: 0em;
-}
-
-
-.notification-actions {
-  font-size: 1.5em;
-  text-align: right;
-  margin-top: 1em;
-}
-
-.notification-date {
-  font-size: .8em;
-}
-
-.notification-status {
-  position: relative;
-  cursor: pointer;
-}
-
-.notification-status-badge {
-  font-size: .5em;
-  position: absolute;
-  border-radius: 1em;
-  height: 1.5em;
-  width: 1.5em;
-  line-height: 1.5em;
-  text-align: center;
-  text-shadow: 0em 0em .1em black;
-  right: -.5em;
-  bottom: .5em;
 }
 .events {
   position: absolute;

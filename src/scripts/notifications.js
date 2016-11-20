@@ -163,10 +163,7 @@ notifications.directive('notifications', [function () {
       $scope.error = false;
 
       $scope.notifications = $rootScope.notifications;
-
-      if (abode.config.auth.device.config.show_events !== true) {
-        $rootScope.notifications.hidden = true;
-      }
+      $rootScope.notifications.hidden = true;
 
       $scope.dismissAll = function () {
         var defers = [];
@@ -222,6 +219,9 @@ notifications.directive('notifications', [function () {
           if (changes) {
             if (abode.config.auth.device.config.show_events === true) {
               $rootScope.notifications.hidden = false;
+            }
+            if ($rootScope.notifications.notifications.length === 0) {
+              $rootScope.notifications.hidden = true;
             }
           }
 
