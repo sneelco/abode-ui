@@ -1,17 +1,20 @@
-<div class="notifications" ng-class="{'notifications-open': notifications.notifications.length > 0 && !notifications.hidden}">
-<div class="notifications-title">
-  <small><i class="icon-notificationbottom"></i></small> Notifications
-  <button class="btn btn-sm btn-default pull-right" ng-click="hide()"><i class="icon-fastright"></i></button>
-</div>
-<ul class="notifications-list">
-<li ng-repeat="notification in notifications.notifications" class="notifications-item">
-  <h2 class="notification-title">{{notification.message}}</h2>
-  <div class="notification-actions">
-	  <controller ng-repeat="action in notification.actions" title="{{action.title}}" type="{{action.type}}" name="{{action.name}}" action="{{action.action}}" icon="{{action.icon}}" args="action.args" onsuccess="dismiss"></controller>
-	  <controller title="Ignore" type="notification" name="{{notification._id}}" action="deactivate" icon="icon-circledelete" args="[]" onsuccess="dismiss"></controller>
-  </div>
-  <div class="notification-date">{{notification.active_date | date: 'medium'}}</div>
-</li>
-</ul>
+<div class="notifications" ng-class="{'notifications-open': !notifications.hidden}">
+	<div class="notifications-title">
+	  <small><i class="icon-flag"></i></small> Notifications
+	  <button class="btn btn-sm btn-default pull-right" ng-click="hide()"><i class="icon-fastright"></i></button>
+	</div>
+	<ul class="notifications-list">
+		<li ng-show="notifications.notifications.length == 0" class="notifications-item">
+		  <h2 class="notification-title">No Notifications</h2>
+		</li>
+		<li ng-repeat="notification in notifications.notifications" class="notifications-item">
+		  <h2 class="notification-title">{{notification.message}}</h2>
+		  <div class="notification-actions">
+			  <controller ng-repeat="action in notification.actions" title="{{action.title}}" type="{{action.type}}" name="{{action.name}}" action="{{action.action}}" icon="{{action.icon}}" args="action.args" onsuccess="dismiss"></controller>
+			  <controller title="Ignore" type="notification" name="{{notification._id}}" action="deactivate" icon="icon-circledelete" args="[]" onsuccess="dismiss"></controller>
+		  </div>
+		  <div class="notification-date">{{notification.active_date | date: 'medium'}}</div>
+		</li>
+	</ul>
 
 </div>

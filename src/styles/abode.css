@@ -895,10 +895,11 @@ body {
 }
 
 .notifications {
+  font-size: 12px;
   position: fixed;
   right: 0em;
   top: 0em;
-  width: 30em;
+  width: 26em;
   bottom: 0em;
   background-color: #333;
   z-index: 10000;
@@ -909,7 +910,7 @@ body {
 
 .notifications-title {
   background-color: #222;
-  font-size: 1.5em;
+  font-size: 2em;
   padding: .25em 1em;
   border-bottom: 1px solid #444;
 }
@@ -928,6 +929,7 @@ body {
 .notification-title {
   margin: 0em;
   padding: 0em;
+  font-size: 1.5em;
 }
 
 .notifications-open {
