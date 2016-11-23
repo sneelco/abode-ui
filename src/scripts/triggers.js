@@ -56,6 +56,20 @@ triggers.factory('Triggers', ['$resource', '$http', '$q', '$uibModal', 'abode', 
     'refresh': { method: 'GET' },
   });
 
+  model.prototype.$check = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/triggers/' + this._id + '/check').value();
+
+    $http.post(url).then(function (results) {
+      defer.resolve(results.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
   model.prototype.$notifications = function () {
     var self = this,
       defer = $q.defer(),
@@ -798,6 +812,40 @@ triggers.controller('triggersEdit', function ($scope, $state, $uibModal, abode, 
   };
 
   $scope.load_notifications();
+  
+  $scope.check = function () {
+    var checker = $uibModal.open({
+      animation: false,
+      size: 'lg',
+      templateUrl: 'views/triggers/triggers.checker.html',
+      controller: ['$scope', '$uibModalInstance', '$timeout', 'trigger', function ($scope, $uibModalInstance, $timeout, trigger) {
+        $scope.loading = false;
+	$scope.results = {};
+
+        $scope.check = function () {
+          $scope.loading = true;
+          trigger.$check().then(function (results) {
+            $scope.loading = false;
+            $scope.results = results;
+          }, function (results) {
+            $scope.loading = false;
+            $scope.results = results;
+          });
+        };
+
+        $scope.close = function () {
+          $uibModalInstance.dismiss();
+        };
+
+        $timeout($scope.check, 1000);
+      }],
+      resolve: {
+        trigger: function () {
+          return $scope.trigger;
+        }
+      }
+    }); 
+  };
 
   $scope.add_notification = function () {
     var picker = $uibModal.open({

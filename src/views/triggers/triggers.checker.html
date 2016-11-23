@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <h4 class="modal-title">Trigger Checker</h4>
+</div>
+<div class="modal-body">
+  <form name="actionFrm">
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-12">
+        <h3 ng-show="loading"><i class="icon-loadingalt spin"></i> Checking conditions</h3>
+        <div class="list-group" ng-hide="loading">
+          <button type="button" class="btn btn-default list-group-item" ng-click="isCollapsed = !isCollapsed">
+            <i class="icon-ok-sign text-success" ng-show="results.results.matches"></i>
+            <i class="icon-remove-sign text-danger" ng-hide="results.results.matches"></i>
+            {{results.results.message}}
+          </button>
+          <div class="list-group-item" uib-collapse="isCollapsed" ng-show="results.results.conditions.length > 0">
+            <div class="list-group" ng-repeat="condition in results.results.conditions">
+              <button type="button" class="btn btn-default list-group-item">
+                <i class="icon-ok-sign text-success" ng-show="condition.value.matches"></i>
+                <i class="icon-remove-sign text-danger" ng-hide="condition.value.matches"></i>
+                {{condition.value.message}}
+              </button>
+              <div class="list-group-item" uib-collapse="isCollapsed" ng-show="condition.value.conditions.length > 0">
+                {{condition.value.conditions}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  </form>
+</div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning btn-sm pull-left" type="button" ng-click="close()">Close</button>
+    <button class="btn btn-primary btn-sm" type="button" ng-click="check()" ng-disabled="loading"><i class="icon-check"></i> Check</button>
+</div>
