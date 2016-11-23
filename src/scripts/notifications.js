@@ -41,6 +41,34 @@ notifications.factory('Notifications', ['$resource', '$http', '$q', '$uibModal',
     'active': { method: 'GET', isArray: true, params: {'id': 'active'} },
   });
 
+  model.prototype.$reset = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/notifications/' + this._id + '/reset').value();
+
+    $http.post(url).then(function () {
+      defer.resolve(self);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  model.prototype.$activate = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/notifications/' + this._id + '/activate').value();
+
+    $http.post(url).then(function () {
+      defer.resolve(self);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
   model.prototype.$deactivate = function () {
     var self = this,
       defer = $q.defer(),
@@ -289,6 +317,7 @@ notifications.controller('notificationsEdit', ['$scope', '$state', '$uibModal', 
   $scope.saving = false;
   $scope.deleting = false;
   $scope.loading = false;
+  $scope.action = {};
 
   $scope.load_triggers = function () {
     $scope.loading = true;
@@ -298,6 +327,41 @@ notifications.controller('notificationsEdit', ['$scope', '$state', '$uibModal', 
 
     }, function () {
       $scope.loading = false;
+    });
+  };
+
+  $scope.activate = function () {
+    $scope.action.status = 'pending';
+    $scope.notification.$activate().then(function () {
+      $scope.notification.active = true;
+      $scope.action.status = 'success';
+      $scope.action.message = 'Notification activated';
+    }, function (err) {
+      $scope.action.status = 'error';
+      $scope.action.message = err;
+    });
+  };
+
+  $scope.deactivate = function () {
+    $scope.action.status = 'pending';
+    $scope.notification.$deactivate().then(function () {
+      $scope.notification.active = false;
+      $scope.action.status = 'success';
+      $scope.action.message = 'Notification de-activated';
+    }, function (err) {
+      $scope.action.status = 'error';
+      $scope.action.message = err;
+    });
+  };
+
+  $scope.reset = function () {
+    $scope.action.status = 'pending';
+    $scope.notification.$reset().then(function () {
+      $scope.action.status = 'success';
+      $scope.action.status = 'Notification reset';
+    }, function (err) {
+      $scope.action.status = 'error';
+      $scope.action.message = err;
     });
   };
 

@@ -60,10 +60,15 @@
                 <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="notificationFrm.$invalid || saving || deleting">
                 <i class="icon-loadingalt spin" ng-show="saving"></i>
                 <i class="icon-savetodrive" ng-hide="saving"></i> Save</button>
+                <button class="pull-right btn btn-sm btn-success" ng-click="activate()" ng-hide="notification.active"><i class="icon-circleplayempty"></i> Activate</button>
+                <button class="pull-right btn btn-sm btn-danger" ng-click="deactivate()" ng-show="notification.active"><i class="icon-circlestopempty"></i> De-activate</button>
                 <button type="submit" class="btn btn-sm btn-default" ng-click="delete()" ng-disabled="saving || deleting">
                   <i class="icon-loadingalt spin" ng-show="deleting"></i>
                   <i class="icon-circledelete" ng-hide="deleting"></i>
                   Remove</button>
+                <button class="btn btn-sm btn-warning" ng-click="reset()">Reset</button>
+                <h6 class="text-muted pull-right" ng-disabled="action.status == 'pending'" ng-show="action.status == 'success'"><i class="text-success icon-info-sign"></i> {{action.message}}</h6>
+                <h6 class="text-muted pull-right" ng-disabled="action.status == 'pending'" ng-show="action.status == 'error'"><i class="text-danger icon-erroralt"></i> {{action.message}}</h6>
               </div>
 
           </form>
