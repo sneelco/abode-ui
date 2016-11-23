@@ -158,11 +158,19 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
   };
 
   methods.$refresh = function () {
-    var self = this,
+    var req,
+      self = this,
       defer = $q.defer(),
       url = abode.url('/api/devices/' + this._id).value();
 
-    $http.get(url).then(function (response) {
+
+    if (self.active) {
+      req = $http.post(abode.url('/api/devices/' + this._id + '/status').value());
+    } else {
+      req = $http.get(abode.url('/api/devices/' + this._id).value());
+    }
+
+    req.then(function (response) {
 
       for (var key in response.data) {
         if (response.data.hasOwnProperty(key)) {
@@ -690,7 +698,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           });
         };
 
-        intervals.push($interval($scope.reload, 2000));
+        intervals.push($interval($scope.reload, 10000));
 
         $scope.$on('$destroy', function () {
           intervals.forEach($interval.cancel);
