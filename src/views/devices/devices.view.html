@@ -1,7 +1,7 @@
 <div class="modal-header">
     <h4 class="modal-title">{{name}}
 
-      <button class="btn btn-primary btn-sm pull-right" ng-hide="errors || processing" ng-click="reload()"><i class="icon-refresh"></i></button>
+      <button class="btn btn-primary btn-sm pull-right" ng-hide="errors || processing" ng-click="reload(true)"><i class="icon-refresh"></i></button>
       <button class="btn btn-danger btn-sm pull-right" ng-show="errors" ng-click="reload()"><i class="icon-erroralt"></i></button>
       <button class="btn btn-default btn-sm pull-right" ng-show="processing"><i class="icon-loadingalt spin"></i></button>
     </h4>
