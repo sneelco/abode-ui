@@ -953,6 +953,7 @@ abode.directive('content', function () {
       height: '@',
       width: '@',
       align: '@',
+      valign: '@',
       size: '@',
       background: '@',
       color: '@',
@@ -960,23 +961,25 @@ abode.directive('content', function () {
       margin: '@'
     },
     controller: function ($scope) {
-      $scope.styles = {};
+      $scope.outerStyles = {};
+      $scope.innerStyles = {};
 
-      if ($scope.top) { $scope.styles.top = $scope.top + 'em'; }
-      if ($scope.bottom) { $scope.styles.bottom = $scope.bottom + 'em'; }
-      if ($scope.left) { $scope.styles.left = $scope.left + 'em'; }
-      if ($scope.right) { $scope.styles.right = $scope.right + 'em'; }
-      if ($scope.height) { $scope.styles.height = $scope.height + 'em'; }
-      if ($scope.width) { $scope.styles.width = $scope.width + 'em'; }
-      if ($scope.align) { $scope.styles['text-align'] = $scope.align; }
-      if ($scope.size) { $scope.styles['font-size'] = $scope.size + 'em'; }
-      if ($scope.background) { $scope.styles.background = $scope.background; }
-      if ($scope.color) { $scope.styles.color = $scope.color; }
-      if ($scope.shadow) { $scope.styles['text-shadow'] = $scope.shadow; }
-      if ($scope.margin) { $scope.styles.margin = (isNaN($scope.margin)) ? $scope.margin : $scope.margin + 'em'; }
+      if ($scope.top) { $scope.outerStyles.top = ($scope.top.indexOf('%') === -1) ? $scope.top + 'em' : $scope.top; }
+      if ($scope.bottom) { $scope.outerStyles.bottom = ($scope.bottom.indexOf('%') === -1) ? $scope.bottom + 'em' : $scope.bottom; }
+      if ($scope.left) { $scope.outerStyles.left = ($scope.left.indexOf('%') === -1) ? $scope.left + 'em' : $scope.left; }
+      if ($scope.right) { $scope.outerStyles.right = ($scope.right.indexOf('%') === -1) ? $scope.right + 'em' : $scope.right; }
+      if ($scope.height) { $scope.outerStyles.height = ($scope.height.indexOf('%') === -1) ? $scope.height + 'em' : $scope.height; }
+      if ($scope.width) { $scope.outerStyles.width = ($scope.width.indexOf('%') === -1) ? $scope.width + 'em' : $scope.width; }
+      if ($scope.align) { $scope.innerStyles['text-align'] = $scope.align; }
+      if ($scope.valign) { $scope.innerStyles['vertical-align'] = $scope.valign; }
+      if ($scope.size) { $scope.innerStyles['font-size'] = $scope.size + 'em'; }
+      if ($scope.background) { $scope.outerStyles.background = $scope.background; }
+      if ($scope.color) { $scope.innerStyles.color = $scope.color; }
+      if ($scope.shadow) { $scope.innerStyles['text-shadow'] = $scope.shadow; }
+      if ($scope.margin) { $scope.innerStyles.margin = (isNaN($scope.margin)) ? $scope.margin : $scope.margin + 'em'; }
 
     },
-    template: '<div class="content" ng-style="styles" ng-transclude></div>',
+    template: '<div class="content" ng-style="outerStyles"><div style="display:table; height: 100%; width: 100%"><div style="display:table-cell;" ng-style="innerStyles" ng-transclude></div></div></div>',
     replace: true,
   };
 });
