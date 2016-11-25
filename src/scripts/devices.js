@@ -190,7 +190,6 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
       defer = $q.defer(),
       url = abode.url('/api/devices/' + this._id + '/on').value();
 
-    console.log(this);
     $http.post(url).then(function (response) {
       self._on = true;
       defer.resolve(response.data);
@@ -527,7 +526,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           $scope.processing = true;
           $scope.errors = false;
 
-          $scope.device.$refresh(force).then(function () {
+          $scope.device.$refresh(force).then(function (result) {
             $scope.processing = false;
             $scope.errors = false;
           }, function () {
@@ -707,9 +706,9 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
       resolve: {
         device: function (Devices) {
           if (typeof device === 'object') {
-            return device;
+            return Devices.get({'id': device._id}).$promise;
           } else {
-            return Devices.get(device);
+            return Devices.get({'id': device}).$promise;
           }
         },
         source: function () {
