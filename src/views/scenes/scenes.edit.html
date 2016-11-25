@@ -54,7 +54,7 @@
                       <ul class="list-group">
                         <li class="list-group-item" ng-repeat="step in scene._steps">
                           <div class="row">
-                            <div class="col-xs-1" style="text-align: center">
+                            <div class="col-xs-2" style="text-align: center">
                               <div><button class="btn btn-sm btn-default"><i class="icon-arrow-up"></i></button></div>
                               <div >{{$index + 1}}</div>
                               <div><button class="btn btn-sm btn-default"><i class="icon-arrow-down"></i></button></div>
@@ -96,8 +96,8 @@
                                 </div>
                               </div>
                             </div>
-                            <div class="col-xs-2">
-                              <button class="pull-right btn btn-default btn-xs" ng-click="removeStep($index)"><i class="icon-remove-sign"></i> Remove</button>
+                            <div class="col-xs-1">
+                              <button class="pull-right btn btn-default btn-sm" ng-click="removeStep($index)"><i class="icon-trash"></i></button>
                             </div>
                           </div>
                         </li>
