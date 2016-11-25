@@ -391,8 +391,10 @@ notifications.controller('notificationsEdit', ['$scope', '$state', '$uibModal', 
         ];
 
         $scope.type_actions = [
-          {name: 'On', value: 'on', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff']},
-          {name: 'Off', value: 'off', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff']},
+          {name: 'On', value: 'on', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff','motion_sensor']},
+          {name: 'Off', value: 'off', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff','motion_sensor']},
+          {name: 'Open', value: 'on', arguments: [], capabilities: ['door','window']},
+          {name: 'Close', value: 'off', arguments: [], capabilities: ['door','window']},
           {name: 'Level', value: 'set_level', arguments: ['level'], capabilities: ['dimmer']},
           {name: 'Status', value: 'status', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff']},
           {name: 'Mode', value: 'set_mode', arguments: ['mode'], capabilities: ['conditioner']},
