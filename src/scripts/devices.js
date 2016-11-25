@@ -887,7 +887,7 @@ devices.controller('devicesEdit', function ($scope, $state, $uibModal, abode, de
     confirm('Are you sure you want to remove this Device?').then(function () {
       $scope.device.$remove().then(function () {
         abode.message({'type': 'success', 'message': 'Device Removed'});
-        $state.go('index.devices');
+        $state.go('main.devices');
       }, function (err) {
         abode.message({'type': 'failed', 'message': 'Failed to remove Device', 'details': err});
         $scope.errors = err;
@@ -976,8 +976,8 @@ devices.controller('devicesEdit', function ($scope, $state, $uibModal, abode, de
 
 });
 
-devices.controller('devicesAdd', function ($scope, $state, abode, devices, providers, capabilities) {
-  $scope.device = {'capabilities': []};
+devices.controller('devicesAdd', function ($scope, $state, abode, Devices, providers, capabilities) {
+  $scope.device = new Devices({'capabilities': []});
   $scope.alerts = [];
   $scope.providers = providers;
   $scope.capabilities = capabilities;
@@ -1003,9 +1003,9 @@ devices.controller('devicesAdd', function ($scope, $state, abode, devices, provi
   };
 
   $scope.add = function () {
-    devices.add($scope.device).then(function () {
+    $scope.device.$save().then(function () {
       abode.message({'type': 'success', 'message': 'Device Added'});
-      $scope.device = {'capabilities': []};
+      $scope.device = new Devices({'capabilities': []});
       $scope.section = 'provider';
     }, function (err) {
         abode.message({'type': 'failed', 'message': 'Failed to add Device', 'details': err});
