@@ -47,6 +47,20 @@ scenes.factory('Scenes', ['$resource', '$http', '$q', 'abode', 'scenes', functio
 
 }]);
 
+rooms.factory('SceneRooms', ['$resource', 'abode', function ($resource, abode) {
+
+  var model = $resource(abode.url('/api/scenes/:scene/rooms/:id'), {id: '@_id'}, {
+    'query': {
+      isArray: true,
+    }
+  });
+
+  angular.merge(model.prototype, scenes.methods);
+
+  return model;
+
+}]);
+
 rooms.factory('RoomScenes', ['$resource', 'abode', function ($resource, abode) {
 
   var model = $resource(abode.url('/api/rooms/:room/scenes/:id'), {id: '@_id'}, {
@@ -54,6 +68,9 @@ rooms.factory('RoomScenes', ['$resource', 'abode', function ($resource, abode) {
       isArray: true,
       transformResponse: [
         function (data, headers, status) {
+          if (status !== 200) {
+            return data;
+          }
           data = angular.fromJson(data);
 
           data.forEach(function (dev) {
@@ -82,7 +99,7 @@ rooms.factory('RoomScenes', ['$resource', 'abode', function ($resource, abode) {
 
 }]);
 
-scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
+scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode, SceneRooms) {
   var model = $resource(abode.url('/api/scenes/:id/:action'), {id: '@_id'}, {
     'update': { method: 'PUT' },
     'on': { method: 'POST', params: {'action': 'on'}},
@@ -90,6 +107,12 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
   });
 
   var methods = {};
+
+  methods.$rooms = function () {
+    var self = this;
+    return SceneRooms.query({'scene': self.name}).$promise;
+
+  };
 
   methods.$refresh = function () {
     var self = this,
@@ -108,6 +131,18 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
     });
 
     return defer.promise;
+  };
+
+  methods.$toggle = function () {
+    var self = this,
+      action = 'off';
+
+    if (self.scene._state === 'stopped') {
+      return self.$on();
+    } else {
+      return self.$off();
+    }
+
   };
 
   methods.$on = function () {
@@ -142,6 +177,32 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
 
   methods.$open = function () {
 
+  };
+
+  methods.$addRoom = function (room) {
+    var self = this,
+      defer = $q.defer();
+
+    $http.post(abode.url('/api/scenes/' + self.name + '/rooms').value(), {'name': room}).then(function () {
+      defer.resolve();
+    }, function () {
+      defer.reject();
+    });
+
+    return defer.promise;
+  };
+
+  methods.$removeRoom = function (room) {
+    var self = this,
+      defer = $q.defer();
+
+    $http.delete(abode.url('/api/scenes/' + self.name + '/rooms/' + room).value()).then(function () {
+      defer.resolve();
+    }, function () {
+      defer.reject();
+    });
+
+    return defer.promise;
   };
 
   var loadScenes = function (source) {
@@ -211,7 +272,7 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
       animation: true,
       templateUrl: 'views/scenes/scenes.view.html',
       size: 'sm',
-      controller: function ($scope, $uibModalInstance, $interval, $timeout, $state, scenes, scene) {
+      controller: function ($scope, $uibModalInstance, $interval, $timeout, $state, scene) {
         var intervals = [];
         var source_uri = (source === undefined) ? '/api' : '/api/sources/' + source;
 
@@ -219,6 +280,7 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
         $scope.scene = scene;
         $scope.processing = false;
         $scope.errors = false;
+          console.dir($scope.scene);
 
         $scope.ok = function () {
           $uibModalInstance.close();
@@ -226,16 +288,12 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
 
         $scope.edit = function () {
           $uibModalInstance.close({'recurse': true});
-          $state.go('index.scenes.edit', {'name': scene.name});
+          $state.go('main.scenes.edit', {'name': scene.name});
         };
 
         $scope.toggle_onoff = function () {
-          var action = 'off';
-          if ($scope.scene._state === 'stopped') {
-            action = 'on';
-          }
 
-          $http.post(source_uri + '/scenes/' + $scope.scene.name + '/' + action).then(function () {
+          $scope.scene.$toggle().then(function() {
             $scope.processing = false;
             $scope.errors = false;
             $scope.scene._state = 'pending';
@@ -244,19 +302,21 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
             $scope.processing = false;
             $scope.errors = true;
           });
+
         };
 
         $scope.reload = function () {
           if ($scope.processing) {
             return;
           }
+
+          console.dir($scope.scene);
           $scope.processing = true;
           $scope.errors = false;
 
-          $http.get(source_uri + '/scenes/' + $scope.scene.name).then(function (response) {
+          $scope.scene.$refresh().then(function(response) {
             $scope.processing = false;
             $scope.errors = false;
-            $scope.scene = response.data;
 
           }, function () {
             $scope.processing = false;
@@ -274,8 +334,12 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode) {
         });
       },
       resolve: {
-        scene: function () {
-          return getScene(scene, source);
+        scene: function (Scenes) {
+          if (typeof scene === 'object') {
+            return Scenes.get({'id': scene._id}).$promise;
+          } else {
+            return Scenes.get({'id': scene}).$promise;
+          }
         },
         source: function () {
           return source;
@@ -376,7 +440,7 @@ scenes.controller('scenesList', function ($scope, $state, scenes) {
 });
 
 scenes.controller('scenesAdd', function ($scope, $state, abode, Scenes) {
-  $scope.scene = new Scene();
+  $scope.scene = new Scenes();
   $scope.alerts = [];
 
   $scope.back = function () {
@@ -388,7 +452,7 @@ scenes.controller('scenesAdd', function ($scope, $state, abode, Scenes) {
   };
 
   $scope.add = function () {
-    scenes.$save().then(function () {
+    $scope.scene.$save().then(function () {
       abode.message({'type': 'success', 'message': 'Scene Added'});
       $state.go('^.list');
     }, function (err) {
@@ -398,7 +462,7 @@ scenes.controller('scenesAdd', function ($scope, $state, abode, Scenes) {
   };
 });
 
-scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devices, scenes, rooms, confirm) {
+scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devices, abode, scenes, rooms, confirm) {
   $scope.scene = scene;
   $scope.alerts = [];
   $scope.rooms = [];
@@ -406,12 +470,12 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
   $scope.section = 'general';
 
   if (!scene) {
-    $state.go('index.scenes.list');
+    $state.go('main.scenes.list');
   }
 
   var getRooms = function () {
     $scope.loading = true;
-    scenes.getRooms(scene.name).then(function(rooms) {
+    $scope.scene.$rooms().then(function(rooms) {
       $scope.rooms = rooms;
       $scope.loading = false;
     }, function () {
@@ -650,14 +714,14 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
 
           return step.actions.map(function (obj) {return obj.name; });
         },
-        devices: function () {
-          return devices.load();
+        devices: function (Devices) {
+          return Devices.query().$promise;
         },
-        scenes: function () {
-          return scenes.load();
+        scenes: function (Scenes) {
+          return Scenes.query().$promise;
         },
-        rooms: function () {
-          return rooms.load();
+        rooms: function (Rooms) {
+          return Rooms.query().$promise;
         }
       },
       controller: function ($scope, $uibModalInstance, devices, scenes, rooms, assigned) {
@@ -895,7 +959,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
   $scope.removeRoom = function (id) {
 
     confirm('Are you sure?').then(function () {
-      scenes.removeRoom(scene.name, id).then(function () {
+      $scope.scene.$removeRoom(id).then(function () {
         getRooms();
         abode.message({'type': 'success', 'message': 'Room removed from Scene'});
       }, function (err) {
@@ -915,7 +979,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
           return $scope.rooms.map(function (obj) {return obj.name; });
         }
       },
-      controller: function ($scope, $uibModalInstance, rooms, assigned) {
+      controller: function ($scope, $uibModalInstance, Rooms, assigned) {
         $scope.loading = true;
         $scope.rooms = [];
         $scope.assigned = assigned;
@@ -929,7 +993,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
         };
 
         $scope.load = function () {
-          rooms.load().then(function (rooms) {
+          Rooms.query().$promise.then(function (rooms) {
             $scope.rooms = rooms;
             $scope.loading = false;
             $scope.error = false;
@@ -946,7 +1010,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
 
     assign.result.then(function (room) {
 
-      scenes.addRoom(scene.name, room.name).then(function () {
+      $scope.scene.$addRoom(room.name).then(function () {
         getRooms();
         abode.message({'type': 'success', 'message': 'Room added to Scene'});
       }, function () {

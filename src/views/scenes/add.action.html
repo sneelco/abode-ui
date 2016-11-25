@@ -6,7 +6,7 @@
 <div class="modal-body">
 
   <div class="row">
-    <div class="col-sm-6" style="font-size: 1.5em;">
+    <div class="col-sm-6">
       <div class="form-group">
         <label for="trigger">Type <span ng-show="type">({{selected.object_type | capitalize}})</span></label>
         <div>
@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <div class="col-sm-6" style="font-size: 1.5em;" ng-show="selected.object_type == 'devices'">
+    <div class="col-sm-6"  ng-show="selected.object_type == 'devices'">
         <label for="trigger">Device <span ng-show="obj">({{obj | capitalize}})</span></label>
         <ul class="list-group bg-muted select-list" >
           <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in devices | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': selected.object_id == t._id}">
@@ -28,7 +28,7 @@
         </ul>
     </div>
 
-    <div class="col-sm-6" style="font-size: 1.5em;" ng-show="selected.object_type == 'rooms'">
+    <div class="col-sm-6" ng-show="selected.object_type == 'rooms'">
         <label for="trigger">Room <span ng-show="obj">({{obj | capitalize}})</span></label>
         <ul class="list-group bg-muted select-list" >
           <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in rooms | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': selected.object_id == t._id}">
@@ -37,7 +37,7 @@
         </ul>
     </div>
 
-    <div class="col-sm-6" style="font-size: 1.5em;" ng-show="selected.object_type == 'scenes'">
+    <div class="col-sm-6" ng-show="selected.object_type == 'scenes'">
         <label for="trigger">Scene <span ng-show="obj">({{obj | capitalize}})</span></label>
         <ul class="list-group bg-muted select-list" >
           <li class="list-group-item" style="cursor: pointer;" ng-repeat="t in scenes | orderBy: '+name'" ng-click="changeItem(t);" ng-class="{'list-group-item-success': selected.object_id == t._id}">
@@ -51,15 +51,15 @@
   <div ng-show="selected.object_id">
     <div class="row">
       <div class="col-sm-8 col-sm-offset-2" ng-hide="controls.length == 0">
-        <label for="enabled" style="font-size: 2em;">Setting: </label>
+        <label for="enabled">Setting: </label>
         <div ng-repeat="control in controls" ng-include="control.view" class="row" > </div>
       </div>
     </div>
     <div>&nbsp;</div>
     <div class="row">
       <div class="col-xs-4">
-        <label style="font-size: 2em;">Stages: </label>
-        <div style="width: 1em;font-size: 2.5em;">
+        <label>Stages: </label>
+        <div style="width: 1em;">
           <div><i class="icon-chevron-up" style="cursor: pointer;" ng-click="stages_up()"></i></div>
           <div style="text-align: center;">{{selected.stages}}</div>
           <div><i class="icon-chevron-down" style="cursor: pointer;" ng-click="stages_down()"></i></div>
@@ -67,8 +67,8 @@
       </div>
       <div class="col-sm-8">
 
-          <label for="enabled" style="font-size: 2em;">Duration (hh:mm:ss) </label>
-          <epochduration time="selected.duration" style="font-size: 2.5em; "></epochduration>
+          <label for="enabled">Duration (hh:mm:ss) </label>
+          <epochduration time="selected.duration"></epochduration>
 
       </div>
     </div>
