@@ -103,6 +103,64 @@ rooms.factory('Rooms', ['$resource', '$q', '$http', 'abode', 'rooms', 'RoomDevic
     return defer.promise;
   };
 
+  Rooms.prototype.$addDevice = function (device) {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/rooms/' + this._id + '/devices').value();
+
+    $http.post(url, {'_id': device._id || device}).then(function (results) {
+      defer.resolve();
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  Rooms.prototype.$removeDevice = function (device) {
+    var self = this,
+      defer = $q.defer(),
+      device_id = device._id || device;
+      url = abode.url('/api/rooms/' + this._id + '/devices/' + device_id).value();
+
+    $http.delete(url).then(function (results) {
+      defer.resolve();
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  Rooms.prototype.$addScene = function (scene) {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/rooms/' + this._id + '/scenes').value();
+
+    $http.post(url, {'_id': scene._id || scene}).then(function (results) {
+      defer.resolve();
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  Rooms.prototype.$removeScene = function (scene) {
+    var self = this,
+      defer = $q.defer(),
+      scene_id = scene._id || scene;
+      url = abode.url('/api/rooms/' + this._id + '/scenes/' + scene_id).value();
+
+    $http.delete(url).then(function (results) {
+      defer.resolve();
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
   return Rooms;
 }]);
 
@@ -331,7 +389,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
 
         $scope.edit = function () {
           $uibModalInstance.close({'recurse': true});
-          $state.go('index.rooms.edit', {'name': room.name});
+          $state.go('main.rooms.edit', {'name': room.name});
         };
 
 
@@ -578,7 +636,7 @@ rooms.controller('roomsAdd', function ($scope, $state, abode, Rooms) {
   $scope.alerts = [];
 
   $scope.back = function () {
-    $state.go('index.rooms');
+    $state.go('main.rooms');
   };
 
   $scope.closeAlert = function(index) {
@@ -600,11 +658,12 @@ rooms.controller('roomsEdit', function ($scope, $state, $uibModal, abode, rooms,
   $scope.room = room;
   $scope.alerts = [];
   $scope.devices = [];
+  $scope.scenes = [];
   $scope.loading = false;
   $scope.section = 'general';
 
   if (!room) {
-    $state.go('index.rooms.list');
+    $state.go('main.rooms.list');
   }
 
   var getDevices = function () {
@@ -617,10 +676,20 @@ rooms.controller('roomsEdit', function ($scope, $state, $uibModal, abode, rooms,
     });
   };
 
+  var getScenes = function () {
+    $scope.loading = true;
+    room.$scenes().$promise.then(function (scenes) {
+      $scope.scenes = scenes;
+      $scope.loading = false;
+    }, function (error) {
+      $scope.loading = false;
+    });
+  };
+
   getDevices();
 
   $scope.back = function () {
-    $state.go('index.rooms');
+    $state.go('main.rooms');
   };
 
   $scope.closeAlert = function(index) {
@@ -628,7 +697,7 @@ rooms.controller('roomsEdit', function ($scope, $state, $uibModal, abode, rooms,
   };
 
   $scope.save = function () {
-    rooms.save($scope.room).then(function () {
+    $scope.room.$update().then(function () {
       abode.message({'type': 'success', 'message': 'Room Saved'});
     }, function (err) {
       abode.message({'type': 'failed', 'message': 'Failed to save Room', 'details': err});
@@ -638,9 +707,9 @@ rooms.controller('roomsEdit', function ($scope, $state, $uibModal, abode, rooms,
 
   $scope.remove = function () {
     confirm('Are you sure you want to remove this Room?').then(function () {
-      rooms.remove(room._id).then(function () {
+      $scope.room.$remove().then(function () {
         abode.message({'type': 'success', 'message': 'Room Removed'});
-        $state.go('index.rooms');
+        $state.go('main.rooms');
       }, function (err) {
         abode.message({'type': 'failed', 'message': 'Failed to remove Room', 'details': err});
         $scope.errors = err;
@@ -651,7 +720,7 @@ rooms.controller('roomsEdit', function ($scope, $state, $uibModal, abode, rooms,
   $scope.removeDevice = function (id) {
 
     confirm('Are you sure?').then(function () {
-      rooms.removeDevice(room.name, id).then(function () {
+      $scope.room.$removeDevice(id).then(function () {
         getDevices();
         abode.message({'type': 'success', 'message': 'Device removed from Room'});
       }, function (err) {
@@ -702,11 +771,75 @@ rooms.controller('roomsEdit', function ($scope, $state, $uibModal, abode, rooms,
 
     assign.result.then(function (device) {
 
-      rooms.addDevice(room.name, device.name).then(function () {
+      $scope.room.$addDevice(device).then(function () {
         getDevices();
         abode.message({'type': 'success', 'message': 'Device added to Room'});
-      }, function () {
+      }, function (err) {
         abode.message({'type': 'failed', 'message': 'Failed to add Device to Room', 'details': err});
+      });
+
+    });
+  };
+
+  $scope.removeScene = function (id) {
+
+    confirm('Are you sure?').then(function () {
+      $scope.room.$removeScene(id).then(function () {
+        getScenes();
+        abode.message({'type': 'success', 'message': 'Scene removed from Room'});
+      }, function (err) {
+        abode.message({'type': 'failed', 'message': 'Failed to remove Scene from Room', 'details': err});
+      });
+    });
+
+  };
+
+  $scope.addScene = function () {
+    var assign = $uibModal.open({
+      animation: true,
+      templateUrl: 'views/rooms/assign.scene.html',
+      size: 'sm',
+      resolve: {
+        assigned: function () {
+          return $scope.scenes.map(function (obj) {return obj.name; });
+        }
+      },
+      controller: function ($scope, $uibModalInstance, Scenes, assigned) {
+        $scope.loading = true;
+        $scope.scenes = [];
+        $scope.assigned = assigned;
+
+        $scope.cancel = function () {
+          $uibModalInstance.dismiss();
+        };
+
+        $scope.select = function (device) {
+          $uibModalInstance.close(device);
+        };
+
+        $scope.load = function () {
+          Scenes.query().$promise.then(function (scenes) {
+            $scope.scenes = scenes;
+            $scope.loading = false;
+            $scope.error = false;
+          }, function () {
+            $scope.loading = false;
+            $scope.error = true;
+          });
+        };
+
+        $scope.load();
+
+      }
+    });
+
+    assign.result.then(function (scene) {
+
+      $scope.room.$addScene(scene).then(function () {
+        getScenes();
+        abode.message({'type': 'success', 'message': 'Scene added to Room'});
+      }, function (err) {
+        abode.message({'type': 'failed', 'message': 'Failed to add Scene to Room', 'details': err});
       });
 
     });
