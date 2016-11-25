@@ -5,15 +5,15 @@
   <div>
     <div class="row">
       <div class="col-sm-8 col-sm-offset-2" ng-hide="controls.length == 0">
-        <label for="enabled" style="font-size: 2em;">Setting: </label>
+        <label for="enabled">Setting: </label>
         <div ng-repeat="control in controls" ng-include="control.view" class="row" > </div>
       </div>
     </div>
     <div>&nbsp;</div>
     <div class="row">
       <div class="col-sm-2 col-sm-offset-2">
-        <label style="font-size: 2em;">Stages: </label>
-        <div style="width: 1em;font-size: 2.5em;">
+        <label>Stages: </label>
+        <div style="width: 1em;">
           <div><i class="icon-chevron-up" style="cursor: pointer;" ng-click="stages_up()"></i></div>
           <div style="text-align: center;">{{selected.stages}}</div>
           <div><i class="icon-chevron-down" style="cursor: pointer;" ng-click="stages_down()"></i></div>
@@ -22,8 +22,8 @@
 
       <div class="col-sm-8">
 
-          <label for="enabled" style="font-size: 2em;">Duration (hh:mm:ss) </label>
-          <epochduration time="selected.duration" style="font-size: 2.5em; "></epochduration>
+          <label for="enabled">Duration (hh:mm:ss) </label>
+          <epochduration time="selected.duration"></epochduration>
 
       </div>
     </div>

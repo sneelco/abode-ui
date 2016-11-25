@@ -948,7 +948,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
     confirm('Are you sure you want to remove this Scene?').then(function () {
       $scope.scene.$remove().then(function () {
         abode.message({'type': 'success', 'message': 'Scene Removed'});
-        $state.go('index.scenes');
+        $state.go('main.scenes');
       }, function (err) {
         abode.message({'type': 'failed', 'message': 'Failed to remove Scene', 'details': err});
         $scope.errors = err;
