@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('wunderground', [])
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -13,7 +11,7 @@ angular.module('wunderground', [])
         return wunderground.get_config();
       }
     }
-  })
+  });
 })
 .service('wunderground', function ($q, settings) {
 
@@ -60,10 +58,10 @@ angular.module('wunderground', [])
   };
 })
 .controller('wundergroundEdit', function ($scope) {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
 
 })
 .controller('wundergroundAdd', function ($scope) {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
   $scope.device.capabilities = ['weather','temperature_sensor', 'humidity_sensor'];
 });

@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('climate', ['ui.bootstrap'])
 .service('climate', function ($interval, $timeout, $http, $state) {
   var rooms = {};

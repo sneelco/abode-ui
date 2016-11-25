@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('ifttt', [])
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -13,7 +11,7 @@ angular.module('ifttt', [])
         return ifttt.get_config();
       }
     }
-  })
+  });
 })
 .service('ifttt', function (settings) {
 
@@ -61,8 +59,8 @@ angular.module('ifttt', [])
 
 })
 .controller('iftttEdit', function () {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
 })
 .controller('iftttAdd', function () {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
 });

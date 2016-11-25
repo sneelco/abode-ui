@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('rad', [])
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -13,7 +11,7 @@ angular.module('rad', [])
         return rad.get_config();
       }
     }
-  })
+  });
 })
 .service('rad', function (settings) {
 
@@ -61,8 +59,8 @@ angular.module('rad', [])
 
 })
 .controller('radEdit', function () {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
 })
 .controller('radAdd', function () {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
 });

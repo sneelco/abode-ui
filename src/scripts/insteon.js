@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('insteon', [])
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -13,7 +11,7 @@ angular.module('insteon', [])
         return insteon.get_config();
       }
     }
-  })
+  });
 })
 .service('insteon', function (settings) {
 
@@ -67,7 +65,7 @@ angular.module('insteon', [])
 
 })
 .controller('insteonEdit', function () {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
 })
 .controller('insteonAdd', function ($scope, $http, $timeout, abode) {
   $scope.device = $scope.$parent.device;
@@ -118,7 +116,7 @@ angular.module('insteon', [])
     }, function (err) {
       $scope.error = err;
     });
-  }
+  };
   $scope.check_linking = function () {
     $http.get(abode.url('/api/insteon/linking/status').value()).then(function (response) {
       if (!response.data.linking) {

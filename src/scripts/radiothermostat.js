@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('radiothermostat', [])
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -13,7 +11,7 @@ angular.module('radiothermostat', [])
         return radiothermostat.get_config();
       }
     }
-  })
+  });
 })
 .service('radiothermostat', function (settings) {
 
@@ -61,8 +59,8 @@ angular.module('radiothermostat', [])
 
 })
 .controller('radiothermostatEdit', function () {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
 })
 .controller('radiothermostatAdd', function () {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
 });

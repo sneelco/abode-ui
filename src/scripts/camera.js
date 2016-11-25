@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('camera', [])
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -13,7 +11,7 @@ angular.module('camera', [])
         return camera.get_config();
       }
     }
-  })
+  });
 })
 .service('camera', function ($q, settings) {
 
@@ -60,11 +58,11 @@ angular.module('camera', [])
   };
 })
 .controller('cameraEdit', function ($scope) {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
 
 })
 .controller('cameraAdd', function ($scope) {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
   $scope.device.capabilities = ['camera'];
   $scope.device.active = true;
 });

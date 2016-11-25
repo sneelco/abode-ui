@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('datetime', [])
 .service('datetime', function ($interval, $http, $state) {
 

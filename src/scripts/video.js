@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('video', [])
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -13,7 +11,7 @@ angular.module('video', [])
         return video.get_config();
       }
     }
-  })
+  });
 })
 .service('video', function (settings) {
 
@@ -61,8 +59,8 @@ angular.module('video', [])
 
 })
 .controller('videoEdit', function () {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
 })
 .controller('videoAdd', function () {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
 });

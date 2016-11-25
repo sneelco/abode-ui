@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('insteonhub', [])
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -13,7 +11,7 @@ angular.module('insteonhub', [])
         return insteonhub.get_config();
       }
     }
-  })
+  });
 })
 .service('insteonhub', function (settings) {
 
@@ -67,7 +65,7 @@ angular.module('insteonhub', [])
 
 })
 .controller('insteonhubEdit', function () {
-  $scope.device = $scope.$parent.device
+  $scope.device = $scope.$parent.device;
 })
 .controller('insteonhubAdd', function ($scope, $http, $timeout, abode) {
   $scope.device = $scope.$parent.device;
@@ -114,7 +112,7 @@ angular.module('insteonhub', [])
     $scope.device.config = {
       'type': 'device',
       'DeviceID': d.DeviceID
-    }
+    };
   };
 
   $scope.selectScene = function (d) {
@@ -122,7 +120,7 @@ angular.module('insteonhub', [])
     $scope.device.config = {
       'type': 'scene',
       'SceneID': d.SceneID
-    }
+    };
   };
 
   $scope.selectRoom = function (d) {
@@ -130,7 +128,7 @@ angular.module('insteonhub', [])
     $scope.device.config = {
       'type': 'room',
       'RoomID': d.RoomID
-    }
+    };
   };
 
   $scope.reload = function () {
