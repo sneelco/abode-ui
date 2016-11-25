@@ -18,10 +18,10 @@ devices.config(function($stateProvider, $urlRouterProvider) {
     templateUrl: '/views/devices/devices.add.html',
     controller: 'devicesAdd',
     resolve: {
-      'providers': function ($q, $http) {
+      'providers': function ($q, $http, abode) {
         var defer = $q.defer();
 
-        $http.get('api/abode/providers').then(function (response) {
+        $http.get(abode.url('/api/abode/providers').value()).then(function (response) {
           defer.resolve(response.data);
         }, function (err) {
           defer.reject(err);
@@ -29,10 +29,10 @@ devices.config(function($stateProvider, $urlRouterProvider) {
 
         return defer.promise;
       },
-      'capabilities': function ($q, $http) {
+      'capabilities': function ($q, $http, abode) {
         var defer = $q.defer();
 
-        $http.get('api/abode/capabilities').then(function (response) {
+        $http.get(abode.url('/api/abode/capabilities').value()).then(function (response) {
           defer.resolve(response.data);
         }, function (err) {
           defer.reject(err);
@@ -975,7 +975,7 @@ devices.controller('devicesEdit', function ($scope, $state, $uibModal, abode, de
 
 });
 
-devices.controller('devicesAdd', function ($scope, $state, notifier, devices, providers, capabilities) {
+devices.controller('devicesAdd', function ($scope, $state, abode, devices, providers, capabilities) {
   $scope.device = {'capabilities': []};
   $scope.alerts = [];
   $scope.providers = providers;
@@ -988,7 +988,7 @@ devices.controller('devicesAdd', function ($scope, $state, notifier, devices, pr
   });
 
   $scope.back = function () {
-    $state.go('index.devices');
+    $state.go('main.devices');
   };
 
   $scope.closeAlert = function(index) {
@@ -1003,11 +1003,11 @@ devices.controller('devicesAdd', function ($scope, $state, notifier, devices, pr
 
   $scope.add = function () {
     devices.add($scope.device).then(function () {
-      notifier.notify({'status': 'success', 'message': 'Device Added'});
+      abode.message({'type': 'success', 'message': 'Device Added'});
       $scope.device = {'capabilities': []};
       $scope.section = 'provider';
     }, function (err) {
-        notifier.notify({'status': 'failed', 'message': 'Failed to add Device', 'details': err});
+        abode.message({'type': 'failed', 'message': 'Failed to add Device', 'details': err});
       $scope.errors = err;
     });
   };

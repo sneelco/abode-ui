@@ -1005,3 +1005,25 @@ body {
 .icon-selector ul li.icon-selected {
   background-color: rgba(0, 188, 140, 255);
 }
+
+
+
+
+.insteon-types {
+  list-style: none;
+  padding: 0px;
+}
+.insteon-types li {
+  display: inline-block;
+  height: 5em;
+  width: 5em;
+  border: 1px solid #aaa;
+  text-align: center;
+  margin: .5em;
+  border-radius: .2em;
+  cursor: pointer;
+}
+
+.insteon-types li.active {
+  background-color: ;
+}

@@ -13,14 +13,14 @@
 
 
             <div class="row">
-              <div class="col-sm-3" style="font-size: 1.5em; position: relative">
+              <div class="col-sm-3" style="position: relative">
                 <ul class="section-nav">
                   <li ng-click="section='provider'" ng-class="{active: section == 'provider'}">Provider</li>
                   <li ng-click="section='settings'" ng-show="device.provider" ng-class="{active: section == 'settings'}">Settings</li>
                   <li ng-click="section='advanced'" ng-show="device.provider" ng-class="{active: section == 'advanced'}">Advanced</li>
                 </ul>
               </div>
-              <div class="col-sm-9 col-xs-12" style="font-size: 2em;">
+              <div class="col-sm-9 col-xs-12">
                 <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
 
                 <div ng-show="section=='provider'">
@@ -43,10 +43,10 @@
                   </div>
                   <div ng-show="device.provider && section == 'advanced'">
 
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="device.name">
-  </div>
+                    <div class="form-group">
+                      <label for="name">Name</label>
+                      <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="device.name">
+                    </div>
                     <div class="form-group">
                       <label for="enabled">Active: </label>
                       <toggle value="device.active" class="pull-right"></toggle>

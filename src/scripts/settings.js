@@ -27,7 +27,7 @@ settings.config(function($stateProvider, $urlRouterProvider) {
         {'name': 'Interfaces', 'route': 'main.settings.interfaces'},
         {'name': 'Sources', 'route': 'main.settings.sources'},
         //{'name': 'Sensors', 'route': 'main.settings.sensors'},
-        //{'name': 'Providers', 'route': 'main.settings.providers'},
+        {'name': 'Providers', 'route': 'main.settings.providers'},
         //{'name': 'Display', 'route': 'main.settings.display'},
         //{'name': 'Networking', 'route': 'main.settings.networking'},
         {'name': 'Advanced', 'route': 'main.settings.advanced'}
@@ -482,19 +482,19 @@ settings.controller('settings', function ($scope, $state, abode, settings, confi
   };
 
   $scope.sensors = [
-    {'name': 'Temperature/Humidity', 'route': 'index.settings.general'},
-    {'name': 'Light', 'route': 'index.settings.home'},
-    {'name': 'Motion', 'route': 'index.settings.sources'},
+    {'name': 'Temperature/Humidity', 'route': 'main.settings.general'},
+    {'name': 'Light', 'route': 'main.settings.home'},
+    {'name': 'Motion', 'route': 'main.settings.sources'},
   ];
 
   $scope.providers = [
-    {'name': 'Insteon PLM', 'route': 'index.settings.insteon'},
-    {'name': 'Insteon Hub', 'route': 'index.settings.insteonhub'},
-    {'name': 'Rad', 'route': 'index.settings.rad'},
-    {'name': 'Wunderground', 'route': 'index.settings.wunderground'},
-    {'name': 'IFTTT', 'route': 'index.settings.ifttt'},
-    {'name': 'RadioThermostat', 'route': 'index.settings.radiothermostat'},
-    {'name': 'Video', 'route': 'index.settings.video'},
+    {'name': 'Insteon PLM', 'route': 'main.settings.insteon'},
+    {'name': 'Insteon Hub', 'route': 'main.settings.insteonhub'},
+    {'name': 'Rad', 'route': 'main.settings.rad'},
+    {'name': 'Wunderground', 'route': 'main.settings.wunderground'},
+    {'name': 'IFTTT', 'route': 'main.settings.ifttt'},
+    {'name': 'RadioThermostat', 'route': 'main.settings.radiothermostat'},
+    {'name': 'Video', 'route': 'main.settings.video'},
   ];
 
   $scope.sources = [

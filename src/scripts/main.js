@@ -13,6 +13,11 @@ var abode = angular.module('abode', [
   'abode.weather',
   'abode.alarmclock',
   'abode.notifications',
+  'insteon',
+  'insteonhub',
+  'camera',
+  'wunderground',
+  'ifttt'
 ]);
 
 abode.directive('iconSelector', ['$compile', function () {
