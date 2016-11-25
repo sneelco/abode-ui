@@ -56,18 +56,18 @@
                           <div class="row">
                             <div class="col-xs-1" style="text-align: center">
                               <div><button class="btn btn-sm btn-default"><i class="icon-arrow-up"></i></button></div>
-                              <div>{{$index + 1}}</div>
+                              <div >{{$index + 1}}</div>
                               <div><button class="btn btn-sm btn-default"><i class="icon-arrow-down"></i></button></div>
                             </div>
                             <div class="col-xs-9">
                               <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                   <div class="form-group">
                                     <label for="enabled">Step Delay: </label>
                                     <epochduration time="step.delay"></epochduration>
                                   </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-7">
                                   <div class="form-group">
                                     <label for="enabled">Actions: </label>
                                     <button class="btn btn-success btn-xs pull-right" ng-click="addAction(step)"><i class="icon-plus-sign"></i> Add</button>
@@ -88,8 +88,7 @@
                                       </li>
                                     </ul>
                                   </div>
-                                </div>
-                                <div class="col-md-3 c">
+
                                   <div class="form-group">
                                     <label for="enabled">Wait for Actions: </label>
                                     <toggle value="step.wait" class="pull-right"></toggle>
