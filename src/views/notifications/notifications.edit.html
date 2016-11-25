@@ -67,8 +67,10 @@
                   <i class="icon-circledelete" ng-hide="deleting"></i>
                   Remove</button>
                 <button class="btn btn-sm btn-warning" ng-click="reset()">Reset</button>
+                <div>
                 <h6 class="text-muted pull-right" ng-disabled="action.status == 'pending'" ng-show="action.status == 'success'"><i class="text-success icon-info-sign"></i> {{action.message}}</h6>
                 <h6 class="text-muted pull-right" ng-disabled="action.status == 'pending'" ng-show="action.status == 'error'"><i class="text-danger icon-erroralt"></i> {{action.message}}</h6>
+                </div>
               </div>
 
           </form>

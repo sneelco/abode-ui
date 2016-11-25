@@ -338,7 +338,7 @@ notifications.controller('notificationsEdit', ['$scope', '$state', '$uibModal', 
       $scope.action.message = 'Notification activated';
     }, function (err) {
       $scope.action.status = 'error';
-      $scope.action.message = err;
+      $scope.action.message = err.message;
     });
   };
 
@@ -350,7 +350,7 @@ notifications.controller('notificationsEdit', ['$scope', '$state', '$uibModal', 
       $scope.action.message = 'Notification de-activated';
     }, function (err) {
       $scope.action.status = 'error';
-      $scope.action.message = err;
+      $scope.action.message = err.message;
     });
   };
 
