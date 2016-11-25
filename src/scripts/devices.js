@@ -167,14 +167,15 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
     if (force && self.active) {
       req = $http.post(abode.url('/api/devices/' + this._id + '/status').value());
     } else {
-      req = $http.get(abode.url('/api/devices/' + this._id).value());
+      req = $http.get(abode.url('/api/devices/' + this._id ).value());
     }
 
     req.then(function (response) {
+      var results = response.data.response || response.data;
 
-      for (var key in response.data) {
-        if (response.data.hasOwnProperty(key)) {
-          self[key] = response.data[key];
+      for (var key in results) {
+        if (results.hasOwnProperty(key)) {
+          self[key] = results[key];
         }
       }
       defer.resolve(self);

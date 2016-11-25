@@ -319,6 +319,11 @@ home.directive('controller', [function () {
 
         var func;
 
+        if ($scope.loader) {
+          $timeout.cancel($scope.loader);
+        }
+        $scope.failed = false;
+        
         if ($scope.action === 'toggle') {
           func = ($scope.obj._on || $scope.obj._lights_on) ? $scope.obj.$off : $scope.obj.$on;
         } else if ($scope.obj['$' + $scope.action]) {
@@ -333,6 +338,9 @@ home.directive('controller', [function () {
             result.then(function () {
             $scope.pending = false;
             $scope.success = true;
+            if ($scope.action === 'toggle' || $scope.action === 'open') {
+              $scope.loader = $timeout($scope.refresh, 5000);
+            }
             if ($scope.onsuccess) {
               $scope.onsuccess();
             }
@@ -342,6 +350,9 @@ home.directive('controller', [function () {
           }, function (err) {
             $scope.pending = false;
             $scope.failed = true;
+            if ($scope.action === 'toggle' || $scope.action === 'open') {
+              $scope.loader = $timeout($scope.refresh, 5000);
+            }
             $timeout(function () {
               $scope.failed = false;
             }, 4000);
@@ -349,6 +360,9 @@ home.directive('controller', [function () {
         } else if (result && result.closed) {
             $scope.pending = false;
             $scope.loading = true;
+            if ($scope.action === 'toggle' || $scope.action === 'open') {
+              $scope.loader = $timeout($scope.refresh, 5000);
+            }
             result.closed.then(function (result) {
               if ($scope.onsuccess) {
                 $scope.onsuccess();
@@ -356,6 +370,9 @@ home.directive('controller', [function () {
               $scope.loading = false;
             });
         } else {
+          if ($scope.action === 'toggle' || $scope.action === 'open') {
+            $scope.loader = $timeout($scope.refresh, 5000);
+          }
           $scope.pending = false;
         }
       };
