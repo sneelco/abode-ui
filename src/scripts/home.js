@@ -297,9 +297,13 @@ home.directive('controller', [function () {
         $scope.obj.$refresh().then(function () {
           $scope.loading = false;
           $scope.error = false;
+
+          $scope.loader = $timeout($scope.refresh, 5000);
         }, function () {
           $scope.loading = false;
           $scope.error = true;
+
+          $scope.loader = $timeout($scope.refresh, 10000);
         });
       };
 
@@ -359,11 +363,11 @@ home.directive('controller', [function () {
       $scope.load();
 
       if ($scope.action === 'toggle' || $scope.action === 'open') {
-        $scope.loader = $interval($scope.refresh, 5000);
+        $scope.loader = $timeout($scope.refresh, 5000);
       }
 
       $scope.$on('$destroy', function () {
-        $interval.cancel($scope.loader);
+        $timeout.cancel($scope.loader);
       });
 
     }]

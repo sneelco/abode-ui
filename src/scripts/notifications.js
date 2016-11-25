@@ -184,7 +184,7 @@ notifications.directive('notifications', [function () {
     scope: {
       'view': '@'
     },
-    controller: ['$rootScope', '$scope', '$interval', '$q', 'abode', 'Notifications', function ($rootScope, $scope, $interval, $q, abode, Notifications) {
+    controller: ['$rootScope', '$scope', '$timeout', '$q', 'abode', 'Notifications', function ($rootScope, $scope, $timeout, $q, abode, Notifications) {
       $rootScope.notifications = $rootScope.notifications || {'hidden': false, 'notifications': []};
       $scope.loader = false;
       $scope.loading = false;
@@ -228,6 +228,7 @@ notifications.directive('notifications', [function () {
             $rootScope.breakIdle();
           }
           $scope.loading = false;
+          $scope.loader = $timeout($scope.refresh, 5000);
 
           //Check if existing notifications are still active
           for (i=$rootScope.notifications.notifications.length; i > 0; i-- ) {
@@ -255,6 +256,7 @@ notifications.directive('notifications', [function () {
 
         }, function () {
           $scope.loading = false;
+          $scope.loader = $timeout($scope.refresh, 10000);
         });
       };
 
@@ -266,11 +268,11 @@ notifications.directive('notifications', [function () {
         $rootScope.notifications.hidden = true;
       };
 
-      $scope.loader = $interval($scope.refresh, 5000);
+      $scope.loader = $timeout($scope.refresh, 5000);
       $scope.refresh();
 
       $scope.$on('$destroy', function () {
-        $interval.cancel($scope.loader);
+        $timeout.cancel($scope.loader);
       });
     }],
     templateUrl: 'views/notifications/index.html'
