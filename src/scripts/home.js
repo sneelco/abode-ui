@@ -275,7 +275,6 @@ home.directive('controller', [function () {
             $scope.obj._on = true;
           } else if (msg.event === 'OFF' && $scope.obj._on === true) {
             $scope.obj._on = false;
-            abode.message({'type': 'success', 'message': 'Off event for ' + msg.name});
           } else if (msg.event === 'UPDATED') {
             $scope.obj._on = msg.object._on;
             $scope.obj._level = msg.object._level;
