@@ -271,10 +271,11 @@ home.directive('controller', [function () {
         }
 
         if (msg.type === $scope.type && $scope.name === msg.name) {
-          if (msg.event === 'ON')  {
+          if (msg.event === 'ON' && $scope.obj._on === false)  {
             $scope.obj._on = true;
-          } else if (msg.event === 'OFF') {
+          } else if (msg.event === 'OFF' && $scope.obj._on === true) {
             $scope.obj._on = false;
+            abode.message({'type': 'success', 'message': 'Off event for ' + msg.name});
           } else if (msg.event === 'UPDATED') {
             $scope.obj._on = msg.object._on;
             $scope.obj._level = msg.object._level;
