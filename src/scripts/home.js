@@ -271,11 +271,11 @@ home.directive('controller', [function () {
           if ($scope.loader) {
             $timeout.cancel($scope.loader);
           }
-          
+
           if (msg.event === 'ON' && $scope.obj._on === false)  {
-            $scope.obj._on = true;
+            //$scope.obj._on = true;
           } else if (msg.event === 'OFF' && $scope.obj._on === true) {
-            $scope.obj._on = false;
+            //$scope.obj._on = false;
           } else if (msg.event === 'UPDATED') {
 
             for (var key in msg.object) {
