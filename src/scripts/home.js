@@ -247,7 +247,7 @@ home.directive('controller', [function () {
       onsuccess: '=',
     },
     templateUrl: '/views/home/controller.html',
-    controller: ['$scope', '$timeout', '$interval', 'Devices', 'Scenes', 'Rooms', 'Notifications', function ($scope, $timeout, $interval, Devices, Scenes, Rooms, Notifications) {
+    controller: ['$scope', '$timeout', '$interval', 'abode', 'Devices', 'Scenes', 'Rooms', 'Notifications', function ($scope, $timeout, $interval, abode, Devices, Scenes, Rooms, Notifications) {
       var types = {
         'devices': Devices, 'device': Devices,
         'rooms': Rooms, 'room': Rooms,
@@ -265,6 +265,28 @@ home.directive('controller', [function () {
       $scope.args = $scope.args || [];
       $scope.icon = $scope.icon || 'icon-lightbulb-idea';
 
+      var event_handler = abode.scope.$on('ABODE_EVENT', function (event, msg) {
+        if ($scope.loader) {
+          $timeout.cancel($scope.loader);
+        }
+
+        if (msg.type === $scope.type && $scope.name === msg.name) {
+          if (msg.event === 'ON')  {
+            $scope.obj._on = true;
+          } else if (msg.event === 'OFF') {
+            $scope.obj._on = false;
+          } else if (msg.event === 'UPDATED') {
+            $scope.obj._on = msg.object._on;
+            $scope.obj._level = msg.object._level;
+          }
+
+          if ($scope.action === 'toggle' || $scope.action === 'open' || $scope.action === 'on' || $scope.action === 'toggle') {
+            $scope.loader = $timeout($scope.refresh, 5000);
+          }
+
+          $scope.$digest();
+        }
+      });
 
       $scope.load = function () {
         if (!types[$scope.type]) {
@@ -385,6 +407,7 @@ home.directive('controller', [function () {
       }
 
       $scope.$on('$destroy', function () {
+        event_handler();
         $timeout.cancel($scope.loader);
       });
 
