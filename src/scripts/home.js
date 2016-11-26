@@ -276,8 +276,11 @@ home.directive('controller', [function () {
           } else if (msg.event === 'OFF' && $scope.obj._on === true) {
             $scope.obj._on = false;
           } else if (msg.event === 'UPDATED') {
-            $scope.obj._on = msg.object._on;
-            $scope.obj._level = msg.object._level;
+            for (var key in msg.object) {
+              if (msg.object.hasOwnProperty(key) && key[0] === '_') {
+                self[key] = msg.object[key];
+              }
+            }
           }
 
           if ($scope.action === 'toggle' || $scope.action === 'open' || $scope.action === 'on' || $scope.action === 'toggle') {
