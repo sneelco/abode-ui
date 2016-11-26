@@ -366,7 +366,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
         };
 
         $scope.openScene = function (scene) {
-          var modal = scenes.view(scene._id, source);
+          var modal = scene.$view();
           modal.result.then(function(config) {
             if (config && config.recurse) {
               $uibModalInstance.close(config);

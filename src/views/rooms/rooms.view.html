@@ -24,7 +24,7 @@
   <ul class="list-group">
     <li class="list-group-item" style="cursor: pointer" ng-repeat="scene in scenes | orderBy: ['-_on', '+age', '+name']" ng-class="{'list-group-item-success': scene._on}" ng-show="filter_condition=='scenes' || filter_conditions==''" ng-click="openScene(scene)">
       <h5 class="list-group-item-heading"><i class="icon-picture"></i> {{scene.name}}</h5>
-      <p style="font-size: 1.2em;" class="list-group-item-text ">{{scene.age | ageHumanReadable}}</p>
+      <p style="font-size: .8em;" class="list-group-item-text ">{{scene.age | ageHumanReadable}}</p>
     </li>
     <li class="list-group-item" style="cursor: pointer" ng-repeat="device in devices | orderBy: ['-_on', '+age', '+name']" ng-class="{'list-group-item-success': device_state(device, '_on', true, ['light', 'display', 'fan']), 'list-group-item-danger': device_state(device, '_on', true, ['door', 'window', 'motion_sensor']) || device._mode == 'HEAT', 'list-group-item-info': device._mode == 'COOL'}" ng-click="open(device)" ng-show="check_filter(device)">
       <h4 class="list-group-item-heading">
@@ -48,7 +48,7 @@
         </p>
       </h4>
 
-      <p class="list-group-item-text ">{{device.age | ageHumanReadable}}</p>
+      <p class="list-group-item-text " style="font-size: .8em;">{{device.age | ageHumanReadable}}</p>
     </li>
   </ul>
 

@@ -47,7 +47,7 @@ scenes.factory('Scenes', ['$resource', '$http', '$q', 'abode', 'scenes', functio
 
 }]);
 
-rooms.factory('SceneRooms', ['$resource', 'abode', function ($resource, abode) {
+scenes.factory('SceneRooms', ['$resource', 'abode', function ($resource, abode) {
 
   var model = $resource(abode.url('/api/scenes/:scene/rooms/:id'), {id: '@_id'}, {
     'query': {
@@ -61,7 +61,7 @@ rooms.factory('SceneRooms', ['$resource', 'abode', function ($resource, abode) {
 
 }]);
 
-rooms.factory('RoomScenes', ['$resource', 'abode', function ($resource, abode) {
+scenes.factory('RoomScenes', ['$resource', 'abode', 'scenes', function ($resource, abode, scenes) {
 
   var model = $resource(abode.url('/api/rooms/:room/scenes/:id'), {id: '@_id'}, {
     'query': {
@@ -137,7 +137,7 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode, Scene
     var self = this,
       action = 'off';
 
-    if (self.scene._state === 'stopped') {
+    if (self._state === 'stopped') {
       return self.$on();
     } else {
       return self.$off();
@@ -203,6 +203,10 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode, Scene
     });
 
     return defer.promise;
+  };
+
+  methods.$view = function () {
+    return viewScene(this);
   };
 
   var loadScenes = function (source) {
@@ -280,7 +284,6 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode, Scene
         $scope.scene = scene;
         $scope.processing = false;
         $scope.errors = false;
-          console.dir($scope.scene);
 
         $scope.ok = function () {
           $uibModalInstance.close();
@@ -310,7 +313,6 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode, Scene
             return;
           }
 
-          console.dir($scope.scene);
           $scope.processing = true;
           $scope.errors = false;
 
