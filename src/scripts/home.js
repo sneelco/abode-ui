@@ -266,16 +266,18 @@ home.directive('controller', [function () {
       $scope.icon = $scope.icon || 'icon-lightbulb-idea';
 
       var event_handler = abode.scope.$on('ABODE_EVENT', function (event, msg) {
-        if ($scope.loader) {
-          $timeout.cancel($scope.loader);
-        }
 
         if (msg.type === $scope.type && $scope.name === msg.name) {
+          if ($scope.loader) {
+            $timeout.cancel($scope.loader);
+          }
+          
           if (msg.event === 'ON' && $scope.obj._on === false)  {
             $scope.obj._on = true;
           } else if (msg.event === 'OFF' && $scope.obj._on === true) {
             $scope.obj._on = false;
           } else if (msg.event === 'UPDATED') {
+
             for (var key in msg.object) {
               if (msg.object.hasOwnProperty(key) && key[0] === '_') {
                 self[key] = msg.object[key];
