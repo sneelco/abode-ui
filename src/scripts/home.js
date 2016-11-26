@@ -280,7 +280,7 @@ home.directive('controller', [function () {
 
             for (var key in msg.object) {
               if (msg.object.hasOwnProperty(key) && key[0] === '_') {
-                self[key] = msg.object[key];
+                $scope.obj[key] = msg.object[key];
               }
             }
           }
