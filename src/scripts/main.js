@@ -260,6 +260,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
   this.messages = [];
   this.message_scope = null;
   this.scope = $rootScope;
+  this.scope.status = {'connected': false};
 
   this.get_events = function () {
     var expires,
@@ -277,34 +278,42 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
       auth_query = auth_query.join('&');
     }
 
-    self.eventSource = new EventSource(self.url('/api/abode/events?' + auth_query).value());
+    $http.post(self.url('/api/abode/events').value(),{}, {'headers': $httpProvider.defaults.headers.common}).then(function (result) {
+      var key = result.data.key;
+      self.eventSource = new EventSource(self.url('/api/abode/events/' + key).value());
 
-    self.eventSource.addEventListener('message', function (msg) {
-      var event = JSON.parse(msg.data);
+      self.eventSource.addEventListener('message', function (msg) {
+        var event = JSON.parse(msg.data);
 
-      if (event.event) {
-        self.scope.$broadcast(event.event, event);
-      }
-      self.scope.$broadcast('ABODE_EVENT', event);
+        if (event.event) {
+          self.scope.$broadcast(event.event, event);
+        }
+        self.scope.$broadcast('ABODE_EVENT', event);
 
 
-    }, false);
+      }, false);
 
-    self.eventSource.onopen = function () {
-      $timeout.cancel(self.event_error);
-    };
+      self.eventSource.onopen = function () {
+        self.scope.status.connected = true;
+        $timeout.cancel(self.event_error);
+      };
 
-    self.eventSource.onerror = function (err) {
-      self.event_error = $timeout(function () {
-        self.message({'type': 'failed', 'message': 'Connection to Abode Died.', 'details': err});
-        self.scope.$broadcast('EVENTS_DIED');
-      }, 10 * 1000);
-    };
+      self.eventSource.onerror = function (err) {
+        self.scope.status.connected = false;
+        err.target.close();
+        self.scope.$broadcast('EVENTS_DIED', err);
+      };
+    }, function (err) {
+      self.scope.$broadcast('EVENTS_DIED', err);
+    });
 
   };
 
-  this.scope.$on('EVENTS_DIED', function () {
-    self.get_events();
+  this.scope.$on('EVENTS_DIED', function (event) {
+    self.event_error = $timeout(function () {
+      self.message({'type': 'failed', 'message': 'Connection to Abode Died.', 'details': event});
+      self.get_events();
+    }, 5 * 1000);
   });
 
   this.url = function (uri, source) {
@@ -482,6 +491,7 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
 
 abode.controller('mainController', ['$scope', '$state', 'abode', 'Interfaces', 'auth', function ($scope, $state, abode, Interfaces, auth) {
 
+  $scope.root = abode.scope;
   $scope.interfaces = Interfaces.query();
 
   $scope.logout = function () {
