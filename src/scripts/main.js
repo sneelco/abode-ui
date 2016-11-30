@@ -304,6 +304,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
         self.scope.$broadcast('EVENTS_DIED', err);
       };
     }, function (err) {
+      self.scope.status.connected = false;
       self.scope.$broadcast('EVENTS_DIED', err);
     });
 
@@ -311,7 +312,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
 
   this.scope.$on('EVENTS_DIED', function (event) {
     self.event_error = $timeout(function () {
-      self.message({'type': 'failed', 'message': 'Connection to Abode Died.', 'details': event});
+      //self.message({'type': 'failed', 'message': 'Connection to Abode Died.', 'details': event});
       self.get_events();
     }, 5 * 1000);
   });
