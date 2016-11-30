@@ -386,13 +386,15 @@ notifications.controller('notificationsEdit', ['$scope', '$state', '$uibModal', 
 
         $scope.action_types = [
           {name: 'Device', value: 'devices', icon: 'glyphicon glyphicon-oil'},
-          {name: 'Room', value: 'rooms', icon: 'glyphicon glyphicon-modal-window', capabilities: ['light', 'dimmer', 'conditioner']},
+          {name: 'Room', value: 'rooms', icon: 'glyphicon glyphicon-modal-window', capabilities: ['light', 'dimmer', 'conditioner', 'lock']},
           {name: 'Scene', value: 'scenes', icon: 'icon-picture', capabilities: ['light']},
         ];
 
         $scope.type_actions = [
           {name: 'On', value: 'on', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff','motion_sensor']},
           {name: 'Off', value: 'off', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff','motion_sensor']},
+          {name: 'Lock', value: 'lock', arguments: [], capabilities: ['lock']},
+          {name: 'Unlock', value: 'unlock', arguments: [], capabilities: ['lock']},
           {name: 'Open', value: 'on', arguments: [], capabilities: ['door','window']},
           {name: 'Close', value: 'off', arguments: [], capabilities: ['door','window']},
           {name: 'Level', value: 'set_level', arguments: ['level'], capabilities: ['dimmer']},

@@ -20,6 +20,7 @@
             <i class="wi wi-day-snow-thunderstorm" ng-show="has_capability(device, 'weather')"></i>
             <i class="icon-browser" ng-show="has_capability(device, 'browser')"></i>
             <i class="glyphicon glyphicon-bullhorn" ng-show="has_capability(device, 'siren')"></i>
+            <i class="icon-lockalt-keyhole" ng-show="has_capability(device, 'lock')"></i>
             {{device.name}}<div class="pull-right" style="margin-left: .5em; margin-top: -.25em"> <button class="btn btn-xs btn-default" ng-click="edit(device)" stop-event><i class="icon-edit"></i></button></div> <span class="badge">{{device._rooms.length}} <i class="glyphicon glyphicon-modal-window"></i></span>
           </li>
         </ul>

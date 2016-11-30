@@ -222,7 +222,7 @@ triggers.service('triggers', function ($http, $q, $uibModal, $resource, abode, c
 
         $scope.action_types = [
           {name: 'Device', value: 'devices', icon: 'glyphicon glyphicon-oil'},
-          {name: 'Room', value: 'rooms', icon: 'glyphicon glyphicon-modal-window', capabilities: ['light', 'dimmer', 'conditioner']},
+          {name: 'Room', value: 'rooms', icon: 'glyphicon glyphicon-modal-window', capabilities: ['light', 'dimmer', 'conditioner', 'lock']},
           {name: 'Scene', value: 'scenes', icon: 'icon-picture', capabilities: ['light']},
           {name: 'Video', value: 'video', icon: 'icon-playvideo', capabilities: ['video']},
           {name: 'Display', value: 'display', icon: 'icon-monitor', capabilities: ['display']},
@@ -231,6 +231,8 @@ triggers.service('triggers', function ($http, $q, $uibModal, $resource, abode, c
         $scope.type_actions = [
           {name: 'On', value: 'on', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff']},
           {name: 'Off', value: 'off', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff']},
+          {name: 'Lock', value: 'lock', arguments: [], capabilities: ['lock']},
+          {name: 'Unlock', value: 'unlock', arguments: [], capabilities: ['lock']},
           {name: 'Status', value: 'status', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff']},
           {name: 'Level', value: 'set_level', arguments: ['level'], capabilities: ['dimmer']},
           {name: 'Mode', value: 'set_mode', arguments: ['mode'], capabilities: ['conditioner']},

@@ -186,6 +186,36 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
     return defer.promise;
   };
 
+  methods.$lock = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/devices/' + this._id + '/lock').value();
+
+    $http.post(url).then(function (response) {
+      self._on = true;
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  methods.$unlock = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/devices/' + this._id + '/unlock').value();
+
+    $http.post(url).then(function (response) {
+      self._on = false;
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
   methods.$on = function () {
     var self = this,
       defer = $q.defer(),
@@ -541,6 +571,35 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           $uibModalInstance.close();
         };
 
+        $scope.unlock = function () {
+
+          $scope.processing = true;
+          $scope.errors = false;
+
+          $scope.device.$unlock().then(function () {
+            $scope.processing = false;
+            $scope.errors = false;
+          }, function (err) {
+            console.log(err);
+            $scope.processing = false;
+            $scope.errors = true;
+          });
+        };
+
+        $scope.lock = function () {
+
+          $scope.processing = true;
+          $scope.errors = false;
+
+          $scope.device.$lock().then(function () {
+            $scope.processing = false;
+            $scope.errors = false;
+          }, function (err) {
+            console.log(err);
+            $scope.processing = false;
+            $scope.errors = true;
+          });
+        };
 
         $scope.toggle_onoff = function () {
 
