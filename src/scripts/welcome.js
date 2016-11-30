@@ -253,7 +253,7 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
   }, function (err) {
     $scope.checking_device = false;
     abode.message({'type': 'failed', 'message': err});
-    $staet.go('welcome_devices');
+    $state.go('welcome_devices');
   });
 
   $scope.reset_server = function () {
