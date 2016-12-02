@@ -467,6 +467,10 @@ triggers.service('triggers', function ($http, $q, $uibModal, $resource, abode, c
           $scope.condition.condition = c.value;
         };
 
+        $scope.removeCondition = function (list, index) {
+         list.splice(index, 1);
+        };
+
         $scope.changeType = function (t) {
           if ($scope.type !== t) {
             $scope.type = t;
