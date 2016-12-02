@@ -7,7 +7,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-12">
-        <h3 ng-show="loading"><i class="icon-loadingalt spin"></i> Checking conditions</h3>
+        <h3 ng-show="loading"><i class="icon-circleselection spin"></i> Checking conditions</h3>
         <div class="list-group" ng-hide="loading">
           <button type="button" class="btn btn-default list-group-item" ng-click="isCollapsed = !isCollapsed">
             <i class="icon-ok-sign text-success" ng-show="results.results.matches"></i>
@@ -22,7 +22,25 @@
                 {{condition.value.message}}
               </button>
               <div class="list-group-item" uib-collapse="isCollapsed" ng-show="condition.value.conditions.length > 0">
-                {{condition.value.conditions}}
+                <div class="list-group" ng-repeat="condition in condition.value.conditions">
+                  <button type="button" class="btn btn-default list-group-item">
+                    <i class="icon-ok-sign text-success" ng-show="condition.value.matches"></i>
+                    <i class="icon-remove-sign text-danger" ng-hide="condition.value.matches"></i>
+                    {{condition.value.message}}
+                  </button>
+                  <div class="list-group-item" uib-collapse="isCollapsed" ng-show="condition.value.conditions.length > 0">
+                    <div class="list-group" ng-repeat="condition in condition.value.conditions">
+                      <button type="button" class="btn btn-default list-group-item">
+                        <i class="icon-ok-sign text-success" ng-show="condition.value.matches"></i>
+                        <i class="icon-remove-sign text-danger" ng-hide="condition.value.matches"></i>
+                        {{condition.value.message}}
+                      </button>
+                      <div class="list-group-item" uib-collapse="isCollapsed" ng-show="condition.value.conditions.length > 0">
+                        {{condition.value.conditions}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

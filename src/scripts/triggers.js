@@ -825,8 +825,8 @@ triggers.controller('triggersEdit', function ($scope, $state, $uibModal, abode, 
       size: 'lg',
       templateUrl: 'views/triggers/triggers.checker.html',
       controller: ['$scope', '$uibModalInstance', '$timeout', 'trigger', function ($scope, $uibModalInstance, $timeout, trigger) {
-        $scope.loading = false;
-	$scope.results = {};
+        $scope.loading = true;
+	      $scope.results = {};
 
         $scope.check = function () {
           $scope.loading = true;
