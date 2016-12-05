@@ -261,6 +261,8 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
   this.message_scope = null;
   this.scope = $rootScope;
   this.scope.status = {'connected': false};
+  this.last_event = new Date();
+  this.last_event = this.last_event.getTime(),
 
   this.get_events = function () {
     var expires,
@@ -278,13 +280,14 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
       auth_query = auth_query.join('&');
     }
 
-    $http.post(self.url('/api/abode/events').value(),{}, {'headers': $httpProvider.defaults.headers.common}).then(function (result) {
+    $http.post(self.url('/api/events').value(),{}, {'headers': $httpProvider.defaults.headers.common}).then(function (result) {
       var key = result.data.key;
-      self.eventSource = new EventSource(self.url('/api/abode/events/' + key).value());
+      self.eventSource = new EventSource(self.url('/api/events/' + key + '?last=' + self.last_event).value());
 
       self.eventSource.addEventListener('message', function (msg) {
         var event = JSON.parse(msg.data);
-
+        self.last_event = event.id;
+        
         if (event.event) {
           self.scope.$broadcast(event.event, event);
         }
