@@ -1016,7 +1016,7 @@ triggers.controller('room', function () {
 
 });
 
-triggers.filter('conditionReadable', function () {
+triggers.filter('conditionReadable', function ($filter) {
     return function (condition) {
       var left, right, cond;
 
@@ -1034,6 +1034,10 @@ triggers.filter('conditionReadable', function () {
           text = key;
         } else if (['string','number'].indexOf(type) !== -1) {
           text = 'the ' + type + ' "' + key + '"';
+        } else if (type === 'timeofday') {
+          text = 'the time ' + $filter('time')(key);
+        } else if (type === 'time' && key === 'time') {
+          text = 'the current time';
         } else {
           text = 'the ' + type + '.' + key;
         }
