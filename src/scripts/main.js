@@ -123,6 +123,22 @@ abode.directive('iconSelector', ['$compile', function () {
           'name': 'Garage',
           'class': 'icon-garage'
         },
+        {
+          'name': 'Lock',
+          'class': 'icon-lock'
+        },
+        {
+          'name': 'Unlock',
+          'class': 'icon-unlock'
+        },
+        {
+          'name': 'Sleep',
+          'class': 'icon-sleep'
+        },
+        {
+          'name': 'Away',
+          'class': 'icon-travel'
+        },
       ];
     }]
   };
