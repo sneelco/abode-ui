@@ -507,7 +507,8 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
     step.actions.splice(index, 1);
   };
 
-  $scope.editAction = function (action) {var assign = $uibModal.open({
+  $scope.editAction = function (action) {
+    var assign = $uibModal.open({
       animation: true,
       templateUrl: 'views/scenes/edit.action.html',
       resolve: {
@@ -586,6 +587,10 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
           if ($scope.has_capability('light') && !$scope.has_capability('dimmer')) {
             $scope.selected._on = $scope.device._on;
           }
+          if ($scope.has_capability('lock')) {
+            $scope.selected._on = $scope.device._on;
+            $scope.selected._level = $scope.device._level;
+          }
           if ($scope.has_capability('conditioner')) {
             $scope.selected._mode = $scope.device._mode;
             $scope.selected._set_point = $scope.device._set_point;
@@ -638,6 +643,20 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
             $scope.device._on = true;
             $scope.device._level = 100;
           }
+        };
+
+        $scope.lock = function () {
+
+          $scope.device._on = true;
+          $scope.device._level = 100;
+
+        };
+
+        $scope.unlock = function () {
+          
+          $scope.device._on = false;
+          $scope.device._level = 0;
+          
         };
 
         $scope.level_up = function () {
@@ -824,6 +843,10 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
           if ($scope.has_capability('light') && !$scope.has_capability('dimmer')) {
             $scope.selected._on = $scope.device._on;
           }
+          if ($scope.has_capability('lock')) {
+            $scope.selected._on = $scope.device._on;
+            $scope.selected._level = $scope.device._level;
+          }
           if ($scope.has_capability('conditioner')) {
             $scope.selected._mode = $scope.device._mode;
             $scope.selected._set_point = $scope.device._set_point;
@@ -876,6 +899,20 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
             $scope.device._on = true;
             $scope.device._level = 100;
           }
+        };
+
+        $scope.lock = function () {
+          
+          $scope.device._on = true;
+          $scope.device._level = 100;
+
+        };
+
+        $scope.unlock = function () {
+
+          $scope.device._on = false;
+          $scope.device._level = 0;
+          
         };
 
         $scope.level_up = function () {
