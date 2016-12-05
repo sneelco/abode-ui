@@ -262,26 +262,24 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
   this.scope = $rootScope;
   this.scope.status = {'connected': false};
   this.last_event = new Date();
-  this.last_event = this.last_event.getTime(),
+  this.last_event = this.last_event.getTime();
 
   this.get_events = function () {
-    var expires,
-      auth_query,
-      eventSource;
-
-    if (self.config && self.config.auth && self.config.auth.token) {
-
-      expires = new Date(); expires.setDate(expires.getDate() + 1);
-      auth_query = [
-        'auth_token=' + self.config.auth.token.auth_token,
-        'client_token=' + self.config.auth.token.client_token,
-      ];
-
-      auth_query = auth_query.join('&');
-    }
+    var eventSource;
 
     $http.post(self.url('/api/events').value(),{}, {'headers': $httpProvider.defaults.headers.common}).then(function (result) {
       var key = result.data.key;
+
+      //Get the current time
+      var now = new Date();
+      now = now.getTime();
+
+      //If it's been over 10 minutes, reset our event stream
+      if ((now - self.last_event) > 1000 * 60 * 10) {
+        this.last_event = now;
+        self.scope.$broadcast('EVENTS_RESET', {});
+      }
+
       self.eventSource = new EventSource(self.url('/api/events/' + key + '?last=' + self.last_event).value());
 
       self.eventSource.addEventListener('message', function (msg) {

@@ -55,7 +55,7 @@ home.factory('Interfaces', ['$resource', '$http', '$q', 'abode', function($resou
 
 home.factory('EventCache', ['$resource', '$http', '$q', 'abode', function($resource, $http, $q, abode) {
 
-  var eventcache = $resource(abode.url('/api/abode/events?cache=true'),{},{});
+  var eventcache = $resource(abode.url('/api/events?last=:last'),{},{});
 
   return eventcache;
 }]);
@@ -173,7 +173,11 @@ home.directive('events', [function () {
 
       };
 
-      EventCache.query().$promise.then(function (response) {
+      var last_event = new Date();
+      var last_event = last_event.getTime() - (1000 * 60 * 30);
+
+      EventCache.query({'last': last_event}).$promise.then(function (response) {
+        response = response.map(function (record) { return record.event; });
         response.forEach(process_event);
         start_listener();
       }, function () {
@@ -255,6 +259,9 @@ home.directive('controller', [function () {
         'notifications': Notifications, 'notification': Notifications
       };
 
+      var success_splay = 1000 * 60 * Math.floor((Math.random() * 5) + 5);
+      var error_splay = 1000 * Math.floor((Math.random() * 5) + 1);
+
       $scope.title = $scope.title || $scope.name;
       $scope.loading = false;
       $scope.failed = false;
@@ -264,6 +271,12 @@ home.directive('controller', [function () {
       $scope.action = $scope.action || 'open';
       $scope.args = $scope.args || [];
       $scope.icon = $scope.icon || 'icon-lightbulb-idea';
+
+
+      //If we get an EVENTS_RESET event, schedule a refresh
+      var feed_detector = abode.scope.$on('EVENTS_RESET', function (event, msg) {
+        $scope.loader = $timeout($scope.refresh, error_splay);
+      });
 
       var event_handler = abode.scope.$on('ABODE_EVENT', function (event, msg) {
 
@@ -285,8 +298,9 @@ home.directive('controller', [function () {
             }
           }
 
-          if ($scope.action === 'toggle' || $scope.action === 'open' || $scope.action === 'on' || $scope.action === 'toggle') {
-            $scope.loader = $timeout($scope.refresh, 5000);
+          //If we got an event, hold off on our normal refresh
+          if (['toggle', 'open', 'on', 'off'].indexOf($scope.action) > -1) {
+            $scope.loader = $timeout($scope.refresh, success_splay);
           }
 
           $scope.$digest();
@@ -310,9 +324,18 @@ home.directive('controller', [function () {
           $scope.obj = result;
           $scope.loading = false;
           $scope.error = false;
+
+
+          if (['toggle', 'open', 'on', 'off'].indexOf($scope.action) > -1) {
+            $scope.loader = $timeout($scope.refresh, success_splay);
+          }
+
         }, function () {
           $scope.loading = false;
           $scope.error = true;
+
+          //If we got an error, try again in 5 seconds
+          $scope.loader = $timeout($scope.load, error_splay);
         });
       };
 
@@ -326,12 +349,12 @@ home.directive('controller', [function () {
           $scope.loading = false;
           $scope.error = false;
 
-          $scope.loader = $timeout($scope.refresh, 5000);
+          $scope.loader = $timeout($scope.refresh, success_splay);
         }, function () {
           $scope.loading = false;
           $scope.error = true;
 
-          $scope.loader = $timeout($scope.refresh, 10000);
+          $scope.loader = $timeout($scope.refresh, error_splay);
         });
       };
 
@@ -405,14 +428,11 @@ home.directive('controller', [function () {
         }
       };
 
-      $scope.load();
-
-      if ($scope.action === 'toggle' || $scope.action === 'open' || $scope.action === 'on' || $scope.action === 'toggle') {
-        $scope.loader = $timeout($scope.refresh, 5000);
-      }
+      $scope.loader = $timeout($scope.load, 100);
 
       $scope.$on('$destroy', function () {
         event_handler();
+        feed_detector();
         $timeout.cancel($scope.loader);
       });
 
