@@ -152,6 +152,7 @@ scenes.service('scenes', function ($http, $q, $uibModal, $resource, abode, Scene
 
     $http.post(url).then(function (response) {
       self._on = true;
+      self._state = 'pending';
       defer.resolve(response.data);
     }, function (err) {
       defer.reject(err.data);
@@ -653,7 +654,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
         };
 
         $scope.unlock = function () {
-          
+
           $scope.device._on = false;
           $scope.device._level = 0;
           

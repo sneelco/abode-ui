@@ -1,5 +1,5 @@
 <div class="controller" ng-click="do_action()">
-  <div class="controller-icon" ng-class="{'controller-pending': pending, 'controller-success': success, 'controller-failed': failed, 'controller-success': (obj._on || obj._lights_on || obj._fans_on) && (action == 'toggle' || action == 'on' || action == 'off'), 'controller-cool': obj._mode == 'COOL', 'controller-heat': obj._mode == 'HEAT', 'spin': (obj._on || obj._fans_on) && spin}">
+  <div class="controller-icon" ng-class="{'controller-pending': pending || obj._state == 'pending', 'controller-success': success, 'controller-failed': failed, 'controller-success': (obj._on || obj._lights_on || obj._fans_on) && (action == 'toggle' || action == 'on' || action == 'off') && obj._state != 'pending', 'controller-cool': obj._mode == 'COOL', 'controller-heat': obj._mode == 'HEAT', 'spin': (obj._on || obj._fans_on) && spin}">
     <span ng-show="icon && !obj._temperature"><i class="{{icon}}"></i></span>
     <span ng-show="obj._temperature">{{obj._temperature | number:0}}</span>
   </div>
