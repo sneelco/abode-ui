@@ -72,6 +72,11 @@
         <input type="input" ng-model="watched.key">
     </div>
 
+    <div class="col-sm-4" ng-if="type == 'age'">
+        <label for="age">Age</label>
+        <epochduration time="watched.key">
+    </div>
+
     <div class="col-sm-4" ng-if="capabilities.length > 0">
 
       <div class="form-group">

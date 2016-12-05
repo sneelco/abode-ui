@@ -174,7 +174,7 @@ home.directive('events', [function () {
       };
 
       var last_event = new Date();
-      var last_event = last_event.getTime() - (1000 * 60 * 30);
+      last_event = last_event.getTime() - (1000 * 60 * 30);
 
       EventCache.query({'last': last_event}).$promise.then(function (response) {
         response = response.map(function (record) { return record.event; });

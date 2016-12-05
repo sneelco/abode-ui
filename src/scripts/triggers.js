@@ -620,6 +620,7 @@ triggers.directive('conditionSide', function ($uibModal, devices, rooms, scenes)
         {name: 'Boolean', value: 'boolean', icon: 'icon-moonfirstquarter'},
         {name: 'Number', value: 'number', icon: 'icon-counter'},
         {name: 'String', value: 'string', icon: 'icon-textcursor'},
+        {name: 'Age', value: 'age', icon: 'icon-stopwatch'},
       ];
 
       $scope.condition_keys = [
@@ -1046,6 +1047,8 @@ triggers.filter('conditionReadable', function ($filter) {
           text = 'the time ' + $filter('time')(key);
         } else if (type === 'time' && key === 'time') {
           text = 'the current time';
+        } else if (type === 'age') {
+          text = 'age of ' + $filter('ageHumanReadable')(key);
         } else {
           text = 'the ' + type + '.' + key;
         }
