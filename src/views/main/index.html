@@ -49,7 +49,7 @@
 </div>
 <div class="status-bar">
 	<div class="anav-opener  text-muted pull-left"  ng-click="anav_open = true"><i class="icon-menu"></i></div>
-	<div ng-class="{'text-success': root.status.connected, 'text-danger': !root.status.connected}"><i ng-class="{'icon-plug': !root.status.connected, 'icon-networksignal': root.status.connected}"></i></div>
+	<div ng-class="{'text-success': root.status.connected, 'text-danger': !root.status.connected}" uib-tooltip-template="'views/main/event_status.html'" tooltip-placement="bottom-right" tooltip-trigger="'click'"><i ng-class="{'icon-plug': !root.status.connected, 'icon-networksignal': root.status.connected}"></i></div>
 	<notifications-status></notifications-status>
 </div>
 <notifications></notifications>

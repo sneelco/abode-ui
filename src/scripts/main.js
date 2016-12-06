@@ -276,7 +276,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
   this.messages = [];
   this.message_scope = null;
   this.scope = $rootScope;
-  this.scope.status = {'connected': false};
+  this.scope.status = {'connected': false, 'messages': 0, 'errors': 0};
   this.last_event = new Date();
   this.last_event = this.last_event.getTime();
 
@@ -306,6 +306,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
           self.scope.$broadcast(event.event, event);
         }
         self.scope.$broadcast('ABODE_EVENT', event);
+        self.scope.status.messages += 1;
 
 
       }, false);
@@ -316,6 +317,8 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
       };
 
       self.eventSource.onerror = function (err) {
+        console.error('Event feed died');
+        self.scope.status.errors += 1;
         self.scope.status.connected = false;
         err.target.close();
         self.scope.$broadcast('EVENTS_DIED', err);
