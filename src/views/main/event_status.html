@@ -1,6 +1,6 @@
 <div style="text-align: left;">
 	<div ng-show="root.status.connected">Status: Connected</div>
 	<div ng-show="!root.status.connected">Status: Disconnected</div>
-	<div>Events: {{root.status.messages}}</div>
-	<div>Errors: {{root.status.errors}}</div>
+	<div>Events: {{root.status.messages | number:0}}</div>
+	<div>Errors: {{root.status.errors | number:0}}</div>
 </div>
