@@ -788,12 +788,13 @@ triggers.controller('triggersList', function ($scope, $state, Triggers, confirm)
   $scope.load();
 });
 
-triggers.controller('triggersEdit', function ($scope, $state, $uibModal, abode, triggers, trigger, Devices, Rooms, confirm, types) {
+triggers.controller('triggersEdit', function ($scope, $state, $uibModal, abode, triggers, trigger, Devices, Rooms, Scenes, confirm, types) {
   $scope.trigger = trigger;
   $scope.alerts = [];
   $scope.state = $state;
   $scope.trigger_types = types;
   $scope.devices = [];
+  $scope.scenes = [];
   $scope.conditions = false;
   $scope.delay = ($scope.trigger.delay && $scope.trigger.delay.time > 0) ? true : false;
   $scope.duration = ($scope.trigger.duration && $scope.trigger.duration.time > 0) ? true : false;
@@ -809,6 +810,7 @@ triggers.controller('triggersEdit', function ($scope, $state, $uibModal, abode, 
     {name: 'None', value: '', icon: 'glyphicon glyphicon-ban-circle'},
     {name: 'Device', value: 'device', icon: 'glyphicon glyphicon-oil'},
     {name: 'Room', value: 'room', icon: 'glyphicon glyphicon-modal-window'},
+    {name: 'Scene', value: 'scene', icon: 'icon-picture'},
     {name: 'Time', value: 'time', icon: 'icon-clockalt-timealt'},
     {name: 'Date', value: 'date', icon: 'icon-calendar'},
     {name: 'String', value: 'string', icon: 'icon-quote'},
@@ -949,8 +951,20 @@ triggers.controller('triggersEdit', function ($scope, $state, $uibModal, abode, 
     });
   };
 
+  var getScenes = function () {
+    $scope.scenes_loading = true;
+    Scenes.query().$promise.then(function (scenes) {
+      $scope.scenes = scenes;
+      $scope.scenes_loading = false;
+    }, function () {
+      $scope.scenes = [];
+      $scope.scenes_loading = false;
+    });
+  };
+
   getDevices();
   getRooms();
+  getScenes();
 
   $scope.$watch('delay', function (type) {
     if (!type) {
@@ -984,6 +998,10 @@ triggers.controller('triggersEdit', function ($scope, $state, $uibModal, abode, 
 
   $scope.changeRoom = function (room) {
     trigger.match = room.name;
+  };
+
+  $scope.changeScene = function (scene) {
+    trigger.match = scene.name;
   };
 
   $scope.closeAlert = function(index) {

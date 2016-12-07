@@ -199,10 +199,14 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
     $scope.loading = true;
     $scope.devices = [];
 
-    AuthDevices.query(function (results) {
+    AuthDevices.query().$promise.then(function (results) {
       $scope.devices = results;
       $scope.loading = false;
-    }).$promise.then(undefined, function () {
+      $scope.failed = false;
+    }, function (err) {
+      $scope.loading = false;
+      $scope.failed = true;
+      console.error(err);
     });
 
   };
@@ -212,7 +216,7 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
     $scope.auth.$assign(device).then(function (result) {
       $state.go('welcome_interfaces');
     }, function (err) {
-      abode.message({'message': err, 'type': 'failed'});
+      abode.message({'message': err.message || 'Error Occured', 'type': 'failed'});
     });
 
     //$state.go('main.home', {'interface': interface});
@@ -253,6 +257,7 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
   }, function (err) {
     $scope.checking_device = false;
     abode.message({'type': 'failed', 'message': err});
+      console.error(err);
     $state.go('welcome_devices');
   });
 
@@ -288,7 +293,7 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
     $scope.device.$set_interface(interface).then(function () {
       $scope.done(interface);
     }, function (err) {
-      abode.message({'type': 'failed', 'message': err});
+      abode.message({'type': 'failed', 'message': err.message || err});
     });
 
   };

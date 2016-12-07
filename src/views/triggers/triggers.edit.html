@@ -81,6 +81,15 @@
                               </ul>
                             </div>
 
+                            <div ng-show="trigger.match_type == 'scene'">
+                              <div ng-show="scenes_loading"><i class="icon-loadingalt spin"></i> Loading...</div>
+                              <ul class="list-group bg-muted select-list" ng-hide="scenes_loading">
+                                <li class="list-group-item" style="cursor: pointer;" ng-repeat="scene in scenes | orderBy: '+name'" ng-click="changeScene(scene)" ng-class="{'list-group-item-success': trigger.match == scene.name}">
+                                  {{scene.name}}
+                                </li>
+                              </ul>
+                            </div>
+
                             <div ng-show="trigger.match_type == 'time'" style="padding-left: 1em;">
                               <epochtime time="trigger.match" disabled="{{trigger.match_type != 'time'}}"></epochtime>
                             </div>
