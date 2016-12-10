@@ -1,0 +1,24 @@
+<div class="row">
+  <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+    <div>&nbsp;</div>
+    <div class="row well">
+      <div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-0">
+        <img src="images/home.png"  class="img-responsive img-rounded">
+      </div>
+
+      <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-0">
+        <p class="text-center"><strong>Configure your new Abode Server</strong></p>
+        <form name="configureFrm">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Name" ng-model="config.name" required>
+          </div>
+          <button class="btn btn-success" ng-disabled="configureFrm.$invalid || loading" ng-click="do_login()"><span class="icon-settingsandroid"></span> Setup</button>
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

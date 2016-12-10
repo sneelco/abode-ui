@@ -3,6 +3,7 @@
 
 module.exports = function(grunt) {
   var server;
+  var proxy = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
   grunt.initConfig({
     watch: {
@@ -30,13 +31,37 @@ module.exports = function(grunt) {
           open: true,
           hostname: '0.0.0.0',
           keepalive: true,
-          debug: true
-        }
-      }
+          debug: true,
+           middleware: function (connect, options, middlewares) {
+            var httpProxy = require('http-proxy');
+             
+            var proxy = httpProxy.createProxyServer(options); // See (†) 
+
+            middlewares.unshift(function (req, res, next) {
+              if (req.url.indexOf('/api') === 0) {
+                proxy.web(req, res, { target: 'http://localhost:8080' });
+                return;
+              }
+              next();
+            });
+             
+            return middlewares;
+          }
+        },
+        proxies: [
+          {
+            context: '/api',
+            host: 'localhost',
+            port: 8080,
+            https: false,
+            xforward: true,
+          }
+        ],
+      },
     },
     concurrent: {
       dev: {
-        tasks: ['watch:scripts', 'connect'],
+        tasks: ['watch:scripts', 'configureProxies:server', 'connect:server'],
         options: {
           logConcurrentOutput: true
         }
@@ -47,6 +72,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-concurrent');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-connect-proxy');
   grunt.loadNpmTasks('grunt-contrib-connect');
 
   grunt.registerTask('default', ['jshint', 'concurrent:dev']);

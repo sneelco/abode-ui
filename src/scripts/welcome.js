@@ -8,6 +8,11 @@ welcome.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRou
       templateUrl: "views/welcome/index.html",
       controller: 'welcomeController',
     })
+    .state('welcome_configure', {
+      url: '/Welcome/Configure',
+      templateUrl: "views/welcome/configure.html",
+      controller: 'welcomeConfigureController',
+    })
     .state('welcome_login', {
       url: '/Welcome/Login',
       templateUrl: "views/welcome/login.html",
@@ -30,7 +35,6 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
 
   var attempts = [
     '',
-    'http://localhost:8080',
     'http://abode:8080',
     'https://abode'
   ];
@@ -52,51 +56,41 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
     $scope.loading = true;
 
     $timeout(function () {
-      attempts.forEach(function (attempt) {
-        var defer = $q.defer();
 
-        attempt_defers.push(defer);
+      $http.get('/api/abode/status').then(function (response) {
+        if (response.data.name !== undefined && response.data.url !== undefined) {
 
-        $http.get(attempt + '/api/abode/status').then(function (response) {
-          if (response.data.name !== undefined && response.data.url !== undefined) {
+          $scope.sources.push({
+            'name': response.data.name,
+            'url': response.data.url,
+            'mode': response.data.mode
+          });
 
-            var matches = $scope.sources.filter(function (item) {
-              return (item.url === response.data.url);
-            });
+          $http.get('/api/abode/upnp').then(function (response) {
+            $scope.sources.push.apply($scope.sources, response.data);
+            $scope.loading = false;
+          }, function () {
+            $scope.loading = false;
+          });
 
-            if (matches.length === 0) {
-              $scope.sources.push({
-                'name': response.data.name,
-                'url': response.data.url
-              });
-            }
-
-            defer.resolve();
-
-          }
-        }, function (err) {
-          defer.reject(err);
-        });
-
+        } else {
+          $scope.loading = false;
+        }
+      }, function (err) {
+        $scope.loading = false;
       });
 
-      $q.all(attempt_defers).then(function () {
-        $timeout(function () {
-          $scope.loading = false;
-        }, 1000);
-
-      }, function () {
-        $timeout(function () {
-          $scope.loading = false;
-        }, 1000);
-      });
-
-    }, 1000);
+    }, 100);
 
   };
 
-  $scope.connect = function (url) {
-    abode.config.server = url;
+  $scope.connect = function (source) {
+    if (source.mode === 'bootstrap') {
+      $state.go('welcome_configure');
+      return;
+    }
+
+    abode.config.server = source.url;
     abode.config.auth = {};
     abode.save(abode.config);
 
@@ -130,6 +124,9 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
 
 }]);
 
+welcome.controller('welcomeConfigureController', ['$scope', '$state', function ($scope, $state) {
+
+}]);
 
 welcome.controller('welcomeLoginController', ['$scope', '$timeout', '$http', '$q', '$state', 'abode', 'Auth', function ($scope, $timeout, $http, $q, $state, abode, Auth) {
 
