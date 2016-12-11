@@ -193,6 +193,36 @@ notifications.directive('notifications', [function () {
       $scope.notifications = $rootScope.notifications;
       $rootScope.notifications.hidden = true;
 
+      //If we get an EVENTS_RESET event, schedule a refresh
+      var feed_detector = abode.scope.$on('EVENTS_RESET', function (event, msg) {
+        $scope.loader = $timeout($scope.refresh, error_splay);
+      });
+
+      //If we get an EVENTS_RESET event, schedule a refresh
+      var feed_activated = abode.scope.$on('NOTIFICATION_ACTIVATED', function (event, msg) {
+        if (!notificationInResults(msg.object, $rootScope.notifications.notifications)) {
+          $rootScope.notifications.notifications.unshift(new Notifications(msg.object));
+
+          if (abode.config.auth.device.config.show_events === true) {
+            $rootScope.notifications.hidden = false;
+          }
+        }
+      });
+
+      //If we get an EVENTS_RESET event, schedule a refresh
+      var feed_deactivated = abode.scope.$on('NOTIFICATION_DEACTIVATED', function (event, msg) {
+        for (i=$rootScope.notifications.notifications.length; i > 0; i-- ) {
+          if (notificationInResults(msg.object, $rootScope.notifications.notifications)) {
+            $rootScope.notifications.notifications.splice(i - 1, 1);
+            changes = true;
+          }
+        }
+
+        if ($rootScope.notifications.notifications.length === 0) {
+          $rootScope.notifications.hidden = true;
+        }
+      });
+
       $scope.dismissAll = function () {
         var defers = [];
 
@@ -228,7 +258,7 @@ notifications.directive('notifications', [function () {
             $rootScope.breakIdle();
           }
           $scope.loading = false;
-          $scope.loader = $timeout($scope.refresh, 5000);
+          //$scope.loader = $timeout($scope.refresh, 5000);
 
           //Check if existing notifications are still active
           for (i=$rootScope.notifications.notifications.length; i > 0; i-- ) {
@@ -256,7 +286,7 @@ notifications.directive('notifications', [function () {
 
         }, function () {
           $scope.loading = false;
-          $scope.loader = $timeout($scope.refresh, 10000);
+          //$scope.loader = $timeout($scope.refresh, 10000);
         });
       };
 
@@ -268,10 +298,14 @@ notifications.directive('notifications', [function () {
         $rootScope.notifications.hidden = true;
       };
 
-      $scope.loader = $timeout($scope.refresh, 5000);
+      //$scope.loader = $timeout($scope.refresh, 5000);
       $scope.refresh();
 
       $scope.$on('$destroy', function () {
+        feed_detector();
+        feed_activated();
+        feed_deactivated();
+
         $timeout.cancel($scope.loader);
       });
     }],
@@ -320,6 +354,13 @@ notifications.controller('notificationsEdit', ['$scope', '$state', '$uibModal', 
   $scope.deleting = false;
   $scope.loading = false;
   $scope.action = {};
+
+  //If we get an EVENTS_RESET event, schedule a refresh
+  var feed_activated = abode.scope.$on('UPDATED', function (event, msg) {
+    if (msg.type === 'notification' && msg.object._id === $scope.notification._id) {
+      angular.merge($scope.notification, msg.object);
+    }
+  });
 
   $scope.load_triggers = function () {
     $scope.loading = true;

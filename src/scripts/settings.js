@@ -475,6 +475,8 @@ settings.controller('interfacesEdit', ['$scope', '$state', '$templateCache', 'ab
 
 settings.controller('settings', function ($scope, $state, abode, settings, config) {
   var notifier = abode.message;
+
+  abode.get_events();
   $scope.config = config;
   $scope.state = $state;
   $scope.reload = function () {

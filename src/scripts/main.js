@@ -284,6 +284,10 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
   this.get_events = function () {
     var eventSource;
 
+    if (self.scope.status.connected) {
+      return;
+    }
+
     $http.post(self.url('/api/events').value(),{}, {'headers': $httpProvider.defaults.headers.common}).then(function (result) {
       var key = result.data.key;
 
@@ -325,6 +329,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
         self.scope.$broadcast('EVENTS_DIED', err);
       };
     }, function (err) {
+      console.dir('Failed to get event feed');
       self.scope.status.connected = false;
       self.scope.$broadcast('EVENTS_DIED', err);
     });
@@ -515,6 +520,7 @@ abode.controller('mainController', ['$scope', '$state', 'abode', 'Interfaces', '
 
   $scope.root = abode.scope;
   $scope.interfaces = Interfaces.query();
+  abode.get_events();
 
   $scope.logout = function () {
     auth.$logout().then(function () {
