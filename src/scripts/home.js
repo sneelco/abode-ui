@@ -24,6 +24,16 @@ home.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRouter
           defer.resolve();
 
           return defer.promise;
+        }],
+        'time': ['$q', '$http', 'abode', function ($q, $http, abode) {
+          var defer = $q.defer();
+
+          $http.get(abode.url('/api/time').value()).then(function (response) {
+            defer.resolve(response.data);
+          }, function () {
+            defer.resolve({});
+          })
+          return defer.promise;
         }]
       }
     });
@@ -233,16 +243,15 @@ home.directive('interfaceLink', function () {  return {
   };
 });
 
-home.controller('homeController', ['$scope', '$state', '$templateCache', 'abode', function ($scope, $state, $templateCache, abode, Interfaces) {
+home.controller('homeController', ['$scope', '$state', '$templateCache', 'abode', 'Interfaces', 'time', function ($scope, $state, $templateCache, abode, Interfaces, time) {
   $scope.interface = $state.params.interface || abode.config.interface;
   $scope.client = abode.config.auth.device.config;
-  $scope.time = {};
+  $scope.time = time;
 
   abode.config.interface = $scope.interface;
 
   //If we get an EVENTS_RESET event, schedule a refresh
   var time_events = abode.scope.$on('TIME_CHANGE', function (event, msg) {
-    console.log(msg.object)
     angular.merge($scope.time, msg.object);
   });
 
