@@ -32,7 +32,8 @@ home.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRouter
             defer.resolve(response.data);
           }, function () {
             defer.resolve({});
-          })
+          });
+          
           return defer.promise;
         }]
       }

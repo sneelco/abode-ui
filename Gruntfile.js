@@ -34,14 +34,20 @@ module.exports = function(grunt) {
           debug: true,
            middleware: function (connect, options, middlewares) {
             var httpProxy = require('http-proxy');
+            var server_alive = true;
              
             var proxy = httpProxy.createProxyServer(options); // See (†) 
+            proxy.on('error', function(e) {
+              server_alive = false;
+            });
 
             middlewares.unshift(function (req, res, next) {
-              if (req.url.indexOf('/api') === 0) {
+
+              if (req.url.indexOf('/api') === 0 && server_alive) {
                 proxy.web(req, res, { target: 'http://localhost:8080' });
                 return;
               }
+
               next();
             });
              

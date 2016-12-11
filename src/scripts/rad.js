@@ -101,7 +101,7 @@ rad.controller('radAdd', ['$scope', '$http', '$timeout', 'abode', function ($sco
       $scope.loading = false;
       $scope.error = true;
     });
-  }
+  };
 
   $timeout($scope.load, 100);
 }]);

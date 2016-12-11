@@ -1025,7 +1025,7 @@ rooms.directive('roomIcon', function () {
           $scope.loading = false;
           $scope.error = true;
         });
-      }
+      };
 
       $scope.loader = $timeout($scope.load, 100);
 

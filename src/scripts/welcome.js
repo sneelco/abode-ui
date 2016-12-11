@@ -258,7 +258,7 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
       $scope.device.config = $scope.device.config || {};
       $scope.device.config.address = rad.url;
     } else {
-      $scope.device.capabilities = ['client', 'browser']
+      $scope.device.capabilities = ['client', 'browser'];
       $scope.device.provider = 'browser';
       $scope.device.config = {};
     }
