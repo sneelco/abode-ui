@@ -516,11 +516,17 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
 
 }]);
 
-abode.controller('mainController', ['$scope', '$state', 'abode', 'Interfaces', 'auth', function ($scope, $state, abode, Interfaces, auth) {
+abode.controller('mainController', ['$scope', '$state', '$interval', 'abode', 'Interfaces', 'auth', function ($scope, $state, $interval, abode, Interfaces, auth) {
 
+  $scope.date = new Date();
   $scope.root = abode.scope;
+  $scope.client = abode.config.auth.device.config;
   $scope.interfaces = Interfaces.query();
   abode.get_events();
+
+  $interval(function () {
+    $scope.date = new Date();
+  },10 * 1000);
 
   $scope.logout = function () {
     auth.$logout().then(function () {
