@@ -67,7 +67,12 @@ home.directive('interface', ['$sce', 'abode', function ($sce, abode) {
     scope: {
       'view': '@'
     },
-    templateUrl: function ($scope) {
+    controller: ['$scope', function ($scope) {
+      $scope.time = $scope.$parent.time;
+      $scope.client = $scope.$parent.client;
+      $scope.testing = 'test';
+    }],
+    templateUrl: function () {
       //return $sce.trustAsResourceUrl(abode.url('/api/abode/views/home.html').value());
       return $sce.trustAsResourceUrl(abode.url('/api/interfaces/' + abode.config.interface + '/template').value());
     },
@@ -230,8 +235,23 @@ home.directive('interfaceLink', function () {  return {
 
 home.controller('homeController', ['$scope', '$state', '$templateCache', 'abode', function ($scope, $state, $templateCache, abode, Interfaces) {
   $scope.interface = $state.params.interface || abode.config.interface;
+  $scope.client = abode.config.auth.device.config;
+  $scope.time = {};
+
   abode.config.interface = $scope.interface;
+
+  //If we get an EVENTS_RESET event, schedule a refresh
+  var time_events = abode.scope.$on('TIME_CHANGE', function (event, msg) {
+    console.log(msg.object)
+    angular.merge($scope.time, msg.object);
+  });
+
   abode.get_events();
+
+  $scope.$on('$destroy', function () {
+    time_events();
+  });
+
 }]);
 
 home.directive('controller', [function () {
@@ -478,10 +498,10 @@ home.directive('background', function () {
       var delay;
 
       var sizeImages = function () {
-        var clientWidth = document.body.clientWidth;
-        var clientHeight = document.body.clientHeight;
+        var clientWidth = window.innerWidth;
+        var clientHeight = window.innerHeight;
 
-        var clientRatio = parseInt(document.body.clientWidth) / parseInt(document.body.clientHeight);
+        var clientRatio = parseInt(clientWidth) / parseInt(clientHeight);
         var imgAratio = parseInt($scope.imgA.naturalWidth) / parseInt($scope.imgA.naturalHeight);
         var imgBratio = parseInt($scope.imgB.naturalWidth) / parseInt($scope.imgB.naturalHeight);
 
@@ -640,7 +660,7 @@ home.directive('background', function () {
       //if ($scope.video === undefined) {
       //  updateBackground();
       //}
-      $timeout(function () { console.log($scope.img); }, 5000);
+      //$timeout(function () { console.log($scope.img); }, 5000);
 
     },
     link: function($scope, element, attrs) {

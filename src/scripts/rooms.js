@@ -955,43 +955,37 @@ rooms.directive('roomIcon', function () {
       'source': '@',
     },
     templateUrl: 'views/rooms/room.icon.html',
-    controller: function ($scope, $interval, $timeout, $rootScope, rooms, Rooms) {
-      var roomTimeout,
-        cycle_timeout,
-        temp_maps = {},
-        intervals = [],
-        temp_index = -1;
-
-      $rootScope.$on('ROOM_CHANGE', function (event, args) {
-        if (args.source == $scope.source && $scope.room === args.object.name) {
-
-          if (!$scope.state.loading) {
-            $timeout.cancel(roomTimer);
-            $timeout.cancel(roomTimeout);
-
-            getRoom();
-          }
-        }
-
-      });
+    controller: function ($scope, $interval, $timeout, $rootScope, abode, rooms, Rooms) {
 
       $scope.loading = false;
-      $scope.devices = [];
+      $scope.error = false;
       $scope.styles =  {};
-      $scope.state = {
-        'is_heat': false,
-        'is_cool': false,
-        'is_fan': false,
-        'is_openclose': false,
-        'is_light': false,
-        'is_motion': false,
-        'loading': false,
-        'error': false,
-      };
-      $scope.temperature = '?';
-      $scope.temperatures = [];
-      $scope.interval = $scope.interval || 30;
 
+      var success_splay = 1000 * 60 * Math.floor((Math.random() * 5) + 5);
+      var error_splay = 1000 * Math.floor((Math.random() * 5) + 1);
+
+      //If we get an EVENTS_RESET event, schedule a refresh
+      var feed_detector = abode.scope.$on('EVENTS_RESET', function (event, msg) {
+        if ($scope.loader) {
+          $timeout.cancel($scope.loader);
+        }
+
+        $scope.loader = $timeout($scope.refresh, error_splay);
+      });
+
+      //If we get an EVENTS_RESET event, schedule a refresh
+      var room_events = abode.scope.$on('UPDATED', function (event, msg) {
+        if (msg.type === 'room' && msg.object._id === $scope.room._id) {
+          if ($scope.loader) {
+            $timeout.cancel($scope.loader);
+          }
+
+          angular.merge($scope.room, msg.object);
+          $scope.loader = $timeout($scope.refresh, success_splay);
+        }
+      });
+
+      //Build our styles
       if ($scope.left !== undefined || $scope.right !== undefined || $scope.top !== undefined || $scope.bottom !== undefined) {
         $scope.styles.position = 'absolute';
       }
@@ -1007,124 +1001,43 @@ rooms.directive('roomIcon', function () {
 
       if ($scope.icon) { $scope.show_icon = true; }
 
+      //Room view function
       $scope.view = function () {
         rooms.view($scope.room, $scope.devices);
       };
 
-      temp_maps.cycle = function () {
-        if (cycle_timeout !== undefined) {
+      //Loader function
+      $scope.load = function () {
+        if ($scope.loading) {
           return;
         }
 
-        var next = function () {
-          temp_index += 1;
-          if ($scope.temperatures.length <= temp_index) { temp_index = 0; }
+        $scope.loading = true;
+        $scope.error = false;
 
-          $scope.temperature = parseInt($scope.temperatures[temp_index], 10);
-        };
+        Rooms.get({'id': $scope.room}).$promise.then(function (obj) {
+          $scope.loading = false;
+          $scope.error = false;
+          $scope.room = obj;
 
-        next();
-        cycle_timeout = $interval(next, 4000);
-      };
-
-      temp_maps.average = function () {
-        var total = $scope.temperatures.length;
-        var sum = 0;
-
-        $scope.temperatures.forEach(function (t) { sum += t; });
-
-        $scope.temperature = parseInt(sum / total, 10);
-      };
-
-      temp_maps.high = function () {
-        var high = 0;
-
-        $scope.temperatures.forEach(function (temp) {
-          if (temp > high) { high = temp; }
+          $scope.loader = $timeout($scope.refresh, success_splay);
+        }, function (err) {
+          $scope.loading = false;
+          $scope.error = true;
         });
+      }
 
-        $scope.temperature = parseInt(high, 10);
-      };
-
-      temp_maps.low = function () {
-        var low = 1000;
-
-        $scope.temperatures.forEach(function (temp) {
-          if (temp < low) { low = temp; }
-        });
-
-        $scope.temperature = parseInt(low, 10);
-      };
-
-      var check_state = function (capability, key, value) {
-        var is_state = $scope.devices.filter(function (dev) {
-          return (dev.capabilities.indexOf(capability) !== -1 && dev[key] === value);
-        });
-
-        return is_state.length;
-      };
-
-      var get_temps = function () {
-        var temps = $scope.devices.filter(function (dev) {
-          return (dev.capabilities.indexOf('temperature_sensor') !== -1);
-        });
-
-        temps = temps.map(function (d) {
-          return d._temperature || 0;
-        });
-
-        return temps;
-      };
-
-      var roomTimer;
-      var getRoom = function () {
-
-        $scope.state.loading = true;
-        $scope.room.$devices().$promise.then(function (devices) {
-          $scope.devices = devices;
-          $scope.state.is_light = check_state('light', '_on', true);
-          $scope.state.is_motion = check_state('motion_sensor', '_on', true);
-          $scope.state.is_fan = check_state('fan', '_on', true);
-          $scope.state.is_heat = check_state('conditioner', '_mode', 'HEAT');
-          $scope.state.is_cool = check_state('conditioner', '_mode', 'COOL');
-          $scope.state.is_openclose = check_state('openclose', '_on', true);
-
-          if (temp_maps[$scope.tempType]) {
-            $scope.temperatures = get_temps();
-            temp_maps[$scope.tempType]();
-          }
-
-          $scope.state.loading = false;
-          $scope.state.error = false;
-
-          $timeout.cancel(roomTimer);
-          roomTimeout = $timeout(getRoom, 1000 * $scope.interval);
-        }, function () {
-          $scope.state.loading = false;
-          $scope.state.error = true;
-          $timeout.cancel(roomTimer);
-          roomTimeout = $timeout(getRoom, 1000 * $scope.interval * 2);
-        });
-
-        roomTimer = $timeout(function () {
-          console.log('Timeout waiting for room to load');
-          $scope.state.loading = false;
-          $scope.state.error = true;
-          roomTimeout = $timeout(getRoom, 1000 * $scope.interval * 5);
-        }, 30 * 1000);
-      };
-
-      Rooms.get({'id': $scope.room}).$promise.then(function (obj) {
-        $scope.room = obj;
-        getRoom();
-      });
-
+      $scope.loader = $timeout($scope.load, 100);
 
       $scope.$on('$destroy', function () {
-        $timeout.cancel(roomTimer);
-        $timeout.cancel(roomTimeout);
-        $interval.cancel(cycle_timeout);
-        intervals.forEach($interval.cancel);
+        //Kill our even listeners
+        room_events();
+        feed_detector();
+
+        // Kill our loader timeout if active
+        if ($scope.loader) {
+          $timeout.cancel($scope.loader);
+        }
       });
 
     },

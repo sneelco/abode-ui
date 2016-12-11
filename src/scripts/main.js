@@ -280,13 +280,16 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
   this.scope.status = {'connected': false, 'messages': 0, 'errors': 0};
   this.last_event = new Date();
   this.last_event = this.last_event.getTime();
+  this.starting_events = false;
 
   this.get_events = function () {
     var eventSource;
 
-    if (self.scope.status.connected) {
+    if (self.starting_events || self.scope.status.connected) {
       return;
     }
+
+    self.starting_events = true;
 
     $http.post(self.url('/api/events').value(),{}, {'headers': $httpProvider.defaults.headers.common}).then(function (result) {
       var key = result.data.key;
@@ -318,6 +321,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
 
       self.eventSource.onopen = function () {
         self.scope.status.connected = true;
+        self.starting_events = false;
         $timeout.cancel(self.event_error);
       };
 
@@ -325,11 +329,13 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
         console.error('Event feed died');
         self.scope.status.errors += 1;
         self.scope.status.connected = false;
+        self.starting_events = false;
         err.target.close();
         self.scope.$broadcast('EVENTS_DIED', err);
       };
     }, function (err) {
       console.dir('Failed to get event feed');
+      self.starting_events = false;
       self.scope.status.connected = false;
       self.scope.$broadcast('EVENTS_DIED', err);
     });
