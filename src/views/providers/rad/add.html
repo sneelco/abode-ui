@@ -1,0 +1,30 @@
+<div ng-controller="radAdd">
+	<div ng-show="!connecting">
+    <p ><strong>Connect to an Abode Device</strong></p>
+    <div class="list-group">
+      <button type="button" class="list-group-item list-group-item-danger" ng-show="detected.length == 0 && !loading" ng-click="load()"><i class="icon-exclamation-sign text-danger"></i> Unable to detect any Abode devices. Specify an address manually below or click here to retry</button>
+      <button type="button" class="list-group-item" ng-repeat="device in detected" ng-click="connect(device)"><i class="icon-home"></i> {{device.name}}</button>
+      <button type="button" class="list-group-item" disabled ng-show="loading"><i class="icon-circleselection spin"></i> Searching of devices...</button>
+      <button type="button" class="list-group-item" ng-show="!loading && sources.length > 0" ng-click="load()"><i class="icon-ok-sign text-success"></i> Found {{detected.length}} Device[s]<div><small>Click to search again.</small></div></button>
+    </div>
+    <p class="text-center"><strong>- or -</strong></p>
+    <form name="manualFrm">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Specify Manually" ng-model="manual.url">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" ng-click="connect(manual)">Go!</button>
+        </span>
+      </div>
+    </form>
+    </div>
+    <div ng-show="connecting">
+	    <div class="list-group">
+      		<button type="button" class="list-group-item" disabled ng-show="loading"><i class="icon-circleselection spin"></i> Connecting to device...</button>
+      		<button type="button" class="list-group-item" disabled ng-show="!loading"><i class="icon-ok-sign text-success"></i> Connected to device, click "Add" to continue adding.</button>
+	    </div>
+      <div class="form-group" ng-show="!loading">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" placeholder="Name" ng-model="device.name" required>
+      </div>
+    </div>
+</div>

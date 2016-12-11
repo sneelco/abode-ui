@@ -85,7 +85,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
   };
 
   $scope.connect = function (source) {
-    if (source.mode === 'bootstrap') {
+    if (source.mode === 'device') {
       $state.go('welcome_configure');
       return;
     }

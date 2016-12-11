@@ -1,5 +1,6 @@
-angular.module('rad', [])
-.config(function($stateProvider, $urlRouterProvider) {
+var rad = angular.module('rad', []);
+
+rad.config(function($stateProvider, $urlRouterProvider) {
 
   $stateProvider
   .state('index.settings.rad', {
@@ -12,8 +13,9 @@ angular.module('rad', [])
       }
     }
   });
-})
-.service('rad', function (settings) {
+});
+
+rad.service('rad', function (settings) {
 
   var get_config = function () {
 
@@ -32,8 +34,9 @@ angular.module('rad', [])
     save: save_config
   };
 
-})
-.controller('radSettings', function ($scope, rad, notifier, config) {
+});
+
+rad.controller('radSettings', function ($scope, rad, notifier, config) {
 
   $scope.config = config;
 
@@ -57,10 +60,48 @@ angular.module('rad', [])
 
   };
 
-})
-.controller('radEdit', function () {
-  $scope.device = $scope.$parent.device;
-})
-.controller('radAdd', function () {
+});
+
+rad.controller('radEdit', function () {
   $scope.device = $scope.$parent.device;
 });
+
+rad.controller('radAdd', ['$scope', '$http', '$timeout', 'abode', function ($scope, $http, $timeout, abode) {
+  $scope.loading = true;
+  $scope.error = false;
+  $scope.detected = [];
+  $scope.connecting = false;
+
+  $scope.device = $scope.$parent.device;
+
+  $scope.load = function () {
+    $http.get(abode.url('/api/abode/detect_devices').value()).then(function (response) {
+      $scope.loading = false;
+      $scope.error = false;
+      $scope.detected = response.data;
+    }, function (err) {
+      $scope.loading = false;
+      $scope.error = true;
+    });
+  };
+
+  $scope.connect = function (device) {
+    $scope.connecting = true;
+    $scope.loading = true;
+    $http.get(device.url + '/api/abode/status').then(function (response) {
+      $scope.loading = false;
+      $scope.error = false;
+      $scope.device.name = response.data.name;
+      $scope.device.config = {
+        'address': response.data.url
+      };
+      $scope.device.capabilities = response.data.capabilities;
+      console.log(response.data);
+    }, function (err) {
+      $scope.loading = false;
+      $scope.error = true;
+    });
+  }
+
+  $timeout($scope.load, 100);
+}]);

@@ -11,7 +11,7 @@
         <p class="text-center"><strong>Connect to an Abode Server</strong></p>
         <div class="list-group">
           <button type="button" class="list-group-item list-group-item-danger" ng-show="sources.length == 0 && !loading" ng-click="load()"><i class="icon-exclamation-sign text-danger"></i> Unable to detect any Abode servers. Specify an address manually below or click here to retry</button>
-          <button type="button" class="list-group-item" ng-repeat="source in sources" ng-click="connect(source)"><i class="icon-home"></i> {{source.name}} <span ng-show="source.mode == 'bootstrap'">(New)</span></button>
+          <button type="button" class="list-group-item" ng-repeat="source in sources" ng-click="connect(source)"><i class="icon-home"></i> {{source.name}} <span ng-show="source.mode == 'device'">(New)</span></button>
           <button type="button" class="list-group-item" disabled ng-show="loading"><i class="icon-circleselection spin"></i> Searching of servers...</button>
           <button type="button" class="list-group-item" ng-show="!loading && sources.length > 0" ng-click="load()"><i class="icon-ok-sign text-success"></i> Found {{sources.length}} Server[s]<div><small>Click to search again.</small></div></button>
         </div>

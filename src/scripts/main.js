@@ -17,7 +17,8 @@ var abode = angular.module('abode', [
   'insteonhub',
   'camera',
   'wunderground',
-  'ifttt'
+  'ifttt',
+  'rad'
 ]);
 
 abode.directive('iconSelector', ['$compile', function () {
