@@ -22,6 +22,19 @@ welcome.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRou
       url: '/Welcome/Devices',
       templateUrl: "views/welcome/devices.html",
       controller: 'welcomeDevicesController',
+      resolve: {
+        'rad': ['$q', '$http', function ($q, $http) {
+          var defer = $q.defer();
+
+          $http.get('/api/abode/status').then(function (response) {
+            defer.resolve(response.data);
+          }, function () {
+            defer.resolve();
+          });
+
+          return defer.promise;
+        }]
+      }
     })
     .state('welcome_interfaces', {
       url: '/Welcome/Interface',
@@ -176,7 +189,7 @@ welcome.controller('welcomeLoginController', ['$scope', '$timeout', '$http', '$q
 
 }]);
 
-welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '$q', '$state', 'abode', 'AuthDevices', 'Auth', function ($scope, $timeout, $http, $q, $state, abode, AuthDevices, Auth) {
+welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '$q', '$state', 'abode', 'AuthDevices', 'Auth', 'rad', function ($scope, $timeout, $http, $q, $state, abode, AuthDevices, Auth, rad) {
 
   abode.load();
   $scope.config = abode.config;
@@ -184,12 +197,26 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
   $scope.failed = false;
   $scope.interfaces = [];
   $scope.state = $state;
+  $scope.rad = rad;
+
+  $scope.add_rad = ($scope.rad && $scope.rad.mode === 'device') ? true : false;
+
   $scope.device = new AuthDevices({'capabilities': ['client', 'browser'], 'provider': 'browser'});
   $scope.auth = new Auth(abode.config.auth);
 
   $scope.reset_server = function () {
     abode.save({});
     $state.go('welcome');
+  };
+
+  $scope.deviceFilter = function () {
+    return function( item ) {
+      if ($scope.add_rad) {
+        return (item.provider === 'rad');
+      } else {
+        return (item.provider === 'browser');
+      }
+    };
   };
 
   $scope.load_devices = function () {
@@ -209,6 +236,11 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
   };
 
   $scope.select = function (device) {
+    if ($scope.add_rad) {
+      device.capabilities.push.apply(device.capabilities, rad.capabilities);
+      device.config = device.config || {};
+      device.config.address = rad.url;
+    }
 
     $scope.auth.$assign(device).then(function (result) {
       $state.go('welcome_interfaces');
@@ -220,10 +252,21 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
   };
 
   $scope.create = function () {
+    if ($scope.add_rad) {
+      $scope.device.provider = 'rad';
+      $scope.device.capabilities.push.apply($scope.device.capabilities, rad.capabilities);
+      $scope.device.config = $scope.device.config || {};
+      $scope.device.config.address = rad.url;
+    } else {
+      $scope.device.capabilities = ['client', 'browser']
+      $scope.device.provider = 'browser';
+      $scope.device.config = {};
+    }
+
     $scope.device.$save().then(function (data) {
       $state.go('welcome_interfaces');
     }, function (err) {
-      abode.message({'message': err.data.message || err.data, 'type': 'failed'});
+      abode.message({'message': err.data.message || err.data.errmsg || err.data, 'type': 'failed'});
     });
   };
 
