@@ -5,7 +5,7 @@ home.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRouter
   $state
     .state('main.home', {
       url: '/Home/:interface',
-      template: '<interface class="interface"></interface>',
+      template: '<interface class="interface" time="time" client="client"></interface>',
       controller: 'homeController',
       resolve: {
         'interface': ['$stateParams', '$q', 'auth', 'abode', function ($stateParams, $q, auth, abode) {
@@ -76,12 +76,11 @@ home.directive('interface', ['$sce', 'abode', function ($sce, abode) {
     restrict: 'E',
     replace: false,
     scope: {
-      'view': '@'
+      'view': '@',
+      'time': '=',
+      'client': '='
     },
     controller: ['$scope', function ($scope) {
-      $scope.time = $scope.$parent.time;
-      $scope.client = $scope.$parent.client;
-      $scope.testing = 'test';
     }],
     templateUrl: function () {
       //return $sce.trustAsResourceUrl(abode.url('/api/abode/views/home.html').value());
