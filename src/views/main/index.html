@@ -47,7 +47,7 @@
 
 <div style="position: absolute; z-index: 1000; font-size: 3em;">
 </div>
-<div class="status-bar">
+<div class="status-bar" ng-class="{night: time.is.night && client.night_mode}">
 	<div class="anav-opener  text-muted pull-left"  ng-click="anav_open = true"><i class="icon-menu"></i></div>
 	<div ng-show="client.show_date">{{date | date:'EEE, MMM d'}}</div>
 	<div class="pointer" ng-class="{'text-success': root.status.connected, 'text-danger': !root.status.connected}" uib-tooltip-template="'views/main/event_status.html'" tooltip-placement="bottom-right" tooltip-trigger="'click'"><i ng-class="{'icon-plug': !root.status.connected, 'icon-networksignal': root.status.connected}"></i></div>

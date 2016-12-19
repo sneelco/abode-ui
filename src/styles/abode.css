@@ -6,6 +6,10 @@ body {
   margin: 0em;
 }
 
+.night {
+  color: #e64533;
+}
+
 .view {
   position: absolute;
   top: 0em;
@@ -531,7 +535,6 @@ body {
 
 .night .room-icon-temp {
   color: #e3301c;
-  text-shadow: 0 0 .1em white;
 }
 
 .night .room-light .room-icon-temp {
