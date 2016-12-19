@@ -38,6 +38,7 @@ module.exports = function(grunt) {
              
             var proxy = httpProxy.createProxyServer(options); // See (†) 
             proxy.on('error', function(e) {
+              console.error('Could not proxy api endpoint');
               server_alive = false;
             });
 
