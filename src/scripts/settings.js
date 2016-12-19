@@ -225,7 +225,7 @@ settings.controller('clientEdit', function ($scope, abode, interfaces, device) {
 
   $scope.save = function () {
     $scope.device.$update().then(function (result) {
-      abode.config.auth.device = result;
+      angular.merge(abode.config.auth.device, result);
       abode.message({'type': 'success', 'message': 'Client Saved'});
     }, function (err) {
       abode.message({'type': 'failed', 'message': err.data });
