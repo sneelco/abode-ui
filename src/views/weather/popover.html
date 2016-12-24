@@ -1,4 +1,4 @@
-<div style="width: 200px;" class="container-fluid">
+<div style="width: 240px;" class="container-fluid">
 		<div class="row">
 			<div class="col-xs-6">
 				<h1 class="text-center" style="font-size: 5em;"><i class="wi {{weather.icon}}"></i></h1>
@@ -37,6 +37,42 @@
 				<h4><i class="wi {{forecast[2].icon}}"></i></h4>
 				<h5>{{forecast[2].temp_low}}/{{forecast[2].temp_high}}</h5>
 				<h6><b>{{forecast[2].day}}</b></h6>
+			</div>
+			<div class="col-xs-1 text-center" ng-show="show_forecast=='hourly'">
+				<h5>&nbsp;</h5>
+				<h6><i class="wi wi-thermometer"></i></h6>
+				<h6><i class="wi wi-umbrella"></i></h6>
+				<h6><i class="wi wi-time-1"></i></b></h6>
+			</div>
+			<div class="col-xs-2 text-center" ng-show="show_forecast=='hourly'">
+				<h5><i class="wi {{hourly[0].icon}}"></i></h5>
+				<h6>{{hourly[0].temp}}</h6>
+				<h6>{{hourly[0].rain}}</h6>
+				<h6><b>{{hourly[0].hour}}</b></h6>
+			</div>
+			<div class="col-xs-2 text-center" ng-show="show_forecast=='hourly'">
+				<h5><i class="wi {{hourly[1].icon}}"></i></h5>
+				<h6>{{hourly[1].temp}}</h6>
+				<h6>{{hourly[1].rain}}</h6>
+				<h6><b>{{hourly[1].hour}}</b></h6>
+			</div>
+			<div class="col-xs-2 text-center" ng-show="show_forecast=='hourly'">
+				<h5><i class="wi {{hourly[2].icon}}"></i></h5>
+				<h6>{{hourly[2].temp}}</h6>
+				<h6>{{hourly[2].rain}}</h6>
+				<h6><b>{{hourly[2].hour}}</b></h6>
+			</div>
+			<div class="col-xs-2 text-center" ng-show="show_forecast=='hourly'">
+				<h5><i class="wi {{hourly[3].icon}}"></i></h5>
+				<h6>{{hourly[3].temp}}</h6>
+				<h6>{{hourly[3].rain}}</h6>
+				<h6><b>{{hourly[3].hour}}</b></h6>
+			</div>
+			<div class="col-xs-2 text-center" ng-show="show_forecast=='hourly'">
+				<h5><i class="wi {{hourly[4].icon}}"></i></h5>
+				<h6>{{hourly[4].temp}}</h6>
+				<h6>{{hourly[4].rain}}</h6>
+				<h6><b>{{hourly[4].hour}}</b></h6>
 			</div>
 		</div>
 		<div class="row">

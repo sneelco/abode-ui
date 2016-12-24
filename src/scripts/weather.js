@@ -298,6 +298,8 @@ weather.directive('weatherStatus', function () {
         'wind_direction': '?',
         'rain': '?',
       };
+      $scope.forecast = [];
+      $scope.hourly = [];
 
       //If we get an EVENTS_RESET event, schedule a refresh
       var time_events = abode.scope.$on('TIME_CHANGE', function (event, msg) {
@@ -381,6 +383,18 @@ weather.directive('weatherStatus', function () {
             'temp_low': data._forecast[3].temp_low
           });
         }
+        var hour_index = 0;
+        data._hourly.forEach(function (hour) {
+          $scope.hourly[hour_index] = {
+            hour: (parseInt(hour.hour, 10) > 12) ? (parseInt(hour.hour, 10) - 12) : hour.hour,
+            temp: hour.temp,
+            rain: hour.rain,
+            icon: getIconClass(hour.icon),
+            icon_raw: hour.icon,
+          };
+          hour_index += 1;
+        });
+        console.dir($scope.hourly);
       };
 
       $scope.refresh = function () {
