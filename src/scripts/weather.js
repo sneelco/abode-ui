@@ -250,3 +250,162 @@ weather.directive('weather', function () {
   };
 
 });
+
+weather.directive('weatherStatus', function () {
+
+  return {
+    restrict: 'E',
+    scope: {
+    },
+    replace: true,
+    templateUrl: 'views/weather/status.html',
+    controller: ['$scope', '$interval', '$timeout', 'abode', 'Devices', function ($scope, $interval, $timeout, abode, Devices) {
+      var icons = {
+        'day-clear': 'wi-day-sunny',
+        'day-cloudy': 'wi-day-cloudy',
+        'day-partlycloudy': 'wi-day-cloudy',
+        'day-rain': 'wi-day-rain',
+        'day-chancerain': 'wi-day-rain',
+        'day-thunderstorms': 'wi-day-thunderstorm',
+        'day-snow': 'wi-day-snow',
+        'day-fog': 'wi-day-fog',
+        'night-clear': 'wi-night-clear',
+        'night-cloudy': 'wi-night-cloudy',
+        'night-partlycloudy': 'wi-day-cloudy',
+        'night-rain': 'wi-night-rain',
+        'night-chancerain': 'wi-night-rain',
+        'night-thunderstorms': 'wi-night-thunderstorm',
+        'night-snow': 'wi-night-snow',
+        'night-fog': 'wi-night-fog',
+      };
+
+      $scope.time = $scope.$parent.time;
+      $scope.client = $scope.$parent.client;
+      $scope.name = $scope.client.weather_device || 'Weather';
+      $scope.weatherClass = 'wi-na'; 
+      $scope.show_forecast = 'daily';
+      $scope.loading = false;
+      $scope.error = false;
+
+      $scope.weather = {
+        'temperature': '?',
+        'temp_high': '?',
+        'temp_low': '?',
+        'humidity': '?',
+        'pressure': '?',
+        'pressure_trend': '=',
+        'wind': '?',
+        'wind_direction': '?',
+        'rain': '?',
+      };
+
+      //If we get an EVENTS_RESET event, schedule a refresh
+      var time_events = abode.scope.$on('TIME_CHANGE', function (event, msg) {
+        angular.merge($scope.time, msg.object);
+      });
+
+
+      var success_splay = 1000 * 60 * Math.floor((Math.random() * 5) + 5);
+      var error_splay = 1000 * Math.floor((Math.random() * 5) + 1);
+
+      //If we get an EVENTS_RESET event, schedule a refresh
+      var feed_detector = abode.scope.$on('EVENTS_RESET', function (event, msg) {
+        $scope.loader = $timeout($scope.refresh, error_splay);
+      });
+
+      var event_handler = abode.scope.$on('ABODE_EVENT', function (event, msg) {
+        if (msg.type === 'device' && $scope.name === msg.name) {
+          if ($scope.loader) {
+            $timeout.cancel($scope.loader);
+          }
+
+          parseWeather(msg.object);
+
+          $scope.loader = $timeout($scope.refresh, success_splay);
+
+          $scope.$digest();
+        }
+      });
+
+      var getIconClass = function (icon) {
+        var daynight = ($scope.$parent.time.is.night) ? 'night' : 'day';
+        var key = daynight + '-' + icon;
+
+
+        var iconClass = (icons[key] !== undefined) ? icons[key] : 'wi-alien';
+        return iconClass;
+      };
+
+      var parseWeather = function (data) {
+        $scope.weather.icon = getIconClass(data._weather.icon);
+        $scope.weather.temperature = data._weather.temp || '?';
+        $scope.weather.temp_high = data._forecast[0].temp_high || '?';
+        $scope.weather.temp_low = data._forecast[0].temp_low || '?';
+        $scope.weather.rain = data._weather.rain_total || '?';
+        $scope.weather.rain_1hr = data._weather.rain_1hr || '?';
+        $scope.weather.humidity = data._weather.humidity || '?';
+        $scope.weather.pressure = Math.round(data._weather.pressure) || '?';
+        $scope.weather.pressure_trend = data._weather.pressure_trend || '=';
+        $scope.weather.wind = data._weather.wind || '0';
+        $scope.weather.wind_degrees = data._weather.wind_degrees || '0';
+        try {
+          $scope.weather.observation = new Date(data.config.raw.current_observation.local_time_rfc822);
+        } catch (e) {}
+
+        $scope.wind_degrees = {
+          'transform': 'rotate(' + $scope.weather.wind_degrees + 'deg)'
+        };
+        $scope.forecast = [];
+
+        if (data._forecast[1].temp_high) {
+          $scope.forecast.push({
+            'day': data._forecast[1].weekday.substring(0,3),
+            'icon': getIconClass(data._forecast[1].icon),
+            'temp_high': data._forecast[1].temp_high,
+            'temp_low': data._forecast[1].temp_low
+          });
+        }
+        if (data._forecast[2].temp_high) {
+          $scope.forecast.push({
+            'day': data._forecast[2].weekday.substring(0,3),
+            'icon': getIconClass(data._forecast[2].icon),
+            'temp_high': data._forecast[2].temp_high,
+            'temp_low': data._forecast[2].temp_low
+          });
+        }
+        if (data._forecast[3].temp_high) {
+          $scope.forecast.push({
+            'day': data._forecast[3].weekday.substring(0,3),
+            'icon': getIconClass(data._forecast[3].icon),
+            'temp_high': data._forecast[3].temp_high,
+            'temp_low': data._forecast[3].temp_low
+          });
+        }
+      };
+
+      $scope.refresh = function () {
+        $scope.loading = true;
+        $scope.error = false;
+
+        Devices.get({'id': $scope.name}).$promise.then(function (record) {
+          $scope.loading = false;
+          $scope.error = false;
+
+          parseWeather(record);
+          $scope.loader = $timeout($scope.refresh, success_splay);
+        }, function () {
+          $scope.loading = false;
+          $scope.error = true;
+
+          $scope.weather.icon = 'wi-na';
+          $scope.loader = $timeout($scope.refresh, error_splay);
+        });
+
+      };
+
+      $timeout($scope.refresh, 100);
+
+    }]
+  };
+
+});

@@ -1,0 +1,5 @@
+<div ng-show="client.show_weather">
+	<span class="text-muted pointer" uib-popover-template="'views/weather/popover.html'" popover-trigger="'click'" popover-placement="bottom-right">
+		{{weather.temperature | number:0}}&deg;
+		<i class="wi {{weather.icon}}"></i></span>
+</div>
