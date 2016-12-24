@@ -385,8 +385,15 @@ weather.directive('weatherStatus', function () {
         }
         var hour_index = 0;
         data._hourly.forEach(function (hour) {
+          var h = (parseInt(hour.hour, 10) > 12) ? (parseInt(hour.hour, 10) - 12) : parseInt(hour.hour, 10);
+          if (h === 0) { h = 12; }
+          if (parseInt(hour.hour, 10) < 12) {
+            h = h + 'a';
+          } else {
+            h = h + 'p';
+          }
           $scope.hourly[hour_index] = {
-            hour: (parseInt(hour.hour, 10) > 12) ? (parseInt(hour.hour, 10) - 12) : hour.hour,
+            hour: h,
             temp: hour.temp,
             rain: hour.rain,
             icon: getIconClass(hour.icon),
