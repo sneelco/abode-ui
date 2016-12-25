@@ -288,7 +288,7 @@ weather.directive('weatherStatus', function () {
          'night-chancesleet': 'wi-night-sleet',
          'night-chancesnow': 'wi-night-snow',
          'night-chancetstorms': 'wi-night-storm-showers',
-         'night-clear': 'wi-night-sunny',
+         'night-clear': 'wi-night-clear',
          'night-cloudy': 'wi-night-cloudy',
          'night-flurries': 'wi-night-snow',
          'night-fog': 'wi-night-fog',
