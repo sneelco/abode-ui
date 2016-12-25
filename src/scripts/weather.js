@@ -429,7 +429,6 @@ weather.directive('weatherStatus', function () {
           };
           hour_index += 1;
         });
-        console.dir($scope.hourly);
       };
 
       $scope.refresh = function () {
