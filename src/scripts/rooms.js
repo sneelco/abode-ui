@@ -948,7 +948,9 @@ rooms.directive('roomIcon', function () {
       'height': '@',
       'align': '@',
       'size': '@',
-      'room': '@',
+      'room': '=?',
+      'name': '@',
+      'id': '@',
       'icon': '@',
       'tempType': '@',
       'interval': '@',
@@ -1015,7 +1017,7 @@ rooms.directive('roomIcon', function () {
         $scope.loading = true;
         $scope.error = false;
 
-        Rooms.get({'id': $scope.room}).$promise.then(function (obj) {
+        Rooms.get({'id': $scope.id || $scope.name || $scope.room._id || $scope.room}).$promise.then(function (obj) {
           $scope.loading = false;
           $scope.error = false;
           $scope.room = obj;
@@ -1024,6 +1026,28 @@ rooms.directive('roomIcon', function () {
         }, function (err) {
           $scope.loading = false;
           $scope.error = true;
+        });
+      };
+
+      //Loader function
+      $scope.refresh = function () {
+        if ($scope.loading) {
+          return;
+        }
+
+        $scope.loading = true;
+        $scope.error = false;
+
+        $scope.room.$refresh().then(function () {
+          $scope.loading = false;
+          $scope.error = false;
+
+          $scope.loader = $timeout($scope.refresh, success_splay);
+        }, function () {
+          $scope.loading = false;
+          $scope.error = true;
+
+          $scope.loader = $timeout($scope.refresh, error_splay);
         });
       };
 
