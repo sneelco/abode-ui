@@ -294,7 +294,7 @@ weather.directive('weatherStatus', function () {
          'night-fog': 'wi-night-fog',
          'night-hazy': 'wi-night-haze',
          'night-mostlycloudy': 'wi-night-cloudy',
-         'night-mostlysunny': w'i-night-sunny-overcast',
+         'night-mostlysunny': 'wi-night-sunny-overcast',
          'night-partlycloudy': 'wi-night-sunny-overcast',
          'night-partlysunny': 'wi-night-cloudy',
          'night-rain': 'wi-night-rain',
