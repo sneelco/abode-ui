@@ -1,4 +1,4 @@
-<div style="text-align: center;">
+<div style="text-align: center;" ng-hide="has_capability('dimmer')">
   <div style="border: .1em solid white; border-radius: .4em; height: 6em; width: 14em; text-align: center; vertical-align: middle; margin: 0 auto; position: relative; cursor: pointer; padding-top: 1em; transition: 2s;" ng-class="{'bg-success':  !device._on, 'bg-danger':  device._on}" ng-click="toggle_onoff()">
     <div style="text-align: center;">
       <h2 ng-show="device._on">On</h2>

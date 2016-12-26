@@ -1,15 +1,15 @@
 <div class="container-fluid">
   <div class="col-xs-6 text-left" style="padding-top: 0em;">
-    <div style="border: .1em solid white; border-radius: .4em; height: 14em; width: 6em; text-align: center; vertical-align: middle; position: relative; cursor: pointer; padding-top: 5em; transition: 2s;" ng-class="{'bg-success':  device._on}" ng-click="toggle_onoff()">
+    <div style="border: .1em solid white; border-radius: .4em; height: 10em; width: 4em; text-align: center; vertical-align: middle; position: relative; cursor: pointer; padding-top: 3em; transition: 2s;" ng-class="{'bg-success':  device._on}" ng-click="toggle_onoff()">
       <div style="text-align: center;">
         <h2><i class="icon-lightbulb-idea"></i></h2>
       </div>
     </div>
   </div>
-  <div class="col-xs-6" style="font-size: 3em; text-align: right; padding-left: 1em;" ng-show="has_capability('dimmer')">
+  <div class="col-xs-6" style="font-size: 2.5em; text-align: right; padding-left: 1em;" ng-show="has_capability('dimmer')">
     <div style="width: 1em;">
       <div><i class="icon-chevron-up" style="cursor: pointer;" ng-click="level_up()"></i></div>
-      <div style="text-align: center;">{{device._level}}</div>
+      <div style="text-align: center; font-size: .75em">{{device._level}}</div>
       <div><i class="icon-chevron-down" style="cursor: pointer;" ng-click="level_down()"></i></div>
     </div>
   </div>
