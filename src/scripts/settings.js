@@ -149,6 +149,7 @@ settings.config(function($stateProvider, $urlRouterProvider) {
 });
 
 settings.controller('clientEdit', function ($scope, abode, interfaces, device) {
+  $scope.dht_sensors = ['', 'DHT11', 'DHT22', 'AM2302'];
   $scope.interfaces = interfaces;
   $scope.device = device;
 

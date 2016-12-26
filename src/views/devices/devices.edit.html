@@ -24,7 +24,8 @@
 
                 <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
                 <form name="editDevice">
-                  <div ng-show="section=='provider'" ng-include="provider_template">
+                  <div ng-show="section=='provider'">
+                    <div ng-include="provider_template"></div>
                   </div>
                   <div ng-show="section=='advanced'">
                     <div class="form-group">

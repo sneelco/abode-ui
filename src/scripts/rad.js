@@ -62,9 +62,10 @@ rad.controller('radSettings', function ($scope, rad, notifier, config) {
 
 });
 
-rad.controller('radEdit', function () {
+rad.controller('radEdit', ['$scope', function ($scope) {
+  $scope.dht_sensors = ['', 'DHT11', 'DHT22', 'AM2302'];
   $scope.device = $scope.$parent.device;
-});
+}]);
 
 rad.controller('radAdd', ['$scope', '$http', '$timeout', 'abode', function ($scope, $http, $timeout, abode) {
   $scope.loading = true;

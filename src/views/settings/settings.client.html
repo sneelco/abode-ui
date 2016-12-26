@@ -60,6 +60,31 @@
               </div>
 
               <div class="form-group">
+                <label for="enabled">Put Display Sleep: </label>
+                <toggle value="device.config.display.sleep" class="pull-right"></toggle>
+              </div>
+
+              <div class="form-group" ng-show="device.config.sleep">
+                <label for="enabled">Sleep after (sec): </label>
+                <input class="form-control" type="number" placeholder="Seconds" ng-model="device.config.display.wake_timer">
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">DHT Sensor: </label>
+                <select class="form-control" ng-model="device.config.display.dht_sensor" ng-options="sensor as sensor for sensor in dht_sensors"></select>
+              </div>
+
+              <div class="form-group" ng-show="device.config.display.dht_sensor">
+                <label for="enabled">DHT GPIO Pin: </label>
+                <input class="form-control" type="number" placeholder="Pin" ng-model="device.config.display.dht_pin">
+              </div>
+
+              <div class="form-group">
+                <label for="enabled">Light GPIO Pin: </label>
+                <input class="form-control" type="number" placeholder="Pin" ng-model="device.config.display.light_pin">
+              </div>
+
+              <div class="form-group">
                 <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()"><i class="icon-savetodrive"></i> Save</button>
               </div>
 
