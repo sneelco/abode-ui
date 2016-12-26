@@ -281,8 +281,6 @@ weather.directive('weatherStatus', function () {
          'day-sunny': 'wi-day-sunny',
          'day-tstorms': 'wi-day-storm-showers',
          'day-unknown': 'wi-na',
-         'day-cloudy': 'wi-day-cloudy',
-         'day-partlycloudy': 'wi-day-cloudy',
          'night-chanceflurries': 'wi-night-snow',
          'night-chancerain': 'wi-night-rain',
          'night-chancesleet': 'wi-night-sleet',
@@ -300,11 +298,9 @@ weather.directive('weatherStatus', function () {
          'night-rain': 'wi-night-rain',
          'night-sleet': 'wi-night-sleet',
          'night-snow': 'wi-night-snow',
-         'night-sunny': 'wi-night-sunny',
+         'night-sunny': 'wi-night-clear',
          'night-tstorms': 'wi-night-storm-showers',
          'night-unknown': 'wi-na',
-         'night-cloudy': 'wi-night-cloudy',
-         'night-partlycloudy': 'wi-night-cloudy',
       };
 
       $scope.time = $scope.$parent.time;
