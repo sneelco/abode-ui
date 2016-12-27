@@ -319,8 +319,14 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
 
       self.eventSource.addEventListener('message', function (msg) {
         var event = JSON.parse(msg.data);
+        var client_name = (self.config.auth && self.config.auth.device && self.config.auth.device.name) ? self.config.auth.device.name : '';
         self.last_event = event.id;
         
+        //If our client device got updated, update our auth object
+        if (event.type === 'device' && event.object.name === client_name) {
+          self.scope.$broadcast('CLIENT_UPDATED', event);
+        }
+
         if (event.event) {
           self.scope.$broadcast(event.event, event);
         }
@@ -545,6 +551,11 @@ abode.controller('mainController', ['$scope', '$state', '$interval', 'abode', 'I
   //If we get an EVENTS_RESET event, schedule a refresh
   var time_events = abode.scope.$on('TIME_CHANGE', function (event, msg) {
     angular.merge($scope.time, msg.object);
+  });
+
+  //If we get an CLIENT_UPDATED event, merge our client config
+  var client_events = abode.scope.$on('CLIENT_UPDATED', function (event, msg) {
+    angular.merge($scope.client, msg.object.config);
   });
 
   $interval(function () {
