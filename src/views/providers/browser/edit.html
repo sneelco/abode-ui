@@ -1,0 +1,46 @@
+<div ng-controller="radEdit">
+	<div class="form-group">
+	  <label for="name">Name</label>
+	  <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="device.name">
+	</div>
+
+	<div class="form-group">
+		<label for="enabled">Default Interface: </label>
+		<select class="form-control" ng-model="device.config.interface" ng-options="iface._id as iface.name for iface in interfaces | orderBy:'name'"></select>
+	</div>
+
+	<div class="form-group">
+		<label for="enabled">Show events in Browser: </label>
+		<toggle value="device.config.show_events" class="pull-right"></toggle>
+	</div>
+
+	<div class="form-group">
+		<label for="enabled">Dim Display: </label>
+		<toggle value="device.config.dim_display" class="pull-right"></toggle>
+	</div>
+
+	<div class="form-group" ng-show="device.config.dim_display">
+		<label for="enabled">Dim After: </label>
+		<input class="form-control" type="number" placeholder="Seconds" ng-model="device.config.dim_after">
+	</div>
+
+	<div class="form-group">
+		<label for="enabled">Night Mode (changes text to red at night): </label>
+		<toggle value="device.config.night_mode" class="pull-right"></toggle>
+	</div>
+
+	<div class="form-group">
+		<label for="enabled">Show Date: </label>
+		<toggle value="device.config.show_date" class="pull-right"></toggle>
+	</div>
+
+	<div class="form-group">
+		<label for="enabled">Show Weather: </label>
+		<toggle value="device.config.show_weather" class="pull-right"></toggle>
+	</div>
+
+	<div class="form-group">
+	  <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="editDevice.$invalid"><i class="icon-savetodrive"></i> Save</button>
+	  <button type="submit" class="btn btn-sm btn-default" ng-click="remove()"><i class="icon-circledelete"></i> Remove</button>
+	</div>
+</div>
