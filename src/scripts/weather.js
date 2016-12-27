@@ -96,12 +96,15 @@ weather.directive('weather', function () {
       source: '@',
     },
     controllerAs: 'weather',
-    controller: function ($scope, $interval, $http, $element, $transclude, $state, weather, datetime) {
+    controller: function ($scope, $interval, $http, $element, $transclude, $state, weather) {
       var intervals = [];
 
+
+      $scope.time = $scope.$parent.time;
+      $scope.client = $scope.$parent.client;
+      
       $scope.interval = $scope.interval || 5;
       $scope.parsed = '?';
-      $scope.time = {is: {day: true, night: false}};
       $scope.weather = {
         current: {},
         forecast: {},
@@ -198,7 +201,6 @@ weather.directive('weather', function () {
       };
 
       var parseWeather = function () {
-        $scope.time = datetime.get();
         var tod = ($scope.time.is.night) ? 'night' : 'day';
 
         var data = weather.get($scope.device, $scope.source);
