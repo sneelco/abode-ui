@@ -15,7 +15,7 @@
 				<div class="row">
 					<div class="col-xs-3 text-center"><i class="wi wi-wind-direction" ng-style="wind_degrees"></i><br/>{{weather.wind}}  </div>
 					<div class="col-xs-3 text-center"><i class="wi wi-humidity"></i><br/>{{weather.humidity}}</div>
-					<div class="col-xs-3 text-center"><i class="wi wi-barometer"></i><span style="white-space: nowrap">{{weather.pressure}} <i class="wi" ng-class="{'wi-direction-up-right': weather.pressure_trend == '+', 'wi-direction-down-right': weather.pressure_trend == '-', 'wi-direction-right': weather.pressure_trend == '='}"></i></span></div>
+					<div class="col-xs-3 text-center"><i class="wi wi-barometer"></i><br/><span style="white-space: nowrap">{{weather.pressure}}<i class="wi" ng-class="{'wi-direction-up-right': weather.pressure_trend == '+', 'wi-direction-down-right': weather.pressure_trend == '-', 'wi-direction-right': weather.pressure_trend == '='}"></i></span></div>
 					<div class="col-xs-3 text-center"><i class="wi wi-umbrella"></i><br/>{{weather.rain}}</div>
 				</div>
 			</div>
