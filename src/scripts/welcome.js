@@ -44,8 +44,9 @@ welcome.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRou
 
 }]);
 
-welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$state', 'abode', 'Auth', 'Interfaces', function ($scope, $timeout, $http, $q, $state, abode, Auth, Interfaces) {
+welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$http', '$q', '$state', 'abode', 'Auth', 'Interfaces', function ($scope, $timeout, $interval, $http, $q, $state, abode, Auth, Interfaces) {
 
+  var ssl_checker;
   var attempts = [
     '',
     'http://abode:8080',
@@ -61,6 +62,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
   $scope.failed = false;
   $scope.sources = [];
   $scope.state = $state;
+  $scope.checking_ssl = false
 
   $scope.load = function () {
     var attempt_defers = [];
@@ -76,7 +78,9 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
           $scope.sources.push({
             'name': response.data.name,
             'url': response.data.url,
-            'mode': response.data.mode
+            'ssl_url': response.data.ssl_url,
+            'mode': response.data.mode,
+            'ca_url': response.data.ca_url,
           });
 
           $http.get('/api/abode/upnp').then(function (response) {
@@ -97,37 +101,91 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$http', '$q', '$
 
   };
 
+  $scope.cancel_check = function () {
+    console.log('here');
+    $interval.cancel(ssl_checker);
+    $scope.checking_ssl = false;
+    $scope.checking = false;
+  };
+
   $scope.connect = function (source) {
     if (source.mode === 'device') {
       $state.go('welcome_configure');
       return;
     }
 
-    abode.config.server = source.url;
-    abode.config.auth = {};
-    abode.save(abode.config);
+    var check_server = function () {
 
-    $scope.auth = new Auth();
-    $scope.auth.$check().then(function (status) {
-      if (status.client_token && status.auth_token) {
-        $scope.config.auth = response.data;
-        abode.save($scope.config);
-        $staet.go('welcome_devices');
-      } else {
-        abode.save($scope.config);
-        $state.go('welcome_login');
-      }
+      abode.config.server = source.url;
+      abode.config.auth = {};
+      abode.save(abode.config);
 
-    }, function (error) {
-      if (error.status === 401) {
-        abode.save($scope.config);
-        $state.go('welcome_login');
-      } else if (error.status === 403) {
-        abode.save($scope.config);
-        $state.go('welcome_devices');
+      $scope.auth = new Auth();
+      $scope.auth.$check().then(function (status) {
+        if (status.client_token && status.auth_token) {
+          $scope.config.auth = response.data;
+          abode.save($scope.config);
+          $staet.go('welcome_devices');
+        } else {
+          abode.save($scope.config);
+          $state.go('welcome_login');
+        }
+
+      }, function (error) {
+        if (error.status === 401) {
+          abode.save($scope.config);
+          $state.go('welcome_login');
+        } else if (error.status === 403) {
+          abode.save($scope.config);
+          $state.go('welcome_devices');
+        } else {
+          abode.message({'type': 'failed', 'message': 'Failed to connect'});
+        }
+      });
+
+    };
+
+    var check_cert = function (status) {
+      var check_count = 0
+
+      var check_ssl = function () {
+        $scope.checking_ssl = true;
+        check_count += 1;
+
+        $http.get(status.ssl_url + '/api/abode/status').then(function () {
+          abode.config.server = status.ssl_url;
+          abode.save(abode.config);
+
+          $scope.checking_ssl = false;
+          check_server();
+        }, function (err) {
+          $scope.checking_ssl = false;
+          if (check_count > 10) {
+            abode.message({'type': 'failed', 'message': 'Timeout waiting for CA to be installed'});
+          } else {
+            $timeout(check_ssl, 2000);
+          }
+        })
+      };
+
+      if (status.ssl_url && status.ca_url) {
+        check_ssl();
+
+        var dl_link = document.createElement('A');
+        dl_link.href = status.ca_url;
+        dl_link.style.display = 'none';
+        document.body.appendChild(dl_link);
+        dl_link.click();
       } else {
-        abode.message({'type': 'failed', 'message': 'Failed to connect'});
+        check_server();
       }
+    };
+
+    $http.get(source.url + '/api/abode/status').then(function (response) {
+      $scope.checking = true;
+      check_cert(response.data);
+    }, function () {
+      abode.message({'type': 'failed', 'message': 'Could not get server status'});
     });
 
   };
