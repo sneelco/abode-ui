@@ -134,7 +134,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
       abode.message({'type': 'failed', 'message': 'Error restarting'});
     });
   };
-  
+
   $scope.cancel_check = function () {
     if (ssl_checker) {
       $timeout.cancel(ssl_checker);
@@ -294,6 +294,15 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
 
   $scope.device = new AuthDevices({'capabilities': ['client', 'browser'], 'provider': 'browser'});
   $scope.auth = new Auth(abode.config.auth);
+
+  $scope.default_devices = [
+    'Living Room Controller',
+    'Living Room Clock',
+    'Bedroom Controller',
+    'Bedroom Clock',
+    'Entry',
+    'Dev Display',
+  ];
 
   $scope.reset_server = function () {
     abode.save({});

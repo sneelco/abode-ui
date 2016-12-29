@@ -16,6 +16,8 @@
           </span>
         </div>
 
+        <div>&nbsp;</div>
+
         <p class="text-center"><strong>Select a Device</strong></p>
         <div class="list-group" ng-show="rad.mode == 'device'">
           <button type="button" class="list-group-item" ng-click="add_rad=false" ng-show="add_rad"><i class="icon-ok-sign text-success"></i> This is an Abode Rad</button>
@@ -34,6 +36,11 @@
             <span class="input-group-btn">
               <button class="btn btn-default" type="button" ng-click="create()"><i class="icon-plus-sign"></i> <span class="hidden-xs">Create</span></button>
             </span>
+          </div>
+
+          <p class="text-center"><strong></strong></p>
+          <div class="list-group">
+            <button ng-repeat="item in default_devices" type="button" class="list-group-item" ng-click="device.name=item">{{item}}</button>
           </div>
         </form>
 
