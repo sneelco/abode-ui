@@ -254,6 +254,23 @@ body {
   padding: .25em 1em;
   border-bottom: 1px solid #444;
 }
+
+.notifications-footer {
+  font-size: 2em;
+  position: absolute;
+  bottom: 0em;
+  left: 0em;
+  right: 0em;
+  background-color: #222;
+  padding: .25em 1em;
+  border-bottom: 1px solid #444;
+}
+
+.notifications-footer>div {
+  display: inline-block;
+  padding: 0em .25em;
+}
+
 .notifications-list {
   list-style: none;
   padding: 0em;
