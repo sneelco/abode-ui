@@ -977,7 +977,7 @@ devices.controller('devicesEdit', function ($scope, $state, $uibModal, abode, de
           return $scope.rooms.map(function (obj) {return obj.name; });
         }
       },
-      controller: function ($scope, $uibModalInstance, rooms, assigned) {
+      controller: function ($scope, $uibModalInstance, Rooms, assigned) {
         $scope.loading = true;
         $scope.rooms = [];
         $scope.assigned = assigned;
@@ -991,7 +991,7 @@ devices.controller('devicesEdit', function ($scope, $state, $uibModal, abode, de
         };
 
         $scope.load = function () {
-          rooms.load().then(function (rooms) {
+          Rooms.query().$promise.then(function (rooms) {
             $scope.rooms = rooms;
             $scope.loading = false;
             $scope.error = false;

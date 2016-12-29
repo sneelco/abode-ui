@@ -179,7 +179,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
     };
 
     var install_cert = function (status) {
-      var check_count = 0
+      var check_count = 0;
 
       //If a SSL URL and a CA_URL are specified, check the SSL status
       if (source.url.indexOf('https') === 0) {
