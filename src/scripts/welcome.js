@@ -141,6 +141,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
           $state.go('welcome_devices');
         } else {
           abode.message({'type': 'failed', 'message': 'Failed to connect'});
+          source.error = true;
         }
       });
 
@@ -164,8 +165,11 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
           if (check_count > 10) {
             $scope.checking = false;
             abode.message({'type': 'failed', 'message': 'Timeout waiting for CA to be installed'});
+            source.error = true;
           } else {
-            $timeout(check_ssl, 2000);
+            if ($scope.checking) {
+              $timeout(check_ssl, 2000);
+            }
           }
         })
       };
@@ -178,6 +182,9 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
         if (document.location.host.indexOf('localhost') >= 0) {
           $http.post('/api/abode/import_ca', {'ca_url': status.ca_url}).then(function () {
           }, function () {
+            abode.message({'type': 'failed', 'message': 'Unable to install CA Certificate'});
+            source.error = true;
+            $scope.cancel_check();
           });
         //Otherwise prompt to download the certificate
         } else {
@@ -200,6 +207,8 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
       check_cert(response.data);
     }, function () {
       abode.message({'type': 'failed', 'message': 'Could not get server status'});
+      source.error = true;
+      $scope.cancel_check();
     });
 
   };
