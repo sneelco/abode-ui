@@ -86,7 +86,8 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
   $scope.failed = false;
   $scope.sources = [];
   $scope.state = $state;
-  $scope.checking_ssl = false
+  $scope.checking_ssl = false;
+  $scope.needs_reboot = false;
 
   $scope.load = function () {
     var attempt_defers = [];
@@ -125,6 +126,15 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
 
   };
 
+  $scope.reboot = function () {
+    $http.post('/api/abode/restart').then(function () {
+
+    }, function () {
+      $scope.working = false;
+      abode.message({'type': 'failed', 'message': 'Error restarting'});
+    });
+  };
+  
   $scope.cancel_check = function () {
     if (ssl_checker) {
       $timeout.cancel(ssl_checker);
@@ -171,37 +181,13 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
     var install_cert = function (status) {
       var check_count = 0
 
-      var check_ssl = function () {
-        $scope.checking_ssl = true;
-        check_count += 1;
-
-        $http.get(source.url + '/api/abode/status').then(function () {
-          abode.config.server = source.url;
-          abode.save(abode.config);
-
-          $scope.checking_ssl = false;
-          check_server();
-        }, function (err) {
-          $scope.checking_ssl = false;
-          if (check_count > 10) {
-            $scope.checking = false;
-            abode.message({'type': 'failed', 'message': 'Timeout waiting for CA to be installed'});
-            source.error = true;
-          } else {
-            if ($scope.checking) {
-              $timeout(check_ssl, 2000);
-            }
-          }
-        })
-      };
-
       //If a SSL URL and a CA_URL are specified, check the SSL status
       if (source.url.indexOf('https') === 0) {
-        check_ssl();
 
         //If we are on localhost, try to import the cert transparently
         if (document.location.host.indexOf('localhost') >= 0) {
           $http.post('/api/abode/import_ca', {'url': source.url}).then(function () {
+            $scope.needs_reboot = true;
           }, function () {
             abode.message({'type': 'failed', 'message': 'Unable to install CA Certificate'});
             source.error = true;
@@ -214,6 +200,8 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
             dl_link.style.display = 'none';
             document.body.appendChild(dl_link);
             dl_link.click();
+
+            check_ssl();
         }
       } else {
         abode.config.server = source.url;
