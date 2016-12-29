@@ -301,6 +301,10 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
     'Bedroom Controller',
     'Bedroom Clock',
     'Entry',
+    'Phone',
+    'Tablet',
+    'Laptop',
+    'Computer',
     'Dev Display',
   ];
 
@@ -384,6 +388,12 @@ welcome.controller('welcomeInterfacesController', ['$scope', '$timeout', '$http'
   $scope.state = $state;
   $scope.checking_device = true;
   $scope.interface = new Interfaces({'icon': 'icon-monitor', 'template': '<div></div>'});
+
+  $scope.default_interfaces = [
+    'Controller',
+    'Clock',
+    'Security',
+  ];
 
   AuthDevice.get().$promise.then(function (record) {
     $scope.device = record;

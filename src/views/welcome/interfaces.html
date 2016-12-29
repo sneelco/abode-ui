@@ -31,6 +31,11 @@
                 <button class="btn btn-default" type="button" ng-click="create()"><i class="icon-plus-sign"></i> <span class="hidden-xs">Create</span></button>
               </span>
             </div>
+
+            <p class="text-center"><strong></strong></p>
+            <div class="list-group">
+              <button ng-repeat="item in default_interfaces" type="button" class="list-group-item" ng-click="interface.name=item">{{item}}</button>
+            </div>
           </form>
       </div>
 
