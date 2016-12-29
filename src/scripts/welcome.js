@@ -144,7 +144,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
 
     };
 
-    var check_cert = function (status) {
+    var install_cert = function (status) {
       var check_count = 0
 
       var check_ssl = function () {
@@ -198,9 +198,16 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
       }
     };
 
-    //Get the status of the selected server
+    //Get the status of the selected server.  If success, check server, otherwise try installing a cert
     $scope.checking = true;
-    check_cert();
+    $http.get(source.url + '/api/abode/status').then(function () {
+      abode.config.server = source.url;
+      abode.save(abode.config);
+      check_server();
+      check_server();
+    }, function () {
+      install_cert();
+    });
 
   };
 
