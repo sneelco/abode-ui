@@ -102,8 +102,9 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
   };
 
   $scope.cancel_check = function () {
-    console.log('here');
-    $interval.cancel(ssl_checker);
+    if (ssl_checker) {
+      $timeout.cancel(ssl_checker);
+    }
     $scope.checking_ssl = false;
     $scope.checking = false;
   };
@@ -161,6 +162,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
         }, function (err) {
           $scope.checking_ssl = false;
           if (check_count > 10) {
+            $scope.checking = false;
             abode.message({'type': 'failed', 'message': 'Timeout waiting for CA to be installed'});
           } else {
             $timeout(check_ssl, 2000);
@@ -168,21 +170,33 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
         })
       };
 
+      //If a SSL URL and a CA_URL are specified, 
       if (status.ssl_url && status.ca_url) {
         check_ssl();
 
-        var dl_link = document.createElement('A');
-        dl_link.href = status.ca_url;
-        dl_link.style.display = 'none';
-        document.body.appendChild(dl_link);
-        dl_link.click();
+        //If we are on localhost, try to import the cert transparently
+        if (document.location.host.indexOf('localhost') >= 0) {
+          $http.post('/api/abode/import_ca', {'ca_url': status.ca_url}).then(function () {
+          }, function () {
+          });
+        //Otherwise prompt to download the certificate
+        } else {
+            var dl_link = document.createElement('A');
+            dl_link.href = status.ca_url;
+            dl_link.style.display = 'none';
+            document.body.appendChild(dl_link);
+            dl_link.click();
+        }
       } else {
         check_server();
       }
     };
 
-    $http.get(source.url + '/api/abode/status').then(function (response) {
-      $scope.checking = true;
+    //Get the status of the selected server
+    $scope.checking = true;
+    var url = source.url + '/api/abode/status';
+    $http.get(url).then(function (response) {
+      //Check for a certificate
       check_cert(response.data);
     }, function () {
       abode.message({'type': 'failed', 'message': 'Could not get server status'});
