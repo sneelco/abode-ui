@@ -339,6 +339,18 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
 
   };
 
+  $scope.save_token = function (token) {
+    $http.put('/api/abode/config', {'server_token': token}).then(function () {
+      $http.post('/api/abode/save').then(function () {
+        $state.go('welcome_interfaces');
+      }, function (err) {
+        console.dir(err);
+      });
+    }, function (err) {
+        console.dir(err);
+    });
+  };
+
   $scope.select = function (device) {
     if ($scope.add_rad) {
       device.capabilities.push.apply(device.capabilities, rad.capabilities);
@@ -347,7 +359,11 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
     }
 
     $scope.auth.$assign(device).then(function (result) {
-      $state.go('welcome_interfaces');
+      if (result.token) {
+        $scope.save_token(result.token);
+      } else {
+        $state.go('welcome_interfaces');
+      }
     }, function (err) {
       abode.message({'message': err.message || 'Error Occured', 'type': 'failed'});
     });
@@ -368,7 +384,11 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
     }
 
     $scope.device.$save().then(function (data) {
-      $state.go('welcome_interfaces');
+      if (data.token) {
+        $scope.save_token(result.token);
+      } else {
+        $state.go('welcome_interfaces');
+      }
     }, function (err) {
       abode.message({'message': err.data.message || err.data.errmsg || err.data, 'type': 'failed'});
     });
