@@ -141,6 +141,66 @@ abode.directive('iconSelector', ['$compile', function () {
           'name': 'Away',
           'class': 'icon-travel'
         },
+        {
+          'name': 'Video Camera',
+          'class': 'icon-videocamerathree',
+        },
+        {
+          'name': 'Still Camera',
+          'class': 'icon-camera',
+        },
+        {
+          'name': 'Sunset',
+          'class': 'wi wi-sunset'
+        },
+        {
+          'name': 'Sunrise',
+          'class': 'wi wi-sunrise'
+        },
+        {
+          'name': 'Lamp',
+          'class': 'icon-lamp'
+        },
+        {
+          'name': 'Lamp Alt1',
+          'class': 'icon-desklamp'
+        },
+        {
+          'name': 'Lamp Alt2',
+          'class': 'icon-lampalt'
+        },
+        {
+          'name': 'Tablet',
+          'class': 'icon-tablet'
+        },
+        {
+          'name': 'Mute',
+          'class': 'icon-mutealt'
+        },
+        {
+          'name': 'Horn',
+          'class': 'icon-bullhorn'
+        },
+        {
+          'name': 'Torch',
+          'class': 'icon-torch'
+        },
+        {
+          'name': 'Pendant',
+          'class': 'icon-ceilinglight'
+        },
+        {
+          'name': 'Battery',
+          'class': 'icon-aaabattery'
+        },
+        {
+          'name': 'Key Hole',
+          'class': 'icon-lockalt-keyhole'
+        },
+        {
+          'name': 'Umbrella',
+          'class': 'wi wi-umbrella',
+        }
       ];
     }]
   };

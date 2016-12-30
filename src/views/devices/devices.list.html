@@ -15,6 +15,8 @@
         <h4 ng-show="loading"><i class="icon-refresh spin"></i> Loading...</h4>
         <ul class="list-group" ng-hide="loading">
           <li class="list-group-item" style="cursor: pointer;" ng-click="view(device)" ng-repeat="device in devices | filter: search | orderBy: '+name'">
+            <i class="{{device.icon}}" ng-show="device.icon"></i>
+            <span ng-hide="device.icon">
             <i class="icon-fan" ng-show="has_capability(device, 'fan')"></i>
             <i class="icon-videocamerathree" ng-show="has_capability(device, 'camera')"></i>
             <i class="icon-lightbulb-idea" ng-show="has_capability(device, 'light')"></i>
@@ -27,8 +29,9 @@
             <i class="icon-browser" ng-show="has_capability(device, 'browser')"></i>
             <i class="glyphicon glyphicon-bullhorn" ng-show="has_capability(device, 'siren')"></i>
             <i class="icon-lockalt-keyhole" ng-show="has_capability(device, 'lock')"></i>
+            </span>
             {{device.name}}<div class="pull-right" style="margin-left: .5em; margin-top: -.25em"> <button class="btn btn-xs btn-default" ng-click="edit(device)" stop-event><i class="icon-edit"></i></button></div> <span class="badge">{{device._rooms.length}} <i class="glyphicon glyphicon-modal-window"></i></span>
-            <div style="font-size: .7em" class="text-muted" ng-show="device.tags.length > 0"><i class="icon-tag"></i>
+            <div style="font-size: .7em" class="text-muted" ng-show="device.tags.length > 0"><i class="icon-tags"></i>
               <span ng-repeat="tag in device.tags" style="margin-right: 1em;">{{tag}}</span>
             </div>
           </li>

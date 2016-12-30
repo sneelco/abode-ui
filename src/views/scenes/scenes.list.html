@@ -16,8 +16,9 @@
         <h4 ng-show="loading"><i class="icon-refresh spin"></i> Loading...</h4>
         <ul class="list-group" ng-hide="loading">
           <li class="list-group-item" style="cursor: pointer;" ng-click="view(scene)" ng-repeat="scene in scenes | filter: search | orderBy: '+name'">
+            <i class="{{scene.icon}}" ng-show="scene.icon"></i>
             {{scene.name}} <div class="pull-right" style="margin-left: .5em; margin-top: -.25em"> <button class="btn btn-xs btn-default" ng-click="edit(scene)" stop-event><i class="icon-edit"></i></button></div> <span class="badge">{{scene._steps.length}} <i class="icon-list-alt"></i></span> <span class="badge">{{scene._rooms.length}} <i class="glyphicon glyphicon-modal-window"></i></span>
-            <div style="font-size: .7em" class="text-muted" ng-show="scene.tags.length > 0"><i class="icon-tag"></i>
+            <div style="font-size: .7em" class="text-muted" ng-show="scene.tags.length > 0"><i class="icon-tags"></i>
               <span ng-repeat="tag in scene.tags" style="margin-right: 1em;">{{tag}}</span>
             </div>
           </li>

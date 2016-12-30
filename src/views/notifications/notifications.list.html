@@ -16,8 +16,9 @@
         <h4 ng-show="loading"><i class="icon-refresh spin"></i> Loading...</h4>
         <ul class="list-group" ng-hide="loading">
           <li class="list-group-item" style="cursor: pointer;" ng-click="view(notification)" ng-repeat="notification in notifications | filter: search | orderBy: '+name'" ui-sref="^.edit({'id': notification._id})">
+            <i class="{{notification.icon}}" ng-show="notification.icon"></i>
             {{notification.name}}
-            <div style="font-size: .7em" class="text-muted" ng-show="notification.tags.length > 0"><i class="icon-tag"></i>
+            <div style="font-size: .7em" class="text-muted" ng-show="notification.tags.length > 0"><i class="icon-tags"></i>
               <span ng-repeat="tag in notification.tags" style="margin-right: 1em;">{{tag}}</span>
             </div>
           </li>

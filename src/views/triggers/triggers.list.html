@@ -16,6 +16,7 @@
         <h4 ng-show="loading"><i class="icon-refresh spin"></i> Loading...</h4>
         <ul class="list-group" ng-hide="loading">
           <li class="list-group-item" style="cursor: pointer;" ng-repeat="trigger in triggers | filter: search | orderBy: '+name'" ng-click="edit(trigger)">
+            <i class="{{trigger.icon}}" ng-show="trigger.icon"></i>
             {{trigger.name}}<button class="pull-right btn btn-xs btn-danger" ng-click="remove(trigger)" stop-event><i class="icon-trash"></i></button>
             <div style="font-size: .8em;" class="text-muted" ng-class="{'strike-through': !trigger.enabled}">
               <span ng-show="trigger.match">{{trigger.match_type | capitalize}} is
@@ -27,7 +28,7 @@
               </span>
               {{trigger.trigger}} Event
             </div>
-            <div style="font-size: .7em" class="text-muted" ng-show="trigger.tags.length > 0"><i class="icon-tag"></i>
+            <div style="font-size: .7em" class="text-muted" ng-show="trigger.tags.length > 0"><i class="icon-tags"></i>
               <span ng-repeat="tag in trigger.tags" style="margin-right: 1em;">{{tag}}</span>
             </div>
           </li>

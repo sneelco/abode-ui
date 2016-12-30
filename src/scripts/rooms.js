@@ -977,7 +977,7 @@ rooms.directive('roomIcon', function () {
 
       //If we get an EVENTS_RESET event, schedule a refresh
       var room_events = abode.scope.$on('UPDATED', function (event, msg) {
-        if (msg.type === 'room' && msg.object._id === $scope.room._id) {
+        if (msg.type === 'room' && $scope.room && msg.object._id === $scope.room._id) {
           if ($scope.loader) {
             $timeout.cancel($scope.loader);
           }
@@ -1021,6 +1021,11 @@ rooms.directive('roomIcon', function () {
           $scope.loading = false;
           $scope.error = false;
           $scope.room = obj;
+
+          if (!$scope.icon && obj.icon) {
+            $scope.icon = obj.icon;
+            $scope.show_icon = true;
+          }
 
           $scope.loader = $timeout($scope.refresh, success_splay);
         }, function (err) {
