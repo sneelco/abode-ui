@@ -15,6 +15,10 @@
                 <label for="name">Name</label>
                 <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="scene.name">
               </div>
+              <div class="form-group">
+                <label for="name">Tags</label>
+                <tags tag-model="scene.tags" />
+              </div>
 
               <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="add()" ng-disabled="addScene.$invalid"><i class="icon-circleadd"></i> Add</button>
             </form>

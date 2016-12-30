@@ -1,0 +1,4 @@
+<div style="background-color: white; border: 1px solid 333#; border-radius: 2px; padding: 6px 12px; padding-bottom: 8px; line-height: 1.5em;">
+	<span class="pointer text-success" style="padding-right: 1em;" ng-click="addTag()"><i class="icon-addtags"></i></span>
+	<span class="label label-primary" ng-repeat="tag in tagModel" style="margin-right: .5em;">{{tag}} <i class="icon-remove-circle text-default pointer" ng-click="removeTag($index)"></i></span>
+</div>

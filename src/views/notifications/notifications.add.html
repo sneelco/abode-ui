@@ -53,6 +53,10 @@
                 <li class="list-group-item" ng-show="!notification.triggers || notification.triggers.length == 0">No actions added</li>
               </ul>
             </div>
+            <div class="form-group">
+              <label for="name">Tags</label>
+              <tags tag-model="notification.tags" />
+            </div>
 
             <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="add()" ng-disabled="notificationFrm.$invalid || saving">
               <i class="icon-loadingalt spin" ng-show="saving"></i>

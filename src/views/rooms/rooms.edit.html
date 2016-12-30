@@ -16,7 +16,7 @@
                   <li ng-click="section='general'" ng-class="{active: section == 'general'}">General</li>
                   <li ng-click="section='devices'" ng-class="{active: section == 'devices'}">Devices</li>
                   <li ng-click="section='scenes'" ng-class="{active: section == 'scenes'}">Scenes</li>
-                  <li ng-click="section='triggers'" ng-class="{active: section == 'triggers'}">Triggers</li>
+                  <!-- <li ng-click="section='triggers'" ng-class="{active: section == 'triggers'}">Triggers</li>-->
                 </ul>
               </div>
               <div class="col-sm-9 col-xs-12">
@@ -28,10 +28,14 @@
                       <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="room.name">
                     </div>
                     <div class="form-group">
+                      <label for="name">Tags</label>
+                      <tags tag-model="room.tags" />
+                    </div>
+                    <div class="form-group">
                       <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="addRoom.$invalid"><i class="icon-savetodrive"></i> Save</button>
                       <button type="submit" class="btn btn-sm btn-default" ng-click="remove()" ng-disabled="addRoom.$invalid"><i class="icon-circledelete"></i> Remove</button>
                     </div>
-                    <room-icon room="{{room._id}}" temp-type="cycle"></room-icon>
+                    <room-icon name="{{room._id}}" temp-type="cycle"></room-icon>
                   </div>
                   <div ng-show="section=='devices'">
                     <div ng-show="loading"><i class="icon-refresh spin"></i> Loading Devices</div>
