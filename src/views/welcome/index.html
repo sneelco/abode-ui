@@ -3,13 +3,49 @@
     <div>&nbsp;</div>
     <div>&nbsp;</div>
     <div>&nbsp;</div>
-    <div class="row well">
+    <div class="row well" ng-show="!connected">
+      <div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-0">
+        <img src="images/home.png"  class="img-responsive img-rounded">
+      </div>
+      <div class="col-xs-12  col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-0" ng-hide="checking">
+        <p class="text-center">
+          <strong>Connect to a Network</strong>
+          <button class="btn btn-sm btn-primary pull-right" ng-click="connected=true" ng-show="network.connected" ng-disabled="scanning"><i class="icon-server"></i></button>
+        </p>
+        <div class="list-group">
+          <button type="button" class="list-group-item list-group-item-danger" ng-show="networks.length == 0 && !scanning" ng-click="scan()"><i class="icon-exclamation-sign text-danger"></i> Unable to detect any networks to connect to. Click to Scan</button>
+          <button type="button" class="list-group-item" ng-repeat="ssid in networks" ng-click="connect_wifi(ssid)">
+            <i ng-show="ssid.encryption" class="icon-lock" ng-class="{'text-warning': !ssid.connected, 'text-success': ssid.connected}"></i> 
+            <i ng-show="!ssid.encryption" class="icon-wifi" ng-class="{'text-danger': !ssid.connected, 'text-success': ssid.connected}"></i> 
+            {{ssid.essid}} <span class="pull-right">{{ssid.signal}}</span><br> <div class="text-muted" style="font-size: .7em;">{{ssid.macaddress}}</div>
+          </button>
+          <button type="button" class="list-group-item" disabled ng-show="scanning"><i class="icon-circleselection spin "></i> Searching of wireless networks...</button>
+          <button type="button" class="list-group-item" ng-show="!scanning && networks.length > 0" ng-click="scan()"><i class="icon-ok-sign text-success"></i> Found {{networks.length}} Networks[s]<div><small>Click to scan again.</small></div></button>
+        </div>
+        <p class="text-center"><strong>- or -</strong></p>
+        <form name="manualSSIDFrm">
+          <div class="form-group">
+            <label for="ssid">SSID</label>
+            <input type="text" class="form-control" id="ssid" placeholder="SSID" required="" ng-model="manual_wifi.essid">
+          </div>
+          <button type="submit" class="pull-right btn btn-sm btn-default" ng-click="connect_wifi(manual_wifi)" ng-disabled="manualSSIDFrm.$invalid || connecting">
+            <i class="icon-loadingalt spin" ng-show="connecting"></i>
+            <i class="icon-savetodrive" ng-hide="connecting"></i> Connect
+          </button>
+        </form>
+      </div>
+
+    </div>
+    <div class="row well" ng-show="connected">
       <div class="col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-0">
         <img src="images/home.png"  class="img-responsive img-rounded">
       </div>
 
       <div class="col-xs-12  col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-0" ng-hide="checking">
-        <p class="text-center"><strong>Connect to an Abode Server</strong></p>
+        <p class="text-center">
+          <strong>Connect to an Abode Server</strong>
+          <button class="btn btn-sm btn-primary pull-right" ng-click="scan()" ng-disabled="loading"><i class="icon-network"></i></button>
+        </p>
         <div class="list-group">
           <button type="button" class="list-group-item list-group-item-danger" ng-show="sources.length == 0 && !loading" ng-click="load()"><i class="icon-exclamation-sign text-danger"></i> Unable to detect any Abode servers. Specify an address manually below or click here to retry</button>
           <button type="button" class="list-group-item" ng-repeat="source in sources" ng-click="connect(source)"><i class="icon-home" ng-hide="source.error"></i><i ng-show="source.error" class="icon-erroralt text-danger"></i> {{source.name}} <span ng-show="source.mode == 'device'">(Setup as New Server)</span></button>

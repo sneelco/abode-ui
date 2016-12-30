@@ -1,0 +1,23 @@
+<div class="modal-body">
+  <div ng-show="!connecting">
+    <div class="form-group">
+      <label for="secret">SSID</label>
+        <input type="text" class="form-control" id="ssid" placeholder="SSID" ng-model="ssid.essid" autocomplete='off' readonly>
+    </div>
+    <div class="form-group" ng-show="ssid.encryption">
+      <label for="secret">Secret</label>
+        <input type="password" class="form-control" id="secret" placeholder="Secret" ng-model="ssid.secret" autocomplete='off'>
+    </div>
+    <div class="alert alert-danger" ng-show="error">{{error}}</div>
+  </div>
+  <div ng-show="connecting">
+  <h3><i class="icon-circleselection spin"></i> Connecting</h3>
+  <h4>Attempt {{attempts}}/10</h4>
+  </div>
+</div>
+
+
+<div class="modal-footer">
+    <button class="btn btn-warning btn-sm" type="button" ng-click="cancel()" ng-disabled="connecting">Cancel</button>
+    <button class="btn btn-primary btn-sm" type="button" ng-click="connect()" ng-disabled="connecting"><i class="icon-network"></i> Connect</button>
+</div>

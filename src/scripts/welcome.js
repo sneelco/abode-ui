@@ -7,6 +7,19 @@ welcome.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRou
       url: '/Welcome',
       templateUrl: "views/welcome/index.html",
       controller: 'welcomeController',
+      resolve: {
+        'network': ['$q', '$http', function ($q, $http) {
+          var defer = $q.defer();
+
+          $http.get('/api/network').then(function (network) {
+            defer.resolve(network.data);
+          }, function () {
+            defer.resolve(false);
+          });
+
+          return defer.promise;
+        }]
+      }
     })
     .state('welcome_configure', {
       url: '/Welcome/Configure',
@@ -25,9 +38,16 @@ welcome.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRou
       resolve: {
         'rad': ['$q', '$http', function ($q, $http) {
           var defer = $q.defer();
+          var opts = {
+            'headers': {
+              'Pragma': 'no-cache',
+              'Cache-Control': 'no-cache',
+              'Expires': 0
+            }
+          };
 
-          $http.get('/api/abode/status').then(function (response) {
-            defer.resolve(response.data);
+          $http.get('/api/abode/status', opts).then(function (response) {
+              defer.resolve(response.data);
           }, function () {
             defer.resolve();
           });
@@ -68,7 +88,7 @@ welcome.controller('powerController', ['$scope','$http', 'abode', function ($sco
   };
 }]);
 
-welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$http', '$q', '$state', 'abode', 'Auth', 'Interfaces', function ($scope, $timeout, $interval, $http, $q, $state, abode, Auth, Interfaces) {
+welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$http', '$q', '$state', '$uibModal', 'abode', 'Auth', 'Interfaces', 'network', function ($scope, $timeout, $interval, $http, $q, $state, $uibModal, abode, Auth, Interfaces, network) {
 
   var ssl_checker;
   var attempts = [
@@ -88,6 +108,104 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
   $scope.state = $state;
   $scope.checking_ssl = false;
   $scope.needs_reboot = false;
+  $scope.network = network;
+  $scope.connected = (network === false || network.connected === true) ? true : false;
+  $scope.networks = [];
+  $scope.scanning = false;
+  $scope.selected_wifi = null;
+  $scope.manual_wifi = {'encryption': true};
+
+  $scope.scan = function () {
+    var attempt_defers = [];
+    $scope.networks = [];
+    $scope.connected = false;
+    $scope.scanning = true;
+
+    $timeout(function () {
+
+      $http.get('/api/network/wireless').then(function (response) {
+        $scope.scanning = false;
+        $scope.networks = response.data;
+      }, function (err) {
+        $scope.scanning = false;
+      });
+
+    }, 100);
+
+  };
+
+  $scope.connect_wifi = function (ssid) {
+
+    $uibModal.open({
+      animation: false,
+      templateUrl: 'views/welcome/wifi.connect.html',
+      size: 'sm',
+      keyboard: false,
+      backdrop: 'static',
+      controller: ['$scope', '$uibModalInstance', '$timeout', function ($uiScope, $uibModalInstance, $timeout) {
+        $uiScope.ssid = ssid;
+        $uiScope.connecting = false;
+        $uiScope.error = false;
+        $uiScope.checking = false;
+
+        var wait_interval;
+        var attempts = 0;
+
+        $uiScope.wait = function () {
+          if ($uiScope.checking) {
+            return;
+          }
+
+          attempts += 1;
+          if (attempts >= 10) {
+            $interval.cancel(wait_interval);
+            $uiScope.error = 'Timeout waiting for network to become available';
+            $uiScope.connecting = false;
+            $uiScope.checking = false;
+            return;
+          }
+
+          $http.get('/api/network').then(function (response) {
+            $uiScope.checking = false;
+            if (!response.data.connected) {
+              $timeout($uiScope.wait, 5 * 1000);
+              return;
+            }
+
+            $uiScope.connected();
+          }, function () {
+            $uiScope.error = 'Error setting new wireless settings';
+            $uiScope.checking = false;
+          })
+        };
+
+        $uiScope.connected = function () {
+          $scope.connected = true;
+          $scope.load();
+          $uibModalInstance.dismiss();
+        };
+
+        $uiScope.connect = function () {
+          $uiScope.connecting = true;
+
+          $http.post('/api/network/connect', ssid).then(function (response) {
+            $timeout($uiScope.wait, 5 * 1000);
+          }, function () {
+            $uiScope.connecting = false;
+            $uiScope.error = false;
+          })
+        };
+
+        $uiScope.cancel = function () {
+          $uibModalInstance.dismiss();
+        };
+
+        if (!ssid.encryption) {
+          $uiScope.connect();
+        }
+      }]
+    });
+  };
 
   $scope.load = function () {
     var attempt_defers = [];
@@ -223,8 +341,11 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
 
   };
 
-
-  $timeout($scope.load, 100);
+  if ($scope.connected) {
+    $timeout($scope.load, 100);
+  } else {
+    $timeout($scope.scan, 100);
+  }
 
 }]);
 
