@@ -982,6 +982,11 @@ rooms.directive('roomIcon', function () {
             $timeout.cancel($scope.loader);
           }
 
+          if (!$scope.icon && msg.object.icon) {
+            $scope.icon = msg.object.icon;
+            $scope.show_icon = true;
+          }
+
           angular.merge($scope.room, msg.object);
           $scope.loader = $timeout($scope.refresh, success_splay);
         }

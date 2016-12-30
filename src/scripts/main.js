@@ -200,6 +200,74 @@ abode.directive('iconSelector', ['$compile', function () {
         {
           'name': 'Umbrella',
           'class': 'wi wi-umbrella',
+        },
+        {
+          'name': 'Room',
+          'class': 'icon-snaptogrid'
+        },
+        {
+          'name': 'Office Chair',
+          'class': 'icon-officechair'
+        },
+        {
+          'name': 'Bed',
+          'class': 'icon-bed'
+        },
+        {
+          'name': 'TV',
+          'class': 'icon-tv'
+        },
+        {
+          'name': 'Fork',
+          'class': 'icon-fork'
+        },
+        {
+          'name': 'Washer',
+          'class': 'icon-washer'
+        },
+        {
+          'name': 'Modes',
+          'class': 'icon-burstmode'
+        },
+        {
+          'name': 'Tree',
+          'class': 'icon-forest-tree'
+        },
+        {
+          'name': 'Tree Christmas',
+          'class': 'icon-christmastree'
+        },
+        {
+          'name': 'Tree Alt',
+          'class': 'icon-treethree'
+        },
+        {
+          'name': 'Plant',
+          'class': 'icon-plantalt'
+        },
+        {
+          'name': 'Plant Alt1',
+          'class': 'icon-macro-plant'
+        },
+        {
+          'name': 'Plant Alt2',
+          'class': 'icon-flowerpot'
+        },
+        {
+          'name': 'Broom',
+          'class': 'icon-broom'
+        },
+        {
+          'name': 'Dog',
+          'class': 'icon-dog'
+        },
+        {
+          'name': 'Dog House',
+          'class': 'icon-doghouse'
+        },
+        {
+          'name': 'Timer',
+          'class': 'icon-timer'
         }
       ];
     }]
