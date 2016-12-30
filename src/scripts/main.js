@@ -1172,8 +1172,8 @@ abode.directive('deviceStatus', function () {
           $scope.slider.options.disabled = false;
         }, function () {
           $scope.slider.level = parseInt($scope.device._level, 10);
-          $scope.slider.options.disabled = false;
           $timeout(function () {
+            $scope.slider.options.disabled = false;
             changing = false;
           }, 100);
         });
@@ -1187,11 +1187,11 @@ abode.directive('deviceStatus', function () {
         }
       };
 
-      $scope.$watch('slider', function () {
+      $scope.$watch('slider.level', function () {
         if (changing) {
           return;
         }
-        if ($scope.device._level !== $scope.slider.level) {
+        if (parseInt($scope.device._level) !== parseInt($scope.slider.level)) {
           if (timer) {
             $timeout.cancel(timer);
           }
