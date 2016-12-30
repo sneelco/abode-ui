@@ -1,0 +1,17 @@
+<div style="width: 240px;">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-9" ng-class="{'col-xs-offset-1': sensors.length == 0}" ng-show="has_capability('light')">
+      	<div>&nbsp;</div>
+      	<div>&nbsp;</div>
+      </div>
+      <div class="col-xs-3" style="font-size: .8em;" ng-class="{'col-xs-offset-4': controls.length == 0, 'text-center': controls.length == 0, 'text-right': controls.length != 0}">
+        <div ng-repeat="sensor in sensors" ng-include="sensor.view" class="row" style="" > </div>
+      </div>
+    </div>
+    <div class="row">
+    	<div class="col-xs-6 text-center"><i class="glyphicon glyphicon-cog pointer" ui-sref="main.settings.client" ></i></div>
+    	<div class="col-xs-6 text-center"><i class="glyphicon glyphicon-off pointer" uib-popover-template="'views/welcome/power.html'" popover-trigger="'outsideClick'" popover-placement="bottom-right"></i></div>
+    </div>
+  </div>
+</div>

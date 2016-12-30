@@ -544,6 +544,7 @@ abode.controller('mainController', ['$scope', '$state', '$interval', 'abode', 'I
   $scope.date = new Date();
   $scope.root = abode.scope;
   $scope.client = abode.config.auth.device.config;
+  $scope.device = abode.config.auth.device;
   $scope.interfaces = Interfaces.query();
   $scope.time = time;
   abode.get_events();
@@ -556,6 +557,7 @@ abode.controller('mainController', ['$scope', '$state', '$interval', 'abode', 'I
   //If we get an CLIENT_UPDATED event, merge our client config
   var client_events = abode.scope.$on('CLIENT_UPDATED', function (event, msg) {
     angular.merge($scope.client, msg.object.config);
+    angular.merge($scope.device, msg.object);
   });
 
   $interval(function () {
@@ -1143,6 +1145,45 @@ abode.directive('datetime', function () {
     },
     template: '<div class="datetime" ng-style="styles">{{formatted}}</div>',
     replace: true,
+  };
+
+});
+
+abode.directive('deviceStatus', function () {
+
+  return {
+    scope: {
+      'device': '='
+    },
+    restrict: 'E',
+    replace: true,
+    templateUrl: 'views/main/display_status.html',
+    controller: ['$scope', 'abode', function ($scope, abode) {
+
+      $scope.has_capability = function (capability) {
+        var match = $scope.capabilities.filter(function (c) {
+
+          return (c.name === capability);
+
+        });
+
+        return (match.length > 0);
+      };
+
+      $scope.capabilities = angular.copy($scope.device.capabilities).map(function (c) {
+        return {
+          'name': c,
+          'view': 'views/devices/capabilities/' + c + '.html'
+        };
+
+      });
+
+      $scope.sensors = $scope.capabilities.filter(function (c) {
+
+        return (c.name.indexOf('_sensor') > -1);
+
+      });
+    }]
   };
 
 });

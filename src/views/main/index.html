@@ -39,8 +39,9 @@
 	</div>
 	<div class="anav-bottom">
 	  <ul>
-	    <li ui-sref="main.settings" ng-click="anav_open=false"><i class="glyphicon glyphicon-cog"></i> Settings</li>
 	    <li class="text-right" ng-click="logout()"><i class="glyphicon glyphicon-log-out"></i> Logout</li>
+	    <li style="width: 3.5em;" ui-sref="main.settings" ng-click="anav_open=false"><i class="glyphicon glyphicon-cog"></i></li>
+	    <li ng-show="client" style="width: 3.5em;" uib-popover-template="'views/welcome/power.html'" popover-trigger="'outsideClick'" popover-placement="top-right"><i class="glyphicon glyphicon-off"></i></li>
 	  </ul>
 	</div>
 </div>
@@ -51,6 +52,7 @@
 	<div class="anav-opener  text-muted pull-left"  ng-click="anav_open = true"><i class="icon-menu"></i></div>
 	<div ng-show="client.show_date">{{date | date:'EEE, MMM d'}}</div>
 	<div class="pointer" ng-class="{'text-success': root.status.connected, 'text-danger': !root.status.connected}" uib-tooltip-template="'views/main/event_status.html'" tooltip-placement="bottom-right" tooltip-trigger="'outsideClick'"><i ng-class="{'icon-plug': !root.status.connected, 'icon-networksignal': root.status.connected}"></i></div>
+	<device-status device="device"></device-status>
 	<weather-status></weather-status>
 	<notifications-status></notifications-status>
 </div>
