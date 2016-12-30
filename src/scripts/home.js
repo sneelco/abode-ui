@@ -276,11 +276,12 @@ home.directive('controller', [function () {
       showTitle: '@',
       source: '@',
       action: '@',
+      longPress: '@',
       args: '=?',
       onsuccess: '=',
     },
     templateUrl: '/views/home/controller.html',
-    controller: ['$scope', '$timeout', '$interval', 'abode', 'Devices', 'Scenes', 'Rooms', 'Notifications', function ($scope, $timeout, $interval, abode, Devices, Scenes, Rooms, Notifications) {
+    controller: ['$scope', '$timeout', '$interval', '$timeout', 'abode', 'Devices', 'Scenes', 'Rooms', 'Notifications', function ($scope, $timeout, $interval, $timeout, abode, Devices, Scenes, Rooms, Notifications) {
       var types = {
         'devices': Devices, 'device': Devices,
         'rooms': Rooms, 'room': Rooms,
@@ -290,6 +291,8 @@ home.directive('controller', [function () {
 
       var success_splay = 1000 * 60 * Math.floor((Math.random() * 5) + 5);
       var error_splay = 1000 * Math.floor((Math.random() * 5) + 1);
+      var press_time = 0;
+      var press_timer;
 
       $scope.title = $scope.title || $scope.name;
       $scope.loading = false;
@@ -387,7 +390,29 @@ home.directive('controller', [function () {
         });
       };
 
-      $scope.do_action = function () {
+      $scope.start = function () {
+        press_time = new Date()
+        press_time = press_time.getTime();
+
+        press_timer = $timeout(function () {
+          $scope.do_action($scope.longPress || $scope.action);
+        }, 2000);
+      };
+
+      $scope.stop = function () {
+        var now = new Date();
+        now = now.getTime();
+
+        $timeout.cancel(press_timer);
+
+        if (now - press_time <= 500) {
+          $scope.do_action($scope.action);
+        } else {
+          $scope.do_action($scope.longPress || $scope.action);
+        }
+      };
+
+      $scope.do_action = function (action) {
         if (!$scope.obj || $scope.failed) {
           $scope.failed = true;
           $timeout(function () {
@@ -404,10 +429,10 @@ home.directive('controller', [function () {
         }
         $scope.failed = false;
         
-        if ($scope.action === 'toggle') {
+        if (action === 'toggle') {
           func = ($scope.obj._on || $scope.obj._lights_on) ? $scope.obj.$off : $scope.obj.$on;
-        } else if ($scope.obj['$' + $scope.action]) {
-          func = $scope.obj['$' + $scope.action];
+        } else if ($scope.obj['$' + action]) {
+          func = $scope.obj['$' + action];
         } else {
           func = $scope.obj.$open;
         }
@@ -418,7 +443,7 @@ home.directive('controller', [function () {
             result.then(function () {
             $scope.pending = false;
             $scope.success = true;
-            if ($scope.action === 'toggle' || $scope.action === 'open' || $scope.action === 'on' || $scope.action === 'toggle') {
+            if (action === 'toggle' || action === 'open' || action === 'on' || action === 'toggle') {
               $scope.loader = $timeout($scope.refresh, 5000);
             }
             if ($scope.onsuccess) {
@@ -430,7 +455,7 @@ home.directive('controller', [function () {
           }, function (err) {
             $scope.pending = false;
             $scope.failed = true;
-            if ($scope.action === 'toggle' || $scope.action === 'open' || $scope.action === 'on' || $scope.action === 'toggle') {
+            if (action === 'toggle' || action === 'open' || action === 'on' || action === 'toggle') {
               $scope.loader = $timeout($scope.refresh, 5000);
             }
             $timeout(function () {
@@ -440,7 +465,7 @@ home.directive('controller', [function () {
         } else if (result && result.closed) {
             $scope.pending = false;
             $scope.loading = true;
-            if ($scope.action === 'toggle' || $scope.action === 'open' || $scope.action === 'on' || $scope.action === 'toggle') {
+            if (action === 'toggle' || action === 'open' || action === 'on' || action === 'toggle') {
               $scope.loader = $timeout($scope.refresh, 5000);
             }
             result.closed.then(function (result) {
@@ -450,7 +475,7 @@ home.directive('controller', [function () {
               $scope.loading = false;
             });
         } else {
-          if ($scope.action === 'toggle' || $scope.action === 'open' || $scope.action === 'on' || $scope.action === 'toggle') {
+          if (action === 'toggle' || action === 'open' || action === 'on' || action === 'toggle') {
             $scope.loader = $timeout($scope.refresh, 5000);
           }
           $scope.pending = false;
