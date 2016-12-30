@@ -3,6 +3,7 @@ var abode = angular.module('abode', [
   'ngResource',
   'ui.router',
   'ui.bootstrap',
+  'rzModule',
   'abode.welcome',
   'abode.home',
   'abode.devices',
@@ -18,7 +19,7 @@ var abode = angular.module('abode', [
   'camera',
   'wunderground',
   'ifttt',
-  'rad'
+  'rad',
 ]);
 
 abode.directive('iconSelector', ['$compile', function () {
@@ -1158,7 +1159,45 @@ abode.directive('deviceStatus', function () {
     restrict: 'E',
     replace: true,
     templateUrl: 'views/main/display_status.html',
-    controller: ['$scope', 'abode', function ($scope, abode) {
+    controller: ['$scope', '$timeout', '$http', 'abode', function ($scope, $timeout, $http, abode) {
+
+      var timer;
+      var changing = false;
+
+      var set_brightness = function () {
+        changing = true;
+        $scope.slider.options.disabled = true;
+        $http.post('/api/display/brightness/' + $scope.slider.level).then(function () {
+          changing = false;
+          $scope.slider.options.disabled = false;
+        }, function () {
+          $scope.slider.level = parseInt($scope.device._level, 10);
+          $scope.slider.options.disabled = false;
+          $timeout(function () {
+            changing = false;
+          }, 100);
+        });
+      };
+
+      $scope.slider = {
+        level: parseInt($scope.device._level, 10) || 0,
+        options: {
+          floor: 0,
+          ceil: 100
+        }
+      };
+
+      $scope.$watch('slider', function () {
+        if (changing) {
+          return;
+        }
+        if ($scope.device._level !== $scope.slider.level) {
+          if (timer) {
+            $timeout.cancel(timer);
+          }
+          timer = $timeout(set_brightness, 1000);
+        }
+      }, true);
 
       $scope.has_capability = function (capability) {
         var match = $scope.capabilities.filter(function (c) {
@@ -1183,6 +1222,63 @@ abode.directive('deviceStatus', function () {
         return (c.name.indexOf('_sensor') > -1);
 
       });
+
+      $scope.toggle_onoff = function () {
+
+      };
+
+      $scope.level_up = function () {
+
+      };
+
+      $scope.level_down = function () {
+
+      };
+    }]
+  };
+
+});
+
+abode.directive('slider', function () {
+
+  return {
+    scope: {
+      'min': '=',
+      'max': '=',
+      'level': '=',
+    },
+    restrict: 'E',
+    replace: true,
+    templateUrl: 'views/main/slider.html',
+    controller: ['$scope', '$document', function ($scope, $document) {
+      var startY;
+      $scope.level = $scope.level || 0;
+      $scope.min = $scope.min || 0;
+      $scope.max = $scope.max || 100;
+
+      $scope.start = function (event) {
+        event.target.setCapture();
+        startY = event.clientY;
+        $document.on('mousemove', $scope.move);
+      };
+
+      $scope.end = function () {
+        $document.unbind('mousemove', $scope.move);
+      };
+
+      $scope.move = function (event) {
+        var value = (startY - event.clientY) + $scope.level;
+        if (value > $scope.max) {
+          $scope.level = parseInt($scope.max, 10);
+          return;
+        }
+        if (value < $scope.min) {
+          $scope.level = parseInt($scope.min, 10);
+          return;
+        }
+        $scope.level = parseInt(value, 10);
+        console.log($scope.level);
+      };
     }]
   };
 

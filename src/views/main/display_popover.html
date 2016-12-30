@@ -1,12 +1,10 @@
 <div style="width: 240px;">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-xs-9" ng-class="{'col-xs-offset-1': sensors.length == 0}" ng-show="has_capability('light')">
+      <div class="col-xs-12">
+      	<h4>Brightness</h4>
+      	<rzslider rz-slider-model="slider.level" rz-slider-options="slider.options" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
       	<div>&nbsp;</div>
-      	<div>&nbsp;</div>
-      </div>
-      <div class="col-xs-3" style="font-size: .8em;" ng-class="{'col-xs-offset-4': controls.length == 0, 'text-center': controls.length == 0, 'text-right': controls.length != 0}">
-        <div ng-repeat="sensor in sensors" ng-include="sensor.view" class="row" style="" > </div>
       </div>
     </div>
     <div class="row">

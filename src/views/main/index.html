@@ -39,9 +39,8 @@
 	</div>
 	<div class="anav-bottom">
 	  <ul>
+	    <li ui-sref="main.settings" ng-click="anav_open=false"><i class="glyphicon glyphicon-cog"></i> Settings</li>
 	    <li class="text-right" ng-click="logout()"><i class="glyphicon glyphicon-log-out"></i> Logout</li>
-	    <li style="width: 3.5em;" ui-sref="main.settings" ng-click="anav_open=false"><i class="glyphicon glyphicon-cog"></i></li>
-	    <li ng-show="client" style="width: 3.5em;" uib-popover-template="'views/welcome/power.html'" popover-trigger="'outsideClick'" popover-placement="top-right"><i class="glyphicon glyphicon-off"></i></li>
 	  </ul>
 	</div>
 </div>

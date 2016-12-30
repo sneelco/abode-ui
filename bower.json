@@ -19,6 +19,7 @@
     "angular-ui-router": "^0.3.1",
     "bootstrap": "^3.3.7",
     "angular-resource": "^1.5.8",
-    "angular-bootstrap": "^2.1.1"
+    "angular-bootstrap": "^2.1.1",
+    "angularjs-slider": "^5.9.0"
   }
 }
