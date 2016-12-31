@@ -1383,6 +1383,10 @@ abode.service('network', ['$uibModal', function ($uibModal) {
               }, 100);
             };
 
+            $scope.close = function () {
+              $uibModalInstance.dismiss();
+            };
+
             $scope.connect_wifi = function (ssid) {
 
               var modal = $uibModal.open({
