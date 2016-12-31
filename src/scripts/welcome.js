@@ -148,6 +148,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
         $uiScope.error = false;
         $uiScope.checking = false;
         $uiScope.attempts = 0;
+        $uiScope.max_attempts = 30;
 
         var wait_interval;
 
@@ -157,7 +158,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
           }
 
           $uiScope.attempts += 1;
-          if ($uiScope.attempts >= 10) {
+          if ($uiScope.attempts >= $uiScope.max_attempts) {
             $interval.cancel(wait_interval);
             $uiScope.error = 'Timeout waiting for network to become available';
             $uiScope.connecting = false;
