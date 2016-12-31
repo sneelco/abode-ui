@@ -1,8 +1,8 @@
 <div class="modal-body">
   <h3><i class="icon-off"></i>&nbsp;&nbsp;Power</h3>
-  <h6 ng-show="action=='restart' && count_down > 0 && !error">Restarting in {{count_down}} seconds. <button class="btn btn-sm btn-link" ng-click="count_down=1">Restart Now</button></h6>
+  <h6 ng-show="action=='restart' && count_down > 0 && !error">Restarting in {{count_down}} seconds.<br/><button class="btn btn-sm btn-link" ng-click="count_down=1">Restart Now</button></h6>
   <h6 ng-show="action=='restart' && count_down == 0 && !error">Restarting...</h6>
-  <h6 ng-show="action=='shutdown' && count_down > 0 && !error">Shutting down in {{count_down}} seconds. <button class="btn btn-sm btn-link" ng-click="count_down=1">Shut down Now</button></h6>
+  <h6 ng-show="action=='shutdown' && count_down > 0 && !error">Shutting down in {{count_down}} seconds.<br/<button class="btn btn-sm btn-link" ng-click="count_down=1">Shut down Now</button></h6>
   <h6 ng-show="action=='shutdown' && count_down == 0 && !error">Shutting Down...</h6>
   <h6 ng-show="error"><i class="text-danger icon-erroralt"></i> {{error}}</h6>
   <div>&nbsp;</div>
