@@ -147,17 +147,17 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
         $uiScope.connecting = false;
         $uiScope.error = false;
         $uiScope.checking = false;
+        $uiScope.attempts = 0;
 
         var wait_interval;
-        var attempts = 0;
 
         $uiScope.wait = function () {
           if ($uiScope.checking) {
             return;
           }
 
-          attempts += 1;
-          if (attempts >= 10) {
+          $uiScope.attempts += 1;
+          if ($uiScope.attempts >= 10) {
             $interval.cancel(wait_interval);
             $uiScope.error = 'Timeout waiting for network to become available';
             $uiScope.connecting = false;
@@ -187,6 +187,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
 
         $uiScope.connect = function () {
           $uiScope.connecting = true;
+          $uiScope.attempts = 0;
 
           $http.post('/api/network/connect', ssid).then(function (response) {
             $timeout($uiScope.wait, 5 * 1000);
