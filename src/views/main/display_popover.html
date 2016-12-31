@@ -31,6 +31,9 @@
           <div class="btn-group">
             <button class="btn btn-default btn-sm" ng-click="network()"><i class="icon-network"></i></button>
           </div>
+          <div class="btn-group" ng-show="root.status.connected">
+            <button class="btn btn-default btn-sm"  ui-sref="main.settings.client"><i class="icon-settingsfour-gearsalt"></i></button>
+          </div>
           <div class="btn-group">
             <button class="btn btn-default btn-sm" ng-click="power()"><i class="icon-off"></i></button>
           </div>
