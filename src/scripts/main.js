@@ -1564,6 +1564,18 @@ abode.directive('deviceStatus', function () {
       $scope.popover = false;
       $scope.root = abode.scope;
 
+      //This probably needs some work
+      //If we get an CLIENT_UPDATED event, merge our client config
+      var client_events = abode.scope.$on('CLIENT_UPDATED', function (event, msg) {
+        if (msg.object._level !== undefined) {
+          changing = true;
+          $scope.display.brightness = msg.object._level;
+          $timeout(function () {
+            changing = false;
+          }, 100);
+        }
+      });
+
       var set_brightness = function () {
         changing = true;
         $scope.slider.options.disabled = true;
@@ -1651,31 +1663,6 @@ abode.directive('deviceStatus', function () {
         }
       }, true);
 
-      /*
-      $scope.has_capability = function (capability) {
-        var match = $scope.capabilities.filter(function (c) {
-
-          return (c.name === capability);
-
-        });
-
-        return (match.length > 0);
-      };
-
-      $scope.capabilities = angular.copy($scope.device.capabilities).map(function (c) {
-        return {
-          'name': c,
-          'view': 'views/devices/capabilities/' + c + '.html'
-        };
-
-      });
-
-      $scope.sensors = $scope.capabilities.filter(function (c) {
-
-        return (c.name.indexOf('_sensor') > -1);
-
-      });
-      */
     }]
   };
 
