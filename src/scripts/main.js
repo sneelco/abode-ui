@@ -1484,7 +1484,7 @@ abode.service('power', ['$uibModal', function ($uibModal) {
         size: 'sm',
         keyboard: false,
         backdrop: 'static',
-        controller: ['$scope', '$uibModalInstance', '$timeout', '$interval', function ($uiScope, $uibModalInstance, $timeout, $interval) {
+        controller: ['$scope', '$http', '$uibModalInstance', '$timeout', '$interval', function ($uiScope, $http, $uibModalInstance, $timeout, $interval) {
           var timer;
 
           $uiScope.count_down = 0;
