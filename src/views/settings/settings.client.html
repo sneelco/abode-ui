@@ -41,7 +41,7 @@
 
               <div class="form-group" ng-show="device.config.dim_display">
                 <label for="enabled">Dim After: </label>
-                <input class="form-control" type="number" placeholder="Seconds" ng-model="device.config.dim_after">
+                <rzslider rz-slider-model="device.config.dim_after" rz-slider-options="{floor: 0, ceil: 120, step: 5, hideLimitLabels: true}" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
               </div>
 
               <div class="form-group">
@@ -59,6 +59,12 @@
                 <toggle value="device.config.show_weather" class="pull-right"></toggle>
               </div>
 
+              <div ng-show="device.provider == 'rad'">
+              <div class="form-group">
+                <label>Minimum Brightness: </label>
+                <rzslider rz-slider-model="device.config.display.min_brightness" rz-slider-options="{floor: 0, ceil: 100, hideLimitLabels: true}" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
+              </div>
+
               <div class="form-group">
                 <label for="enabled">Put Display Sleep: </label>
                 <toggle value="device.config.display.sleep" class="pull-right"></toggle>
@@ -66,7 +72,7 @@
 
               <div class="form-group" ng-show="device.config.display.sleep">
                 <label for="enabled">Sleep after (sec): </label>
-                <input class="form-control" type="text" placeholder="Seconds" ng-model="device.config.display.wake_timer">
+                <rzslider rz-slider-model="device.config.display.wake_timer" rz-slider-options="{floor: 0, ceil: 120, step: 5, hideLimitLabels: true}" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
               </div>
 
               <div class="form-group">
@@ -76,12 +82,13 @@
 
               <div class="form-group" ng-show="device.config.display.dht_sensor">
                 <label for="enabled">DHT GPIO Pin: </label>
-                <input class="form-control" type="text" min=0 max=40 placeholder="Pin" ng-model="device.config.display.dht_pin">
+                <rzslider rz-slider-model="device.config.display.dht_pin" rz-slider-options="{floor: 0, ceil: 27, hideLimitLabels: true}" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
               </div>
 
               <div class="form-group">
                 <label for="enabled">Light GPIO Pin: </label>
-                <input class="form-control" type="text" placeholder="Pin" ng-model="device.config.display.light_pin">
+                <rzslider rz-slider-model="device.config.display.light_pin" rz-slider-options="{floor: 0, ceil: 27, hideLimitLabels: true}" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
+              </div>
               </div>
 
               <div class="form-group">
