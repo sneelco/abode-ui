@@ -281,7 +281,7 @@ home.directive('controller', [function () {
       onsuccess: '=',
     },
     templateUrl: '/views/home/controller.html',
-    controller: ['$scope', '$timeout', '$interval', '$timeout', 'abode', 'Devices', 'Scenes', 'Rooms', 'Notifications', function ($scope, $timeout, $interval, $timeout, abode, Devices, Scenes, Rooms, Notifications) {
+    controller: ['$scope', '$timeout', '$interval', 'abode', 'Devices', 'Scenes', 'Rooms', 'Notifications', function ($scope, $timeout, $interval, abode, Devices, Scenes, Rooms, Notifications) {
       var types = {
         'devices': Devices, 'device': Devices,
         'rooms': Rooms, 'room': Rooms,
@@ -391,7 +391,7 @@ home.directive('controller', [function () {
       };
 
       $scope.start = function () {
-        press_time = new Date()
+        press_time = new Date();
         press_time = press_time.getTime();
 
         press_timer = $timeout(function () {

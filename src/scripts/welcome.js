@@ -177,7 +177,8 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
           }, function () {
             $uiScope.error = 'Error setting new wireless settings';
             $uiScope.checking = false;
-          })
+          });
+
         };
 
         $uiScope.connected = function () {
@@ -195,7 +196,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
           }, function () {
             $uiScope.connecting = false;
             $uiScope.error = false;
-          })
+          });
         };
 
         $uiScope.cancel = function () {

@@ -306,28 +306,28 @@ abode.directive('tags', function () {
                 return;
               }
               var matches = $scope.tagModel.filter(function (tag) {
-                return (tag.toLowerCase() === $uiScope.tag.name.toLowerCase())
+                return (tag.toLowerCase() === $uiScope.tag.name.toLowerCase());
               });
 
               if (matches.length > 0) {
                 $uiScope.error = 'Tag already exists';
-                return
+                return;
               }
 
               $uiScope.error = '';
               $scope.tagModel.push($uiScope.tag.name);
 
               $uibModalInstance.close();
-            }
+            };
 
             $uiScope.cancel = function () {
               $uibModalInstance.dismiss();
-            }
+            };
           }]
         });
-      }
+      };
     }]
-  }
+  };
 });
 
 abode.config(['$stateProvider', '$urlRouterProvider', 'abodeProvider', function($state, $urlRouter, abode) {
