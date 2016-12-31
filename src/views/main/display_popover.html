@@ -1,6 +1,6 @@
 <div style="width: 240px;">
   <div class="container-fluid">
-    <div class="row">
+    <div class="row" ng-show="display.max_brightness" ng-show="device">
       <div class="col-xs-12">
       	<h4>Brightness</h4>
       	<rzslider rz-slider-model="slider.level" rz-slider-options="slider.options" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
@@ -8,8 +8,34 @@
       </div>
     </div>
     <div class="row">
-    	<div class="col-xs-6 text-center"><i class="glyphicon glyphicon-cog pointer" ui-sref="main.settings.client" ></i></div>
-    	<div class="col-xs-6 text-center"><i class="glyphicon glyphicon-off pointer" uib-popover-template="'views/welcome/power.html'" popover-trigger="'outsideClick'" popover-placement="bottom-right"></i></div>
+      <div class="col-xs-12"">
+        <div class="row">
+          <div class="col-xs-4">Status</div>
+          <div class="col-xs-1" style="font-size: .8em;"><i class="icon-server"></i></div>
+          <div class="col-xs-3 text-right" style="font-size: .8em;"><i class="icon-clouddownload"></i></div>
+          <div class="col-xs-3 text-right" style="font-size: .8em;"><i class="icon-clouderror"></i></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-offset-4 col-xs-1" style="font-size: .8em;">
+            <i class="icon-ok text-success" ng-show="root.status.connected"></i>
+            <i class="icon-erroralt text-danger" ng-show="!root.status.connected"></i>
+          </div>
+          <div class="col-xs-3 text-right" style="font-size: .8em;">{{root.status.messages | number:0}}</div>
+          <div class="col-xs-3 text-right" style="font-size: .8em;">{{root.status.errors | number:0}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="row" ng-show="device">
+    	<div class="col-xs-12 text-center">
+        <div class="btn-group btn-group-justified">
+          <div class="btn-group">
+            <button class="btn btn-default btn-sm" ng-click="network()"><i class="icon-network"></i></button>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-default btn-sm" ng-click="power()"><i class="icon-off"></i></button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

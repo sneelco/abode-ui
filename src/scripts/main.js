@@ -1223,7 +1223,8 @@ abode.directive('content', function () {
       background: '@',
       color: '@',
       shadow: '@',
-      margin: '@'
+      margin: '@',
+      overflow: '@'
     },
     controller: function ($scope) {
       $scope.outerStyles = {};
@@ -1242,6 +1243,7 @@ abode.directive('content', function () {
       if ($scope.color) { $scope.innerStyles.color = $scope.color; }
       if ($scope.shadow) { $scope.innerStyles['text-shadow'] = $scope.shadow; }
       if ($scope.margin) { $scope.innerStyles.margin = (isNaN($scope.margin)) ? $scope.margin : $scope.margin + 'em'; }
+      if ($scope.overflow) { $scope.outerStyles.overflow = $scope.overflow || 'hidden'; }
 
     },
     template: '<div class="content" ng-style="outerStyles"><div style="display:table; height: 100%; width: 100%"><div style="display:table-cell;" ng-style="innerStyles" ng-transclude></div></div></div>',
@@ -1334,6 +1336,210 @@ abode.directive('datetime', function () {
 
 });
 
+abode.service('network', ['$uibModal', function ($uibModal) {
+  return {
+    open: function () {
+      return $uibModal.open({
+          animation: false,
+          templateUrl: 'views/main/network.html',
+          size: 'lg',
+          controller: ['$scope', '$uibModalInstance', '$timeout', '$interval', '$http', function ($scope, $uibModalInstance, $timeout, $interval, $http) {
+            $scope.networks = [];
+            $scope.status = {};
+            $scope.scanning = true;
+            $scope.checking = true;
+            $scope.manual_wifi = {'encryption': true};
+
+            $scope.scan = function () {
+              var attempt_defers = [];
+              $scope.networks = [];
+              $scope.scanning = true;
+
+              $timeout(function () {
+
+                $http.get('/api/network/wireless').then(function (response) {
+                  $scope.scanning = false;
+                  $scope.networks = response.data;
+                }, function (err) {
+                  $scope.scanning = false;
+                });
+
+              }, 100);
+
+            };
+
+            $scope.get_status = function () {
+              $scope.checking = true;
+
+              $timeout(function () {
+
+                $http.get('/api/network').then(function (response) {
+                  $scope.checking = false;
+                  $scope.status = response.data;
+                }, function (err) {
+                  $scope.checking = false;
+                });
+
+              }, 100);
+            };
+
+            $scope.connect_wifi = function (ssid) {
+
+              var modal = $uibModal.open({
+                animation: false,
+                templateUrl: 'views/welcome/wifi.connect.html',
+                size: 'sm',
+                keyboard: false,
+                backdrop: 'static',
+                controller: ['$scope', '$uibModalInstance', '$timeout', function ($uiScope, $uibModalInstance, $timeout) {
+                  $uiScope.ssid = ssid;
+                  $uiScope.connecting = false;
+                  $uiScope.error = false;
+                  $uiScope.checking = false;
+                  $uiScope.attempts = 0;
+                  $uiScope.max_attempts = 30;
+
+                  var wait_interval;
+
+                  $uiScope.wait = function () {
+                    if ($uiScope.checking) {
+                      return;
+                    }
+
+                    $uiScope.attempts += 1;
+                    if ($uiScope.attempts >= $uiScope.max_attempts) {
+                      $interval.cancel(wait_interval);
+                      $uiScope.error = 'Timeout waiting for network to become available';
+                      $uiScope.connecting = false;
+                      $uiScope.checking = false;
+                      return;
+                    }
+
+                    $http.get('/api/network').then(function (response) {
+                      $uiScope.checking = false;
+                      if (!response.data.connected) {
+                        $timeout($uiScope.wait, 5 * 1000);
+                        return;
+                      }
+
+                      $uiScope.connected();
+                    }, function () {
+                      $uiScope.error = 'Error setting new wireless settings';
+                      $uiScope.checking = false;
+                    });
+
+                  };
+
+                  $uiScope.connected = function () {
+                    $uibModalInstance.close();
+                  };
+
+                  $uiScope.connect = function () {
+                    $uiScope.connecting = true;
+                    $uiScope.attempts = 0;
+
+                    $http.post('/api/network/connect', ssid).then(function (response) {
+                      $timeout($uiScope.wait, 5 * 1000);
+                    }, function () {
+                      $uiScope.connecting = false;
+                      $uiScope.error = false;
+                    });
+                  };
+
+                  $uiScope.cancel = function () {
+                    $uibModalInstance.dismiss();
+                  };
+
+                  if (!ssid.encryption) {
+                    $uiScope.connect();
+                  }
+                }]
+              })
+
+              modal.result.then(function () {
+                $scope.get_status();
+              })
+            };
+
+            $timeout($scope.scan, 100);
+            $timeout($scope.get_status, 100);
+
+          }]
+      });
+    }
+  };
+}]);
+
+abode.service('power', ['$uibModal', function ($uibModal) {
+
+  return {
+    open: function () {
+      return $uibModal.open({
+        animation: false,
+        templateUrl: 'views/main/power.html',
+        size: 'sm',
+        keyboard: false,
+        backdrop: 'static',
+        controller: ['$scope', '$uibModalInstance', '$timeout', '$interval', function ($uiScope, $uibModalInstance, $timeout, $interval) {
+          var timer;
+
+          $uiScope.count_down = 0;
+          $uiScope.action = "";
+
+          var do_action = function (uri) {
+            $http.post(uri).then(function () {
+
+            }, function (err) {
+              $uiScope.error = err.data.error || err.data.message || err;
+            });
+          };
+
+          $uiScope.restart = function () {
+            $uiScope.error = '';
+            $uiScope.action = 'restart';
+            $uiScope.count_down = 30;
+            timer = $interval(function () {
+              $uiScope.count_down -= 1;
+
+              if ($uiScope.count_down == 0) {
+                $interval.cancel(timer);
+                do_action('/api/abode/restart');
+              }
+            }, 1000);
+          };
+
+          $uiScope.shutdown = function () {
+            $uiScope.error = '';
+            $uiScope.action = 'shutdown';
+            $uiScope.count_down = 30;
+            timer = $interval(function () {
+              $uiScope.count_down -= 1;
+
+              if ($uiScope.count_down == 0) {
+                $interval.cancel(timer);
+                do_action('/api/abode/shutdown');
+              }
+            }, 1000);
+          };
+
+          $uiScope.cancel = function () {
+            if ($uiScope.count_down > 0) {
+              $interval.cancel(timer);
+              $uiScope.action = '';
+              $uiScope.count_down = 0;
+              return;
+            }
+
+            $uibModalInstance.dismiss();
+          };
+
+        }]
+      });
+    }
+  };
+
+}]);
+
 abode.directive('deviceStatus', function () {
 
   return {
@@ -1343,10 +1549,16 @@ abode.directive('deviceStatus', function () {
     restrict: 'E',
     replace: true,
     templateUrl: 'views/main/display_status.html',
-    controller: ['$scope', '$timeout', '$http', 'abode', function ($scope, $timeout, $http, abode) {
+    controller: ['$scope', '$timeout', '$http', '$uibModal', 'abode', 'power', 'network', function ($scope, $timeout, $http, $uibModal, abode, power, network) {
 
       var timer;
       var changing = false;
+      $scope.display = {};
+      $scope.network = {};
+      $scope.loading = true;
+      $scope.error = false;
+      $scope.popover = false;
+      $scope.root = abode.scope;
 
       var set_brightness = function () {
         changing = true;
@@ -1354,8 +1566,8 @@ abode.directive('deviceStatus', function () {
         $http.post('/api/display/brightness/' + $scope.slider.level).then(function () {
           changing = false;
           $scope.slider.options.disabled = false;
-        }, function () {
-          $scope.slider.level = parseInt($scope.device._level, 10);
+        }, function (err) {
+          $scope.slider.level = parseInt($scope.display.brightness, 10);
           $timeout(function () {
             $scope.slider.options.disabled = false;
             changing = false;
@@ -1364,18 +1576,70 @@ abode.directive('deviceStatus', function () {
       };
 
       $scope.slider = {
-        level: parseInt($scope.device._level, 10) || 0,
+        level: 0,
         options: {
           floor: 0,
-          ceil: 100
+          ceil: 100,
+          hideLimitLabels: true
         }
       };
 
+      $scope.network = function () {
+        $scope.popover = false;
+        console.log(network.open());
+      };
+
+      $scope.power = function () {
+        $scope.popover = false;
+        power.open();
+      };
+
+      $scope.load = function () {
+        $scope.error = false;
+        $scope.loading = true;
+
+        var done = function () {
+          $scope.loading = false;
+        };
+
+        var load_network = function () {
+
+          $http.get('/api/network').then(function (result) {
+            angular.merge($scope.network, result.data);
+            done()
+          }, function (err) {
+            $scope.error = true;
+            done();
+          });
+
+        };
+
+        var load_display = function () {
+
+          $http.get('/api/display').then(function (result) {
+            $scope.device = true;
+            angular.merge($scope.display, result.data);
+            $scope.slider.level = $scope.display.brightness;
+            load_network()
+          }, function (err) {
+            $scope.error = true;
+            $scope.device = false;
+            done();
+          });
+
+        };
+
+        load_display();
+
+      };
+
+      $timeout($scope.load, 100);
+
       $scope.$watch('slider.level', function () {
-        if (changing) {
+        if (changing || $scope.display.max_brightness == undefined) {
           return;
         }
-        if (parseInt($scope.device._level) !== parseInt($scope.slider.level)) {
+        if (parseInt($scope.display.brightness) !== parseInt($scope.slider.level)) {
           if (timer) {
             $timeout.cancel(timer);
           }
@@ -1383,6 +1647,7 @@ abode.directive('deviceStatus', function () {
         }
       }, true);
 
+      /*
       $scope.has_capability = function (capability) {
         var match = $scope.capabilities.filter(function (c) {
 
@@ -1406,18 +1671,7 @@ abode.directive('deviceStatus', function () {
         return (c.name.indexOf('_sensor') > -1);
 
       });
-
-      $scope.toggle_onoff = function () {
-
-      };
-
-      $scope.level_up = function () {
-
-      };
-
-      $scope.level_down = function () {
-
-      };
+      */
     }]
   };
 

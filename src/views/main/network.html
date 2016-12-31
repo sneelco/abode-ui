@@ -1,0 +1,53 @@
+<div class="modal-body">
+  <h3>
+    <i class="icon-network"></i>&nbsp;&nbsp;Network
+  </h3>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-5 col-md-4">
+      <div class="well" style="font-size: .9em;">
+        <div>Connection: <i class="icon-circleselection spin" ng-show="checking"></i><i class="icon-ok text-success" ng-show="status.connected && !checking"></i><i class="icon-erroralt text-danger" ng-show="!status.connected && !checking"></i></div>
+        <div ng-show="status.connected">
+          <div>Interface: {{status.interface}}</div>
+          <div>IP: {{status.ip}}</div>
+          <div>Gateway: {{status.gateway}}</div>
+          <div ng-show="status.essid">SSID: {{status.essid}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12  col-sm-7 col-md-8">
+      <div class="list-group">
+        <button type="button" class="list-group-item list-group-item-danger" ng-show="networks.length == 0 && !scanning" ng-click="scan()"><i class="icon-exclamation-sign text-danger"></i> Unable to detect any networks to connect to. Click to Scan</button>
+
+        <button type="button" class="list-group-item" ng-repeat="ssid in networks" ng-click="connect_wifi(ssid)">
+          <i ng-show="ssid.encryption" class="icon-lock" ng-class="{'text-warning': !ssid.connected, 'text-success': ssid.connected}"></i> 
+          <i ng-show="!ssid.encryption" class="icon-wifi" ng-class="{'text-danger': !ssid.connected, 'text-success': ssid.connected}"></i> 
+          {{ssid.essid}} <span class="pull-right">{{ssid.signal}}</span><br> <div class="text-muted" style="font-size: .7em;">{{ssid.macaddress}}</div>
+        </button>
+
+        <button type="button" class="list-group-item" disabled ng-show="scanning"><i class="icon-circleselection spin "></i> Searching of wireless networks...</button>
+
+        <button type="button" class="list-group-item" ng-show="!scanning && networks.length > 0" ng-click="scan()"><i class="icon-ok-sign text-success"></i> Found {{networks.length}} Networks[s]<div><small>Click to scan again.</small></div></button>
+
+      </div>
+      <p class="text-center"><strong>- Manual Connection -</strong></p>
+      <form name="manualSSIDFrm">
+        <div class="form-group">
+          <div class="input-group">
+          <input type="text" class="form-control" id="ssid" placeholder="SSID" required="" ng-model="manual_wifi.essid">
+          <span class="input-group-btn">
+            <button type="submit" class="pull-right btn btn-default" ng-click="connect_wifi(manual_wifi)" ng-disabled="!manual_wifi.essid">
+              <i class="icon-connected"></i> Connect
+            </button>
+          </span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 text-right">
+      <button class="btn btn-link btn-sm btn-warning">Close</button>
+    </div>
+  </div>
+</div>

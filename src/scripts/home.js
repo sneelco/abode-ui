@@ -760,7 +760,7 @@ home.directive('background', function () {
       }
 
     },
-    template: '<div style="z-index: 1; position: absolute; top: 0px; bottom: 0px; left: 0px; right: 0px;">  <div ng-style="bgA" class="background"></div><div ng-style="bgB" class="background"></div></div>',
+    template: '<div style="position: absolute; top: 0px; bottom: 0px; left: 0px; right: 0px;">  <div ng-style="bgA" class="background"></div><div ng-style="bgB" class="background"></div></div>',
     replace: true,
   };
 

@@ -1,3 +1,5 @@
-<div  ng-show="device.provider === 'rad'" uib-popover-template="'views/main/display_popover.html'" popover-trigger="'outsideClick'" popover-placement="bottom-right">
-	<i class="text-muted pointer icon-monitor"></i>
+<div uib-popover-template="'views/main/display_popover.html'" popover-trigger="'outsideClick click'" popover-placement="bottom-right" popover-is-open="popover">
+  <i ng-show="loading" class="text-muted pointer icon-circleselection spin"></i>
+  <i ng-hide="loading || device == false" class="pointer" ng-class="{'text-danger': !network.connected, 'text-success': network.connected, 'icon-lan': !network.essid, 'icon-lan': !network.essid, 'icon-networksignal': network.essid, 'text-warning': !root.status.connected}"></i>
+  <i ng-hide="loading || device == true" ng-class="{'icon-plug': !root.status.connected, 'icon-networksignal': root.status.connected}"></i>
 </div>
