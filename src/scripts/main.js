@@ -1570,6 +1570,7 @@ abode.directive('deviceStatus', function () {
         if (msg.object._level !== undefined) {
           changing = true;
           $scope.display.brightness = msg.object._level;
+          $scope.slider.level = msg.object._level;
           $timeout(function () {
             changing = false;
           }, 100);
