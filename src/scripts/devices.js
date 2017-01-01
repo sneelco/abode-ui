@@ -558,6 +558,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           $scope.errors = false;
 
           $scope.device.$refresh(force).then(function (result) {
+            console.log(result);
             $scope.processing = false;
             $scope.errors = false;
           }, function () {
@@ -569,6 +570,38 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
 
         $scope.ok = function () {
           $uibModalInstance.close();
+        };
+
+        $scope.display_unlock = function () {
+
+          $scope.processing = true;
+          $scope.errors = false;
+
+          $scope.device.$unlock().then(function () {
+            $scope.device.locked = false;
+            $scope.processing = false;
+            $scope.errors = false;
+          }, function (err) {
+            console.log(err);
+            $scope.processing = false;
+            $scope.errors = true;
+          });
+        };
+
+        $scope.display_lock = function () {
+
+          $scope.processing = true;
+          $scope.errors = false;
+
+          $scope.device.$lock().then(function () {
+            $scope.device.locked = true;
+            $scope.processing = false;
+            $scope.errors = false;
+          }, function (err) {
+            console.log(err);
+            $scope.processing = false;
+            $scope.errors = true;
+          });
         };
 
         $scope.unlock = function () {

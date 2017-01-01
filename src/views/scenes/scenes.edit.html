@@ -85,6 +85,8 @@
                                         {{action.name}} <button class="pull-right btn btn-default btn-xs" ng-click="removeDevice(step, $index)"><i class="icon-remove-sign"></i></button>
                                         <div style="font-size: .70em;">
                                           <span ng-show="!action._level && action._on">Turn ON</span>
+                                          <span ng-show="action.locked === true">Lock</span>
+                                          <span ng-show="action.locked === false">Unlock</span>
                                           <span ng-show="action._level > 0">Turn ON to {{action._level}}% brightness</span>
                                           <span ng-show="action._mode == 'COOL'">Turn on COOL to {{action._set_point}}&deg;</span>
                                           <span ng-show="action._mode == 'HEAT'">Turn on HEAT to {{action._set_point}}&deg;</span>

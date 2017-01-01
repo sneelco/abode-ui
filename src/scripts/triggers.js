@@ -231,8 +231,8 @@ triggers.service('triggers', function ($http, $q, $uibModal, $resource, abode, c
         $scope.type_actions = [
           {name: 'On', value: 'on', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff']},
           {name: 'Off', value: 'off', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff']},
-          {name: 'Lock', value: 'lock', arguments: [], capabilities: ['lock']},
-          {name: 'Unlock', value: 'unlock', arguments: [], capabilities: ['lock']},
+          {name: 'Lock', value: 'lock', arguments: [], capabilities: ['lock','display']},
+          {name: 'Unlock', value: 'unlock', arguments: [], capabilities: ['lock', 'display']},
           {name: 'Status', value: 'status', arguments: [], capabilities: ['light', 'dimmer', 'display', 'fan', 'onoff']},
           {name: 'Level', value: 'set_level', arguments: ['level'], capabilities: ['dimmer']},
           {name: 'Mode', value: 'set_mode', arguments: ['mode'], capabilities: ['conditioner']},

@@ -580,6 +580,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
           if ($scope.has_capability('display')) {
             $scope.selected._on = $scope.device._on;
             $scope.selected._level = $scope.device._level;
+            $scope.selected.locked = $scope.device.locked;
           }
           if ($scope.has_capability('light') && $scope.has_capability('dimmer')) {
             $scope.selected._on = $scope.device._on;
@@ -636,6 +637,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
 
           $scope.processing = true;
           $scope.errors = false;
+          $scope.device.locked = undefined;
 
           if ($scope.device._on) {
             $scope.device._on = false;
@@ -644,6 +646,22 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
             $scope.device._on = true;
             $scope.device._level = 100;
           }
+        };
+
+        $scope.display_lock = function () {
+
+          $scope.device.locked = true;
+          $scope.device._level = undefined;
+          $scope.device._on = undefined;
+
+        };
+
+        $scope.display_unlock = function () {
+
+          $scope.device.locked = false;
+          $scope.device._level = undefined;
+          $scope.device._on = undefined;
+          
         };
 
         $scope.lock = function () {
@@ -661,6 +679,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
         };
 
         $scope.level_up = function () {
+          $scope.device.locked = undefined;
           if (isNaN($scope.device._level)) {
             $scope.device._level = 0;
           }
@@ -672,6 +691,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
         };
 
         $scope.level_down = function () {
+          $scope.device.locked = undefined;
           if (isNaN($scope.device._level)) {
             $scope.device._level = 0;
           }
@@ -836,6 +856,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
           if ($scope.has_capability('display')) {
             $scope.selected._on = $scope.device._on;
             $scope.selected._level = $scope.device._level;
+            $scope.selected.locked = $scope.device.locked;
           }
           if ($scope.has_capability('light') && $scope.has_capability('dimmer')) {
             $scope.selected._on = $scope.device._on;
@@ -892,6 +913,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
 
           $scope.processing = true;
           $scope.errors = false;
+          $scope.device.locked = undefined;
 
           if ($scope.device._on) {
             $scope.device._on = false;
@@ -916,7 +938,24 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
           
         };
 
+        $scope.display_lock = function () {
+
+          $scope.device.locked = true;
+          $scope.device._level = undefined;
+          $scope.device._on = undefined;
+
+        };
+
+        $scope.display_unlock = function () {
+
+          $scope.device.locked = false;
+          $scope.device._level = undefined;
+          $scope.device._on = undefined;
+
+        };
+
         $scope.level_up = function () {
+          $scope.device.locked = undefined;
           if (isNaN($scope.device._level)) {
             $scope.device._level = 0;
           }
@@ -928,6 +967,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
         };
 
         $scope.level_down = function () {
+          $scope.device.locked = undefined;
           if (isNaN($scope.device._level)) {
             $scope.device._level = 0;
           }
