@@ -19,11 +19,7 @@
 
         <div>&nbsp;</div>
 
-        <p class="text-center"><strong>Select a Device</strong></p>
-        <div class="list-group" ng-show="rad.mode">
-          <button type="button" class="list-group-item" ng-click="add_rad=false" ng-show="add_rad"><i class="icon-ok-sign text-success"></i> This is an Abode Rad</button>
-          <button type="button" class="list-group-item" ng-click="add_rad=true" ng-show="!add_rad"><i class="icon-circledelete text-danger"></i> Not adding as an Abode Rad</button>
-        </div>
+        <p class="text-center"><strong>Select a existing Device</strong></p>
         <div class="list-group">
           <button type="button" class="list-group-item" disabled ng-show="loading"><i class="icon-loadingalt spin"></i> Looking for Devices</button>
           <button type="button" class="list-group-item list-group-item-warning" ng-show="devices.length == 0 && !loading && !failed" ng-click="load_devices()"><i class="icon-warning-sign text-warning"></i> No existing devices found. Create a new one below or click here to retry</button>
@@ -31,6 +27,10 @@
           <button type="button" class="list-group-item" ng-repeat="device in devices | orderBy: '+name' | filter:deviceFilter()" ng-click="select(device)"> {{device.name}}</button>
         </div>
         <p class="text-center"><strong>- or -</strong></p>
+        <div class="list-group" ng-show="rad.mode">
+          <button type="button" class="list-group-item" ng-click="add_rad=false" ng-show="add_rad"><i class="icon-ok-sign text-success"></i> This is an Abode Rad</button>
+          <button type="button" class="list-group-item" ng-click="add_rad=true" ng-show="!add_rad"><i class="icon-circledelete text-danger"></i> Not adding as an Abode Rad</button>
+        </div>
         <form name="manualFrm">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Create a New Device" ng-model="device.name">
@@ -52,5 +52,5 @@
 </div>
 </content>
 <div class="status-bar">
-  <device-status device="device"></device-status>
+  <device-status ></device-status>
 </div>

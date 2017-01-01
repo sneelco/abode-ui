@@ -595,6 +595,14 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
 
   };
 
+  this.lock = function () {
+
+  };
+
+  this.unlock = function () {
+
+  };
+
   this.$get = function () {
     return {
       config: self.config,
@@ -609,7 +617,80 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
       },
       get_events: self.get_events,
       scope: self.scope,
+      lock: self.lock,
+      unlock: self.unlock
     };
+  };
+
+}]);
+
+abode.service('Security', ['$uibModal', '$http', 'abode', function ($uibModal, $http, abode) {
+  var self = this;
+  var lockModal;
+
+  self.lock = function () {
+    var device_id = abode.config.auth.device._id;
+    $http.post(abode.url('/api/devices/' + device_id + '/lock').value());
+  };
+
+  self.show_lock = function () {
+    lockModal = $uibModal.open({
+      animation: false,
+      templateUrl: 'views/main/locked.html',
+      size: 'sm',
+      keyboard: false,
+      backdrop: 'static',
+      controller: ['$scope', '$http', '$uibModalInstance', '$timeout', '$interval', 'abode', function ($uiScope, $http, $uibModalInstance, $timeout, $interval, abode) {
+        $uiScope.pin = [];
+        $uiScope.checking = false;
+        $uiScope.error = false;
+        $uiScope.success = false;
+
+        $uiScope.unlock = function () {
+          $uiScope.checking = true;
+          var device_id = abode.config.auth.device._id;
+          $http.post(abode.url('/api/devices/' + device_id + '/unlock').value(), JSON.stringify([$uiScope.pin.join('')])).then(function (result) {
+            console.dir(result);
+            $uiScope.success = true;
+          }, function () {
+            $uiScope.error = true;
+            $timeout(function () {
+              $uiScope.pin = [];
+              $uiScope.checking = false;
+              $uiScope.error = false;
+            }, 2000)
+          });
+        };
+
+        $uiScope.entry = function (key) {
+          if (key === 'back') {
+            if ($uiScope.pin.length > 0) {
+              $uiScope.pin.splice($uiScope.pin.length - 1, 1);
+            }
+            return;
+          }
+
+          if ($uiScope.length > 16) {
+            return;
+          }
+
+          $uiScope.pin.push(key);
+        };
+
+      }]
+    });
+  };
+
+  self.hide_lock = function () {
+    if (lockModal && lockModal.close) {
+      lockModal.close();
+    }
+  };
+
+  return {
+    lock: self.lock,
+    show_lock: self.show_lock,
+    hide_lock: self.hide_lock,
   };
 
 }]);
@@ -724,7 +805,7 @@ abode.controller('rootController', ['$rootScope', '$scope', '$state', '$window',
 
 }]);
 
-abode.controller('mainController', ['$scope', '$state', '$interval', 'abode', 'Interfaces', 'auth', 'time', function ($scope, $state, $interval, abode, Interfaces, auth, time) {
+abode.controller('mainController', ['$scope', '$state', '$interval', 'abode', 'Security', 'Interfaces', 'auth', 'time', function ($scope, $state, $interval, abode, Security, Interfaces, auth, time) {
 
   $scope.date = new Date();
   $scope.root = abode.scope;
@@ -734,6 +815,10 @@ abode.controller('mainController', ['$scope', '$state', '$interval', 'abode', 'I
   $scope.time = time;
   abode.get_events();
 
+  if ($scope.device.locked) {
+    Security.show_lock();
+  }
+
   //If we get an EVENTS_RESET event, schedule a refresh
   var time_events = abode.scope.$on('TIME_CHANGE', function (event, msg) {
     angular.merge($scope.time, msg.object);
@@ -741,8 +826,16 @@ abode.controller('mainController', ['$scope', '$state', '$interval', 'abode', 'I
 
   //If we get an CLIENT_UPDATED event, merge our client config
   var client_events = abode.scope.$on('CLIENT_UPDATED', function (event, msg) {
+    if ($scope.device.locked !== msg.object.locked) {
+      if (msg.object.locked) {
+        Security.show_lock();
+      } else {
+        Security.hide_lock();
+      }
+    }
     angular.merge($scope.client, msg.object.config);
     angular.merge($scope.device, msg.object);
+
   });
 
   $interval(function () {
@@ -1458,11 +1551,11 @@ abode.service('network', ['$uibModal', function ($uibModal) {
                     $uiScope.connect();
                   }
                 }]
-              })
+              });
 
               modal.result.then(function () {
                 $scope.get_status();
-              })
+              });
             };
 
             $timeout($scope.scan, 100);
@@ -1505,7 +1598,7 @@ abode.service('power', ['$uibModal', function ($uibModal) {
             timer = $interval(function () {
               $uiScope.count_down -= 1;
 
-              if ($uiScope.count_down == 0) {
+              if ($uiScope.count_down === 0) {
                 $interval.cancel(timer);
                 do_action('/api/abode/restart');
               }
@@ -1519,7 +1612,7 @@ abode.service('power', ['$uibModal', function ($uibModal) {
             timer = $interval(function () {
               $uiScope.count_down -= 1;
 
-              if ($uiScope.count_down == 0) {
+              if ($uiScope.count_down === 0) {
                 $interval.cancel(timer);
                 do_action('/api/abode/shutdown');
               }
@@ -1548,12 +1641,11 @@ abode.directive('deviceStatus', function () {
 
   return {
     scope: {
-      'device': '='
     },
     restrict: 'E',
     replace: true,
     templateUrl: 'views/main/display_status.html',
-    controller: ['$scope', '$timeout', '$http', '$uibModal', 'abode', 'power', 'network', function ($scope, $timeout, $http, $uibModal, abode, power, network) {
+    controller: ['$scope', '$timeout', '$http', '$uibModal', 'abode', 'Security', 'power', 'network', function ($scope, $timeout, $http, $uibModal, abode, Security, power, network) {
 
       var timer;
       var changing = false;
@@ -1611,6 +1703,11 @@ abode.directive('deviceStatus', function () {
         power.open();
       };
 
+      $scope.lock = function () {
+        $scope.popover = false;
+        Security.lock();
+      };
+
       $scope.load = function () {
         $scope.error = false;
         $scope.loading = true;
@@ -1623,7 +1720,7 @@ abode.directive('deviceStatus', function () {
 
           $http.get('/api/network').then(function (result) {
             angular.merge($scope.network, result.data);
-            done()
+            done();
           }, function (err) {
             $scope.error = true;
             done();
@@ -1637,7 +1734,7 @@ abode.directive('deviceStatus', function () {
             $scope.device = true;
             angular.merge($scope.display, result.data);
             $scope.slider.level = $scope.display.brightness;
-            load_network()
+            load_network();
           }, function (err) {
             $scope.error = true;
             $scope.device = false;
@@ -1653,7 +1750,7 @@ abode.directive('deviceStatus', function () {
       $timeout($scope.load, 100);
 
       $scope.$watch('slider.level', function () {
-        if (changing || $scope.display.max_brightness == undefined) {
+        if (changing || $scope.display.max_brightness === undefined) {
           return;
         }
         if (parseInt($scope.display.brightness) !== parseInt($scope.slider.level)) {

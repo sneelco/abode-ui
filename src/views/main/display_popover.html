@@ -28,6 +28,9 @@
     <div class="row" ng-show="device">
     	<div class="col-xs-12 text-center">
         <div class="btn-group btn-group-justified">
+          <div class="btn-group">
+            <button class="btn btn-default btn-sm" ng-click="lock()"><i class="icon-lock"></i></button>
+          </div>
           <div class="btn-group" ng-show="root.status.connected">
             <button class="btn btn-default btn-sm"  ui-sref="main.settings.client"><i class="icon-settingsfour-gearsalt"></i></button>
           </div>

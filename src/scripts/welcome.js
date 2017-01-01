@@ -306,7 +306,7 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
   $scope.state = $state;
   $scope.rad = rad;
 
-  $scope.add_rad = ($scope.rad && $scope.rad.mode === 'device') ? true : false;
+  $scope.add_rad = ($scope.rad && ($scope.rad.mode === 'device' || $scope.rad.mode === 'server')) ? true : false;
 
   $scope.device = new AuthDevices({'capabilities': ['client', 'browser'], 'provider': 'browser'});
   $scope.auth = new Auth(abode.config.auth);
@@ -401,7 +401,7 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
 
     $scope.device.$save().then(function (data) {
       if (data.token) {
-        $scope.save_token(result.token);
+        $scope.save_token(data.token);
       } else {
         $state.go('welcome_interfaces');
       }

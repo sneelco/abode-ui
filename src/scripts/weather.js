@@ -430,6 +430,9 @@ weather.directive('weatherStatus', function () {
       };
 
       $scope.refresh = function () {
+        if (!$scope.client.show_weather) {
+          return;
+        }
         $scope.loading = true;
         $scope.error = false;
 
