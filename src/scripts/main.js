@@ -647,10 +647,10 @@ abode.service('Security', ['$uibModal', '$http', 'abode', function ($uibModal, $
         $uiScope.success = false;
 
         $uiScope.unlock = function () {
-          if ($uiScope.pin.length === 1) {
+          if ($uiScope.pin.length === 0) {
             return;
           }
-          
+
           $uiScope.checking = true;
           var device_id = abode.config.auth.device._id;
           $http.post(abode.url('/api/devices/' + device_id + '/unlock').value(), JSON.stringify([$uiScope.pin.join('')])).then(function (result) {
