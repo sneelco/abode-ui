@@ -806,11 +806,12 @@ abode.service('Security', ['$uibModal', '$http', 'abode', function ($uibModal, $
   };
 
   self.hide_lock = function () {
-    if (unlock_timer) {
-      $timeout.cancel(unlock_timer);
-    }
     if (lockModal && lockModal.close) {
       lockModal.close();
+    }
+    
+    if (unlock_timer) {
+      $timeout.cancel(unlock_timer);
     }
   };
 
