@@ -809,7 +809,7 @@ abode.service('Security', ['$uibModal', '$http', 'abode', function ($uibModal, $
     if (lockModal && lockModal.close) {
       lockModal.close();
     }
-    
+
     if (unlock_timer) {
       $timeout.cancel(unlock_timer);
     }
@@ -1774,7 +1774,7 @@ abode.directive('deviceStatus', function () {
     restrict: 'E',
     replace: true,
     templateUrl: 'views/main/display_status.html',
-    controller: ['$scope', '$timeout', '$http', '$uibModal', 'abode', 'Security', 'power', 'network', function ($scope, $timeout, $http, $uibModal, abode, Security, power, network) {
+    controller: ['$scope', '$timeout', '$http', '$uibModal', '$location', 'abode', 'Security', 'power', 'network', function ($scope, $timeout, $http, $uibModal, $location, abode, Security, power, network) {
 
       var timer;
       var changing = false;
@@ -1838,6 +1838,9 @@ abode.directive('deviceStatus', function () {
       };
 
       $scope.load = function () {
+        if ($location.host().indexOf('localhost') !== 0) {
+          return;
+        }
         $scope.error = false;
         $scope.loading = true;
 

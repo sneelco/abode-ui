@@ -216,10 +216,11 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
             var dl_link = document.createElement('A');
             dl_link.href = source.url + '/ca_chain.crt';
             dl_link.style.display = 'none';
+            dl_link.target = '_new';
             document.body.appendChild(dl_link);
             dl_link.click();
 
-            check_ssl();
+            check_server();
         }
       } else {
         abode.config.server = source.url;
@@ -233,7 +234,6 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
     $http.get(source.url + '/api/abode/status').then(function () {
       abode.config.server = source.url;
       abode.save(abode.config);
-      check_server();
       check_server();
     }, function () {
       install_cert();
