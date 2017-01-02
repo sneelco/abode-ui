@@ -14,9 +14,7 @@
 		<button ng-repeat="k in [6, 7, 8] track by $index" class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry(numbers[k])" ng-disabled="checking || error">{{numbers[k]}}</button>
 	</div>
 	<div style="text-align: left">
-		<button class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry('back')"><i class="icon-chevron-left" ng-disabled="checking || error"></i></button>
-		<button class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry(numbers[9])" ng-disabled="checking || error">{{numbers[9]}}</button>
-		<button class="pin-entry-key" ng-class="{'pin-entry-key-danger': error, 'pin-entry-key-disabled': checking || pinModel.length == 0, 'pin-entry-key-submit': !checking && !success && !error && pinModel.length > 0}" ng-show="showSubmit" ng-click="submit()" ng-disabled="checking || error">
+		<button class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry('back')"><i class="icon-chevron-left" ng-disabled="checking || error"></i></button><button class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry(numbers[9])" ng-disabled="checking || error">{{numbers[9]}}</button><button class="pin-entry-key" ng-class="{'pin-entry-key-danger': error, 'pin-entry-key-disabled': checking || pinModel.length == 0, 'pin-entry-key-submit': !checking && !success && !error && pinModel.length > 0}" ng-show="showSubmit" ng-click="submit()" ng-disabled="checking || error">
 			<i class="icon-unlock" ng-hide="checking"></i>
 			<i class="icon-circleselection spin" ng-show="checking"></i>
 		</button>
