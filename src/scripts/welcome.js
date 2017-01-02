@@ -36,7 +36,7 @@ welcome.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRou
       templateUrl: "views/welcome/devices.html",
       controller: 'welcomeDevicesController',
       resolve: {
-        'rad': ['$q', '$http', function ($q, $http) {
+        'rad': ['$q', '$http', '$location', function ($q, $http, $location) {
           var defer = $q.defer();
           var opts = {
             'headers': {
@@ -45,6 +45,11 @@ welcome.config(['$stateProvider', '$urlRouterProvider', function($state, $urlRou
               'Expires': 0
             }
           };
+
+          if ($location.host().indexOf('localhost') !== 0) {
+            defer.resolve();
+            return defer.promise;
+          }
 
           $http.get('/api/abode/status', opts).then(function (response) {
               defer.resolve(response.data);
