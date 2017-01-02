@@ -229,6 +229,9 @@ settings.controller('pinsEdit', ['$scope', '$state', 'abode', 'triggers', 'confi
   $scope.removeAction = triggers.removeAction;
 
   $scope.save = function () {
+    if ($scope.pin.pin === '') {
+      $scope.pin.pin = undefined;
+    }
     $scope.pin.$update().then(function () {
       $scope.pin.pin = undefined;
       abode.message({'type': 'success', 'message': 'Pin saved successfully'});

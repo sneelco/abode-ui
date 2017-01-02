@@ -1074,3 +1074,39 @@ body {
 .pin-entry-key-danger {
    background-color: rgb(231, 76, 60);
 }
+
+.tag-list {
+  position: relative;
+  border: 1px solid #222; 
+  border-radius: .2em; 
+  padding: 0em; 
+  overflow: hidden;
+  width: 100%;
+}
+.tag-list-add {
+  position: absolute;
+  top: 0em;
+  bottom: 0em;
+  left: 0em;
+  width: 3em;
+  background-color: #333;
+  text-align: center;
+}
+.tag-list-tags {
+  position: relative;
+  margin-left: 3em;
+  background-color: #fff;
+  min-height: 2em;
+  padding: .25em;
+  word-wrap: break-word;
+}
+
+.tag-list-tag {
+  display: inline-block;
+  background-color: #777;
+  color: #fff;
+  font-size: .75em;
+  padding: .2em 1em;
+  margin: .125em .125em;
+  border-radius: .25em;
+}

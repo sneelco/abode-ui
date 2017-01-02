@@ -1,15 +1,14 @@
-<div class="modal-header"><h3>Add Tag</h3></div>
 
 <div class="modal-body">
-  <div class="input-group" ng-class="{'has-error': error}">
-    <div class="input-group-addon"><i class="icon-tag"></i></div>
-    <input type="text" class="form-control" id="name" placeholder="Tag" ng-model="tag.name" autocomplete='off'>
-  </div>
-  <span id="helpBlock" class="help-block text-danger" ng-show="error">{{error}}</span>
-</div>
-
-
-<div class="modal-footer">
-    <button class="btn btn-warning btn-sm" type="button" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-primary btn-sm" type="button" ng-click="add()">Add</button>
+	<h3><i class="icon-addtags"></i> Add Tag</h3>
+	<div class="input-group" ng-class="{'has-error': error}">
+		<div class="input-group-addon"><i class="icon-tag"></i></div>
+		<input type="text" class="form-control" id="name" placeholder="Tag" ng-model="tag.name" autocomplete='off'>
+	</div>
+	<span id="helpBlock" class="help-block text-danger" ng-show="error">{{error}}</span>
+	<div>&nbsp;</div>
+	<div class="text-right">
+	    <button class="btn btn-warning btn-sm pull-left" type="button" ng-click="cancel()">Cancel</button>
+	    <button class="btn btn-primary btn-sm" type="button" ng-click="add()"><i class="icon-circleadd"></i> Add</button>
+	</div>
 </div>
