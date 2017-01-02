@@ -196,6 +196,19 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
 
     };
 
+    var check_ssl = function () {
+      $scope.checking_ssl = true;
+      $scope.checking = true;
+
+      $http.get(source.url + '/api/abode/status').then(function () {
+        abode.config.server = source.url;
+        abode.save(abode.config);
+        check_server();
+      }, function () {
+        ssl_checker = $timeout(check_ssl, 5000);
+      });
+    };
+
     var install_cert = function (status) {
       var check_count = 0;
 
@@ -220,7 +233,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
             document.body.appendChild(dl_link);
             dl_link.click();
 
-            check_server();
+            check_ssl();
         }
       } else {
         abode.config.server = source.url;
@@ -235,7 +248,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
       abode.config.server = source.url;
       abode.save(abode.config);
       check_server();
-    }, function () {
+    }, function (err) {
       install_cert();
     });
 

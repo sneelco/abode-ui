@@ -1839,6 +1839,8 @@ abode.directive('deviceStatus', function () {
 
       $scope.load = function () {
         if ($location.host().indexOf('localhost') !== 0) {
+          $scope.loading = false;
+          $scope.device = false;
           return;
         }
         $scope.error = false;
