@@ -185,13 +185,16 @@ notifications.directive('notifications', [function () {
       'view': '@'
     },
     controller: ['$rootScope', '$scope', '$timeout', '$q', 'abode', 'Notifications', function ($rootScope, $scope, $timeout, $q, abode, Notifications) {
-      $rootScope.notifications = $rootScope.notifications || {'hidden': false, 'notifications': []};
+      var auto_hide_timer;
+
       $scope.loader = false;
       $scope.loading = false;
       $scope.error = false;
 
+      $rootScope.notifications = $rootScope.notifications || {'hidden': true, 'notifications': []};
       $scope.notifications = $rootScope.notifications;
       $rootScope.notifications.hidden = true;
+      abode.config.auth.device.config.events_auto_hide = abode.config.auth.device.config.events_auto_hide || 5;
 
       //If we get an EVENTS_RESET event, schedule a refresh
       var feed_detector = abode.scope.$on('EVENTS_RESET', function (event, msg) {
@@ -205,6 +208,7 @@ notifications.directive('notifications', [function () {
 
           if (abode.config.auth.device.config.show_events === true) {
             $rootScope.notifications.hidden = false;
+            $scope.auto_hide();
           }
         }
       });
@@ -214,14 +218,34 @@ notifications.directive('notifications', [function () {
         for (i=$rootScope.notifications.notifications.length; i > 0; i-- ) {
           if (notificationInResults(msg.object, $rootScope.notifications.notifications)) {
             $rootScope.notifications.notifications.splice(i - 1, 1);
-            changes = true;
           }
         }
 
         if ($rootScope.notifications.notifications.length === 0) {
           $rootScope.notifications.hidden = true;
+          $scope.stop_auto_hide();
         }
       });
+
+      $scope.stop_auto_hide = function () {
+
+        if (auto_hide_timer) {
+          $timeout.cancel(auto_hide_timer);
+        }
+
+      };
+
+      $scope.auto_hide = function(cancel) {
+
+        var timer = (abode.config.auth.device.config.events_auto_hide) ? (1000 * 60 * abode.config.auth.device.config.events_auto_hide) : (1000 * 60 * 5);
+
+        $scope.stop_auto_hide();
+
+        auto_hide_timer = $timeout(function () {
+          $rootScope.notifications.hidden = true;
+        }, timer);
+
+      };
 
       $scope.dismissAll = function () {
         var defers = [];
@@ -252,7 +276,7 @@ notifications.directive('notifications', [function () {
 
         Notifications.active().$promise.then(function (results) {
           var i,
-            changes = false;
+            additions = false;
 
           if (results.length !== 0 && results.length !== $rootScope.notifications.notifications.length) {
             $rootScope.breakIdle();
@@ -260,27 +284,29 @@ notifications.directive('notifications', [function () {
           $scope.loading = false;
           //$scope.loader = $timeout($scope.refresh, 5000);
 
-          //Check if existing notifications are still active
+          //Check if existing notifications are still active, remove if not
           for (i=$rootScope.notifications.notifications.length; i > 0; i-- ) {
             if (!notificationInResults($rootScope.notifications.notifications[i - 1], results)) {
               $rootScope.notifications.notifications.splice(i - 1, 1);
-              changes = true;
             }
           }
 
+          //Check if any new notifications should be added
           results.forEach(function (notification) {
             if (!notificationInResults(notification, $rootScope.notifications.notifications)) {
               $rootScope.notifications.notifications.unshift(notification);
-              changes = true;
+              additions = true;
             }
           });
 
-          if (changes) {
+          if (additions) {
             if (abode.config.auth.device.config.show_events === true) {
               $rootScope.notifications.hidden = false;
+              $scope.auto_hide();
             }
             if ($rootScope.notifications.notifications.length === 0) {
               $rootScope.notifications.hidden = true;
+              $scope.stop_auto_hide();
             }
           }
 
@@ -296,6 +322,7 @@ notifications.directive('notifications', [function () {
 
       $scope.hide = function () {
         $rootScope.notifications.hidden = true;
+        $scope.stop_auto_hide();
       };
 
       //$scope.loader = $timeout($scope.refresh, 5000);
@@ -306,6 +333,7 @@ notifications.directive('notifications', [function () {
         feed_activated();
         feed_deactivated();
 
+        $scope.stop_auto_hide();
         $timeout.cancel($scope.loader);
       });
     }],

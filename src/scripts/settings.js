@@ -248,7 +248,7 @@ settings.controller('pinsEdit', ['$scope', '$state', 'abode', 'triggers', 'confi
       });
     });
 
-  }
+  };
 
 }]);
 

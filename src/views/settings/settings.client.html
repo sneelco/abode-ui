@@ -34,6 +34,11 @@
                 <toggle value="device.config.show_events" class="pull-right"></toggle>
               </div>
 
+              <div class="form-group" ng-show="device.config.show_events">
+                <label for="enabled">Auto Hide Events (m): </label>
+                <rzslider rz-slider-model="device.config.events_auto_hide" rz-slider-options="{floor: 0, ceil: 60, step: 1, hideLimitLabels: true}" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
+              </div>
+
               <div class="form-group">
                 <label for="enabled">Dim Display: </label>
                 <toggle value="device.config.dim_display" class="pull-right"></toggle>
