@@ -759,8 +759,9 @@ abode.service('Security', ['$uibModal', '$http', 'abode', function ($uibModal, $
 
   self.lock = function () {
     var device_id = abode.config.auth.device._id;
-    $http.post(abode.url('/api/devices/' + device_id + '/lock').value());
-    self.show_lock();
+    $http.post(abode.url('/api/devices/' + device_id + '/lock').value()).then(undefined, function (err) {
+      abode.message({'type': 'failed', 'message': err.data.message || err.data.msg || 'Could not lock device'});
+    });
   };
 
   self.show_lock = function () {
