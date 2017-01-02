@@ -752,7 +752,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
 
 }]);
 
-abode.service('Security', ['$uibModal', '$http', 'abode', function ($uibModal, $http, abode) {
+abode.service('Security', ['$uibModal', '$http', '$timeout', 'abode', function ($uibModal, $http, $timeout, abode) {
   var self = this;
   var lockModal;
   var unlock_timer;
@@ -771,7 +771,7 @@ abode.service('Security', ['$uibModal', '$http', 'abode', function ($uibModal, $
       size: 'sm',
       keyboard: false,
       backdrop: 'static',
-      controller: ['$scope', '$http', '$uibModalInstance', '$timeout', '$interval', 'abode', function ($uiScope, $http, $uibModalInstance, $timeout, $interval, abode) {
+      controller: ['$scope', '$http', '$uibModalInstance', 'abode', function ($uiScope, $http, $uibModalInstance, abode) {
         $uiScope.pin = '';
         $uiScope.checking = false;
         $uiScope.error = false;
