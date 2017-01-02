@@ -82,6 +82,10 @@ abode.directive('iconSelector', ['$compile', function () {
           'class': 'icon-securityalt-shieldalt'
         },
         {
+          'name': 'Security Alt1',
+          'class': 'icon-security-shield'
+        },
+        {
           'name': 'Controller',
           'class': 'icon-controlpanelalt'
         },
@@ -268,6 +272,74 @@ abode.directive('iconSelector', ['$compile', function () {
         {
           'name': 'Timer',
           'class': 'icon-timer'
+        },
+        {
+          'name': 'Travel',
+          'class': 'icon-travel'
+        },
+        {
+          'name': 'Car',
+          'class': 'icon-automobile-car',
+        },
+        {
+          'name': 'Moon',
+          'class': 'icon-moon-night',
+        },
+        {
+          'name': 'Hat',
+          'class': 'icon-tophat',
+        },
+        {
+          'name': 'Alert',
+          'class': 'icon-alertalt'
+        },
+        {
+          'name': 'Baby',
+          'class': 'icon-baby'
+        },
+        {
+          'name': 'Speaker Off',
+          'class': 'icon-volume-off',
+        },
+        {
+          'name': 'Speaker Up',
+          'class': 'icon-volume-up'
+        },
+        {
+          'name': 'Speaker Down',
+          'class': 'icon-volume-down'
+        },
+        {
+          'name': 'Office',
+          'class': 'icon-office-building'
+        },
+        {
+          'name': 'Weather Hot',
+          'class': 'wi wi-hot',
+        },
+        {
+          'name': 'Weather Rain',
+          'class': 'wi wi-rain'
+        },
+        {
+          'name': 'Thermometer',
+          'class': 'wi wi-thermometer'
+        },
+        {
+          'name': 'Music',
+          'class': 'icon-music'
+        },
+        {
+          'name': 'Bath',
+          'class': 'icon-bathtub'
+        },
+        {
+          'name': 'Movie',
+          'class': 'icon-movieclapper'
+        },
+        {
+          'name': 'Movie Alt',
+          'class': 'icon-moviereel'
         }
       ];
     }]
