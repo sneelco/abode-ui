@@ -4,13 +4,13 @@
 	</div>
 	<div>
 	<div>&nbsp;</div>
-	<div>
+	<div style="text-align: left">
 		<button ng-repeat="k in [0, 1, 2] track by $index" class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry(numbers[k])" ng-disabled="checking || error">{{numbers[k]}}</button>
 	</div>
-	<div>
+	<div style="text-align: left">
 		<button ng-repeat="k in [3, 4, 5] track by $index" class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry(numbers[k])" ng-disabled="checking || error">{{numbers[k]}}</button>
 	</div>
-	<div>
+	<div style="text-align: left">
 		<button ng-repeat="k in [6, 7, 8] track by $index" class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry(numbers[k])" ng-disabled="checking || error">{{numbers[k]}}</button>
 	</div>
 	<div style="text-align: left">
