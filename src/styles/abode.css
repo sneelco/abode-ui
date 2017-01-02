@@ -1049,3 +1049,28 @@ body {
 .insteon-types li.active {
   background-color: ;
 }
+
+
+.pin-entry-key {
+  text-align: center;
+  height: 3em; 
+  width: 3em; 
+  border-radius: 1.5em;
+  background-color: #333; 
+  color: #eee;
+  border: 1px solid #aaa; background-color: #333; 
+  margin: .25em;
+}
+
+.pin-entry-key-disabled {
+  color: #666;
+  background-color: #444; 
+}
+
+.pin-entry-key-submit {
+  background-color: #4ab9db; 
+}
+
+.pin-entry-key-danger {
+   background-color: rgb(231, 76, 60);
+}

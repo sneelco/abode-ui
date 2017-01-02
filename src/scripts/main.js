@@ -346,6 +346,62 @@ abode.directive('iconSelector', ['$compile', function () {
   };
 }]);
 
+abode.directive('pinEntry', function () {
+
+  return {
+    restrict: 'E',
+    replace: true,
+    scope: {
+      pinModel: '=',
+      randomize: '=?',
+      showSubmit: '=?',
+      submit: '&',
+      checking: '=?',
+      error: '=?',
+      success: '=?',
+    },
+    templateUrl: 'views/main/pin_entry.html',
+    controller: ['$scope', function ($scope) {
+      $scope.pinModel = '';
+      $scope.hashed = '';
+      $scope.randomize = $scope.randomize || false;
+      $scope.showSubmit = $scope.showSubmit || false;
+      $scope.checking = $scope.checking || false;
+      $scope.error = $scope.error || false;
+      $scope.success = $scope.success || false;
+      $scope.numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+
+      var shuffle = function (array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+
+        while (0 !== currentIndex) {
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+
+        return array;
+      }
+
+      if ($scope.randomize) {
+        $scope.numbers = shuffle($scope.numbers);
+      }
+
+      $scope.entry = function (v) {
+        if (v === 'back') {
+          $scope.pinModel = $scope.pinModel.slice(0, $scope.pinModel.length - 1);
+          return;
+        }
+        $scope.pinModel += String(v);
+      };
+    }]
+  };
+
+});
+
 abode.directive('tags', function () {
   return {
     restrict: 'E',
@@ -699,10 +755,12 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
 abode.service('Security', ['$uibModal', '$http', 'abode', function ($uibModal, $http, abode) {
   var self = this;
   var lockModal;
+  var unlock_timer;
 
   self.lock = function () {
     var device_id = abode.config.auth.device._id;
     $http.post(abode.url('/api/devices/' + device_id + '/lock').value());
+    self.show_lock();
   };
 
   self.show_lock = function () {
@@ -713,7 +771,7 @@ abode.service('Security', ['$uibModal', '$http', 'abode', function ($uibModal, $
       keyboard: false,
       backdrop: 'static',
       controller: ['$scope', '$http', '$uibModalInstance', '$timeout', '$interval', 'abode', function ($uiScope, $http, $uibModalInstance, $timeout, $interval, abode) {
-        $uiScope.pin = [];
+        $uiScope.pin = '';
         $uiScope.checking = false;
         $uiScope.error = false;
         $uiScope.success = false;
@@ -725,32 +783,21 @@ abode.service('Security', ['$uibModal', '$http', 'abode', function ($uibModal, $
 
           $uiScope.checking = true;
           var device_id = abode.config.auth.device._id;
-          $http.post(abode.url('/api/devices/' + device_id + '/unlock').value(), JSON.stringify([$uiScope.pin.join('')])).then(function (result) {
-            console.dir(result);
+          $http.post(abode.url('/api/auth/check_pin').value(), {'pin': $uiScope.pin}).then(function (result) {
             $uiScope.success = true;
+            unlock_timer = $timeout(function () {
+              $uiScope.success = false;
+              $uiScope.checking = false;
+              abode.message({'type': 'failed', 'message': 'Timeout waiting for unlock'});
+            }, 10000)
           }, function () {
             $uiScope.error = true;
             $timeout(function () {
-              $uiScope.pin = [];
+              $uiScope.pin = '';
               $uiScope.checking = false;
               $uiScope.error = false;
             }, 2000);
           });
-        };
-
-        $uiScope.entry = function (key) {
-          if (key === 'back') {
-            if ($uiScope.pin.length > 0) {
-              $uiScope.pin.splice($uiScope.pin.length - 1, 1);
-            }
-            return;
-          }
-
-          if ($uiScope.length > 16) {
-            return;
-          }
-
-          $uiScope.pin.push(key);
         };
 
       }]
@@ -758,6 +805,9 @@ abode.service('Security', ['$uibModal', '$http', 'abode', function ($uibModal, $
   };
 
   self.hide_lock = function () {
+    if (unlock_timer) {
+      $timeout.cancel(unlock_timer);
+    }
     if (lockModal && lockModal.close) {
       lockModal.close();
     }

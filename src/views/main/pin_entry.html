@@ -1,0 +1,24 @@
+<div  style="display: inline-block; width: 11em; padding: 0em;">
+	<div style="width: 100%; border-radius: .25em;  border: 1px solid #aaa; background-color: #333; padding: .25em; height: 2em; margin: 0em;" ng-class="{'text-danger': error, 'text-muted': !error && !success, 'text-success': success}">
+	<i ng-repeat="k in pinModel track by $index" style="margin: .25em;" class="icon-circlerecord "></i>
+	</div>
+	<div>
+	<div>&nbsp;</div>
+	<div>
+		<button ng-repeat="k in [0, 1, 2] track by $index" class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry(numbers[k])" ng-disabled="checking || error">{{numbers[k]}}</button>
+	</div>
+	<div>
+		<button ng-repeat="k in [3, 4, 5] track by $index" class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry(numbers[k])" ng-disabled="checking || error">{{numbers[k]}}</button>
+	</div>
+	<div>
+		<button ng-repeat="k in [6, 7, 8] track by $index" class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry(numbers[k])" ng-disabled="checking || error">{{numbers[k]}}</button>
+	</div>
+	<div style="text-align: left">
+		<button class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry('back')"><i class="icon-chevron-left" ng-disabled="checking || error"></i></button>
+		<button class="pin-entry-key" ng-class="{'pin-entry-key-disabled': checking || error}" ng-click="entry(numbers[9])" ng-disabled="checking || error">{{numbers[9]}}</button>
+		<button class="pin-entry-key" ng-class="{'pin-entry-key-danger': error, 'pin-entry-key-disabled': checking || pinModel.length == 0, 'pin-entry-key-submit': !checking && !success && !error && pinModel.length > 0}" ng-show="showSubmit" ng-click="submit()" ng-disabled="checking || error">
+			<i class="icon-unlock" ng-hide="checking"></i>
+			<i class="icon-circleselection spin" ng-show="checking"></i>
+		</button>
+	</div>
+</div>
