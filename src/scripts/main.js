@@ -662,7 +662,7 @@ abode.service('Security', ['$uibModal', '$http', 'abode', function ($uibModal, $
               $uiScope.pin = [];
               $uiScope.checking = false;
               $uiScope.error = false;
-            }, 2000)
+            }, 2000);
           });
         };
 
@@ -862,7 +862,7 @@ abode.controller('mainController', ['$scope', '$state', '$interval', 'abode', 'S
 }]);
 
 abode.service('confirm', function ($q, $uibModal) {
-  return function (msg) {
+  return function (msg, options) {
     var defer = $q.defer();
 
     var modal = $uibModal.open({
@@ -871,6 +871,7 @@ abode.service('confirm', function ($q, $uibModal) {
       size: 'sm',
       controller: function ($scope, $uibModalInstance) {
         $scope.msg = msg;
+        $scope.options = options;
 
         $scope.no = function () {
           $uibModalInstance.dismiss();

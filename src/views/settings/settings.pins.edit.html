@@ -1,0 +1,52 @@
+  <div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+    <div class="row">
+      <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+        <h2>Settings / Pins /Edit
+           <div class="pull-right pointer"  ui-sref="^.list"><i class="glyphicon glyphicon-arrow-left"></i></div></h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+            <form name="pinFrm">
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="pin.name">
+              </div>
+              <div class="form-group">
+                <label for="name">PIN</label>
+                <input type="password" class="form-control" id="name" placeholder="******" ng-model="pin.pin">
+              </div>
+              <div class="form-group">
+                <label for="actions">Unlock Actions</label>
+                <button class="btn btn-default btn-xs pull-right" ng-click="addAction(pin.actions)"><i class="icon-plus-sign"></i> Add</button>
+                <div class="well well-sm" ng-show="pin.actions.length === 0">No Actions Added</div>
+                <div>
+                  <ul class="list-group bg-muted select-list" ng-show="pin.actions.length > 0">
+                    <li class="list-group-item" style="cursor: pointer;" ng-repeat="action in pin.actions" ng-click="editAction(action)">
+                    {{action.name}}
+                    <button class="pull-right btn btn-xs btn-danger" ng-click="removeAction(pin.actions, $index)" stop-event><i class="icon-trash"></i></button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="name">Icon</label>
+                <icon-selector value="pin.icon" />
+              </div>
+              <div class="form-group">
+                <label for="name">Tags</label>
+                <tags tag-model="pin.tags" />
+              </div>
+
+              <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="pinFrm.$invalid"><i class="icon-save-floppy"></i> Save</button>
+              <button type="submit" class="btn btn-sm btn-danger" ng-click="delete()"><i class="icon-trash"></i> Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -5,6 +5,7 @@ settings.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.when('/settings', '/settings/list');
   $urlRouterProvider.when('/settings/sources', '/settings/sources/list');
   $urlRouterProvider.when('/settings/interfaces', '/settings/interfaces/list');
+  $urlRouterProvider.when('/settings/pins', '/settings/pins/list');
 
   $stateProvider
   .state('main.settings', {
@@ -25,7 +26,8 @@ settings.config(function($stateProvider, $urlRouterProvider) {
         {'name': 'General', 'route': 'main.settings.general'},
         {'name': 'Client', 'route': 'main.settings.client'},
         {'name': 'Interfaces', 'route': 'main.settings.interfaces'},
-        {'name': 'Sources', 'route': 'main.settings.sources'},
+        {'name': 'Pins', 'route': 'main.settings.pins'},
+        //{'name': 'Sources', 'route': 'main.settings.sources'},
         //{'name': 'Sensors', 'route': 'main.settings.sensors'},
         {'name': 'Providers', 'route': 'main.settings.providers'},
         //{'name': 'Display', 'route': 'main.settings.display'},
@@ -55,6 +57,38 @@ settings.config(function($stateProvider, $urlRouterProvider) {
       }],
       device: ['abode', 'AuthDevice', function (abode, AuthDevice) {
         return AuthDevice.get().$promise;
+      }]
+    }
+  })
+  .state('main.settings.pins', {
+    url: '/pins',
+    templateUrl: '/views/settings/settings.pins.html',
+  })
+  .state('main.settings.pins.list', {
+    url: '/list',
+    templateUrl: '/views/settings/settings.pins.list.html',
+    controller: 'pinsList',
+  })
+  .state('main.settings.pins.add', {
+    url: '/add',
+    templateUrl: '/views/settings/settings.pins.add.html',
+    controller: 'pinsAdd',
+  })
+  .state('main.settings.pins.edit', {
+    url: '/:id',
+    templateUrl: '/views/settings/settings.pins.edit.html',
+    controller: 'pinsEdit',
+    resolve: {
+      'pin': ['$q', '$stateParams', 'Pins', function ($q, $stateParams, Pins) {
+        var defer = $q.defer();
+
+        Pins.get($stateParams).$promise.then(function (record) {
+          defer.resolve(record);
+        }, function () {
+          defer.reject({'state': 'main.settings.pins', 'message': 'Pin not found'});
+        });
+
+        return defer.promise;
       }]
     }
   })
@@ -147,6 +181,76 @@ settings.config(function($stateProvider, $urlRouterProvider) {
     templateUrl: '/views/settings/settings.advanced.html',
   });
 });
+
+settings.factory('Pins', ['$resource', '$q', '$http', 'abode', function($resource, $q, $http, abode) {
+
+  var model = $resource(abode.url('/api/auth/pins/:id'), {id: '@_id'}, {
+    'update': { method: 'PUT' }
+  });
+
+  return model;
+}]);
+
+settings.controller('pinsList', ['$scope', 'Pins', function ($scope, Pins) {
+  $scope.loading = true;
+  $scope.pins = [];
+
+  Pins.query().$promise.then(function (results) {
+    $scope.loading = false;
+    $scope.pins = results;
+  });
+
+}]);
+
+settings.controller('pinsAdd', ['$scope', '$state', 'abode', 'triggers', 'Pins', function ($scope, $state, abode, triggers, Pins) {
+  $scope.pin = new Pins();
+  
+  $scope.addAction = triggers.addAction;
+  $scope.editAction = triggers.editAction;
+  $scope.removeAction = triggers.removeAction;
+
+  $scope.add = function () {
+    $scope.pin.$save().then(function () {
+      $scope.pin = new Pins();
+      abode.message({'type': 'success', 'message': 'Pin added successfully'});
+      $state.go('^');
+    }, function (err) {
+      abode.message({'type': 'failed', 'message': err.data.message || err.data || 'Failed to add Pin'});
+    });
+  };
+
+}]);
+
+settings.controller('pinsEdit', ['$scope', '$state', 'abode', 'triggers', 'confirm', 'pin', function ($scope, $state, abode, triggers, confirm, pin) {
+  $scope.pin = pin;
+
+  $scope.addAction = triggers.addAction;
+  $scope.editAction = triggers.editAction;
+  $scope.removeAction = triggers.removeAction;
+
+  $scope.save = function () {
+    $scope.pin.$update().then(function () {
+      abode.message({'type': 'success', 'message': 'Pin saved successfully'});
+    }, function (err) {
+      abode.message({'type': 'failed', 'message': err.data.message || err.data || 'Failed to add Pin'});
+    });
+  };
+
+  $scope.delete = function () {
+
+    confirm('Are you sure?', {'title': 'Delete PIN', 'icon': 'icon-trash'}).then(function () {
+      $scope.pin.$delete().then(function () {
+        abode.message({'type': 'success', 'message': 'Pin Deleted'});
+        $state.go('^');
+      }, function (err) {
+        abode.message({'type': 'failed', 'message': 'Failed to delete Pin', 'details': err});
+        $scope.errors = err;
+      });
+    });
+
+  }
+
+}]);
 
 settings.controller('clientEdit', function ($scope, abode, interfaces, device) {
   $scope.dht_sensors = ['', 'DHT11', 'DHT22', 'AM2302'];
