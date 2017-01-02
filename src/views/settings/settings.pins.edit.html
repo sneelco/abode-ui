@@ -17,7 +17,9 @@
               </div>
               <div class="form-group">
                 <label for="name">PIN</label>
-                <input type="password" class="form-control" id="name" placeholder="******" ng-model="pin.pin">
+                <div style="text-align: center">
+                  <pin-entry pin-model="pin.pin"></pin-entry>
+                </div>
               </div>
               <div class="form-group">
                 <label for="actions">Unlock Actions</label>
