@@ -54,8 +54,8 @@
 
                     <div style="font-size: .8em;" ng-show="token.locale">{{token.locale.city}}, {{token.locale.region}} {{token.locale.country}} ({{token.ip}})</div>
                     <div style="font-size: .8em;" ng-hide="token.locale">IP: {{token.ip}}</div>
-                    <div style="font-size: .7em;" class="pull-right">Expires: {{token.last_used | date: 'medium'}}</div>
-                    <div style="font-size: .7em;">Used: {{token.expires | date: 'medium'}}</div>
+                    <div style="font-size: .7em;" class="pull-right">Expires: {{token.expires | date: 'medium'}}</div>
+                    <div style="font-size: .7em;">Used: {{token.last_ued | date: 'medium'}}</div>
                   </li>
                   <li class="list-group-item" ng-show="tokens.length == 0">No Tokens Found</li>
                 </ul>
