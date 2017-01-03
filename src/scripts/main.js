@@ -384,7 +384,7 @@ abode.directive('pinEntry', function () {
         }
 
         return array;
-      }
+      };
 
       if ($scope.randomize) {
         $scope.numbers = shuffle($scope.numbers);
@@ -628,7 +628,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
         self.scope.$broadcast('EVENTS_RESET', {});
       }
 
-      self.eventSource = new EventSource(self.url('/api/events/' + key + '?last=' + self.last_event).value());
+      self.eventSource = new EventSource(self.url('/api/events/feed/' + key + '?last=' + self.last_event).value());
 
       self.eventSource.addEventListener('message', function (msg) {
         var event = JSON.parse(msg.data);
@@ -790,7 +790,7 @@ abode.service('Security', ['$uibModal', '$http', '$timeout', 'abode', function (
               $uiScope.success = false;
               $uiScope.checking = false;
               abode.message({'type': 'failed', 'message': 'Timeout waiting for unlock'});
-            }, 10000)
+            }, 10000);
           }, function () {
             $uiScope.error = true;
             $timeout(function () {

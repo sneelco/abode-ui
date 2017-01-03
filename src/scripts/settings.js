@@ -262,7 +262,8 @@ settings.service('Users', ['$q', '$http', '$resource', 'abode', function ($q, $h
     'query': list_users,
     'create': create_user,
     'get': get_user
-  }
+  };
+
 }]);
 
 settings.controller('usersList', ['$scope', 'Users', function ($scope, Users) {
@@ -315,7 +316,7 @@ settings.controller('usersEdit', ['$scope', '$state', 'abode', 'confirm', 'user'
       $scope.tokens = tokens;
     }, function () {
       $scope.loading = false;
-    })
+    });
   };
 
   $scope.save = function () {
