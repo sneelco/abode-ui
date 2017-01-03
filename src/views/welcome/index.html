@@ -20,9 +20,9 @@
           <button type="button" class="list-group-item" ng-show="!loading && sources.length > 0" ng-click="load()"><i class="icon-ok-sign text-success"></i> Found {{sources.length}} Server[s]<div><small>Click to search again.</small></div></button>
         </div>
         <p class="text-center"><strong>- or -</strong></p>
-        <form name="manualFrm">
+        <form name="manualFrm" ng-submit="connect(manual)">
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Specify Manually" ng-model="manual">
+            <input type="text" class="form-control" placeholder="Specify Manually" ng-model="manual.url">
             <span class="input-group-btn">
               <button class="btn btn-default" type="button" ng-click="connect(manual)">Go!</button>
             </span>

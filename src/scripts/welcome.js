@@ -110,6 +110,7 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
   $scope.loading = false;
   $scope.failed = false;
   $scope.sources = [];
+  $scope.manual = {};
   $scope.state = $state;
   $scope.checking_ssl = false;
   $scope.needs_reboot = false;
@@ -249,7 +250,13 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
       abode.save(abode.config);
       check_server();
     }, function (err) {
-      install_cert();
+      if (err.status > 0) {
+        abode.config.server = source.url;
+        abode.save(abode.config);
+        check_server();
+      } else {
+        install_cert();
+      }
     });
 
   };
