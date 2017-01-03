@@ -6,6 +6,7 @@ settings.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.when('/settings/sources', '/settings/sources/list');
   $urlRouterProvider.when('/settings/interfaces', '/settings/interfaces/list');
   $urlRouterProvider.when('/settings/pins', '/settings/pins/list');
+  $urlRouterProvider.when('/settings/users', '/settings/users/list');
 
   $stateProvider
   .state('main.settings', {
@@ -27,6 +28,7 @@ settings.config(function($stateProvider, $urlRouterProvider) {
         {'name': 'Client', 'route': 'main.settings.client'},
         {'name': 'Interfaces', 'route': 'main.settings.interfaces'},
         {'name': 'Pins', 'route': 'main.settings.pins'},
+        {'name': 'Users', 'route': 'main.settings.users'},
         //{'name': 'Sources', 'route': 'main.settings.sources'},
         //{'name': 'Sensors', 'route': 'main.settings.sensors'},
         {'name': 'Providers', 'route': 'main.settings.providers'},
@@ -60,6 +62,39 @@ settings.config(function($stateProvider, $urlRouterProvider) {
       }]
     }
   })
+  .state('main.settings.users', {
+    url: '/users',
+    templateUrl: '/views/settings/settings.users.html',
+  })
+  .state('main.settings.users.list', {
+    url: '/list',
+    templateUrl: '/views/settings/settings.users.list.html',
+    controller: 'usersList',
+  })
+  .state('main.settings.users.add', {
+    url: '/add',
+    templateUrl: '/views/settings/settings.users.add.html',
+    controller: 'usersAdd',
+  })
+  .state('main.settings.users.edit', {
+    url: '/:id',
+    templateUrl: '/views/settings/settings.users.edit.html',
+    controller: 'usersEdit',
+    resolve: {
+      'user': ['$q', '$stateParams', 'Users', function ($q, $stateParams, Users) {
+        var defer = $q.defer();
+
+        Users.get($stateParams).then(function (record) {
+          defer.resolve(record);
+        }, function () {
+          defer.reject({'state': 'main.settings.users', 'message': 'User not found'});
+        });
+
+        return defer.promise;
+      }]
+    }
+  })
+
   .state('main.settings.pins', {
     url: '/pins',
     templateUrl: '/views/settings/settings.pins.html',
@@ -180,6 +215,189 @@ settings.config(function($stateProvider, $urlRouterProvider) {
     url: '/advanced',
     templateUrl: '/views/settings/settings.advanced.html',
   });
+});
+
+settings.service('Users', ['$q', '$http', '$resource', 'abode', function ($q, $http, $resource, abode) {
+
+  var UserModel = $resource(abode.url('/api/auth/users/:id'), {id: '@_id'}, {
+    'update': { method: 'PUT' }
+  });
+
+  var TokenModel = $resource(abode.url('/api/auth/users/:userid/tokens/:id'), {id: '@_id', 'userid': '@userid'}, {
+    'update': { method: 'PUT' }
+  });
+
+  UserModel.prototype.$tokens = function () {
+    var self = this,
+      defer = $q.defer();
+
+    TokenModel.query({'userid': self._id}).$promise.then(function (results) {
+
+      results = results.map(function (item) {
+        item.userid = self._id;
+        return item;
+      });
+
+      defer.resolve(results);
+    }, function (err) {
+      defer.reject(err.data || err);
+    });
+
+    return defer.promise;
+  };
+
+  var list_users = function (options) {
+    return UserModel.query(options).$promise;
+  };
+
+  var create_user = function (options) {
+    return new UserModel(options);
+  };
+
+  var get_user = function (options) {
+    return UserModel.get(options).$promise;
+  };
+
+  return {
+    'query': list_users,
+    'create': create_user,
+    'get': get_user
+  }
+}]);
+
+settings.controller('usersList', ['$scope', 'Users', function ($scope, Users) {
+
+  $scope.loading = true;
+  $scope.users = [];
+
+  Users.query().then(function (results) {
+    $scope.loading = false;
+    $scope.users = results;
+  });
+
+}]);
+
+settings.controller('usersAdd', ['$scope', '$state', 'abode', 'Users', function ($scope, $state, abode, Users) {
+  $scope.user = Users.create();
+  $scope.field_errors = {};
+  $scope.working = false;
+
+  $scope.add = function () {
+    $scope.working = true;
+    $scope.user.$save().then(function () {
+      $scope.user = new Users.create();
+      $scope.working = true;
+      abode.message({'type': 'success', 'message': 'User added successfully'});
+      $state.go('^');
+    }, function (err) {
+      $scope.working = false;
+      $scope.field_errors = err.data.fields;
+      console.log(err);
+      abode.message({'type': 'failed', 'message': err.data.message || err.data || 'Failed to add User'});
+    });
+  };
+
+}]);
+
+settings.controller('usersEdit', ['$scope', '$state', 'abode', 'confirm', 'user', function ($scope, $state, abode, confirm, user) {
+  $scope.user = user;
+  $scope.tokens = [];
+
+  $scope.loading = false;
+  $scope.working = false;
+
+  $scope.load = function () {
+    $scope.loading = true;
+
+    $scope.user.$tokens().then(function (tokens) {
+      $scope.loading = false;
+      $scope.tokens = tokens;
+    }, function () {
+      $scope.loading = false;
+    })
+  };
+
+  $scope.save = function () {
+    $scope.working = true;
+    if ($scope.user.password === '') {
+      $scope.user.password = undefined;
+    }
+    $scope.user.$update().then(function () {
+      $scope.working = false;
+      $scope.user.password = undefined;
+      $scope.user.newpassword2 = undefined;
+
+      abode.message({'type': 'success', 'message': 'User saved successfully'});
+    }, function (err) {
+      $scope.working = false;
+      $scope.field_errors = err.data.fields;
+
+      abode.message({'type': 'failed', 'message': err.data.message || err.data || 'Failed to save User'});
+    });
+  };
+
+  $scope.delete = function () {
+    $scope.working = true;
+
+    confirm('Are you sure?', {'title': 'Delete User', 'icon': 'icon-trash'}).then(function () {
+      $scope.pin.$delete().then(function () {
+        $scope.working = false;
+        abode.message({'type': 'success', 'message': 'User Deleted'});
+        $state.go('^');
+      }, function (err) {
+        abode.message({'type': 'failed', 'message': 'Failed to delete User', 'details': err});
+        $scope.errors = err;
+        $scope.working = false;
+      });
+    });
+
+  };
+
+  $scope.delete_token = function (token) {
+
+    confirm('Are you sure?', {'title': 'Delete Token', 'icon': 'icon-trash'}).then(function () {
+      token.$delete().then(function () {
+        $scope.working = false;
+        abode.message({'type': 'success', 'message': 'Token Deleted'});
+
+        $scope.load();
+      }, function (err) {
+        abode.message({'type': 'failed', 'message': 'Failed to delete Token', 'details': err});
+        $scope.errors = err;
+        $scope.working = false;
+      });
+    });
+  };
+
+
+  $scope.load();
+
+}]);
+
+settings.directive('matches', function() {
+
+  return {
+    require: 'ngModel',
+    scope: {
+      matches: '='
+    },
+    link: function(scope, elm, attrs, ctrl) {
+      ctrl.$validators.matches = function(modelValue, viewValue) {
+        if (scope.matches == modelValue) {
+          // consider empty models to be valid
+          return true;
+        }
+
+        return false;
+      };
+
+      scope.$watch( 'matches', function() {
+          ctrl.$validate();
+      } );
+
+    }
+  };
+
 });
 
 settings.factory('Pins', ['$resource', '$q', '$http', 'abode', function($resource, $q, $http, abode) {

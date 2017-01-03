@@ -1,0 +1,59 @@
+  <div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+    <div class="row">
+      <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+        <h2>Settings / Users / Add
+           <div class="pull-right pointer"  ui-sref="^.list"><i class="glyphicon glyphicon-arrow-left"></i></div></h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+            <form name="userFrm">
+              <div class="form-group has-feedback" ng-class="{'has-success': userFrm.name.$valid && userFrm.name.$dirty, 'has-error': userFrm.name.$invalid && userFrm.name.$dirty}">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Name" required="" ng-model="user.name">
+                <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="userFrm.name.$valid && userFrm.name.$dirty"></span>
+                <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="userFrm.name.$invalid && userFrm.name.$dirty"></span>
+                <span class="help-block text-danger" ng-show="field_errors.name">{{field_errors.name}}</span>
+              </div>
+              <div class="form-group has-feedback" ng-class="{'has-success': userFrm.user.$valid && userFrm.user.$dirty, 'has-error': userFrm.user.$invalid && userFrm.user.$dirty}">
+                <label for="user">User</label>
+                <input type="text" class="form-control" name="user" id="user" placeholder="User" required="" ng-model="user.user">
+                <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="userFrm.user.$valid && userFrm.user.$dirty"></span>
+                <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="userFrm.user.$invalid && userFrm.user.$dirty"></span>
+                <span class="help-block text-danger" ng-show="field_errors.user">{{field_errors.user}}</span>
+              </div>
+              <div class="form-group has-feedback" ng-class="{'has-success': userFrm.email.$valid && userFrm.email.$dirty, 'has-error': userFrm.email.$invalid && userFrm.email.$dirty}">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="Email" required="" ng-model="user.email">
+                <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="userFrm.email.$valid && userFrm.email.$dirty"></span>
+                <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="userFrm.email.$invalid && userFrm.email.$dirty"></span>
+                <span class="help-block text-danger" ng-show="field_errors.email">{{field_errors.email}}</span>
+              </div>
+
+              <div class="well">
+                  <div class="form-group has-feedback" ng-class="{'has-success': userFrm.newpassword.$valid && userFrm.newpassword.$dirty, 'has-error': userFrm.newpassword.$invalid && userFrm.newpassword.$dirty}">
+                  <label for="newpassword">Password</label>
+                  <input type="password" name="newpassword" class="form-control" ng-model="user.password" matches="userFrm.newpassword2.$viewValue">
+                  <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="userFrm.newpassword.$valid && userFrm.newpassword.$dirty"></span>
+                  <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="userFrm.newpassword.$invalid && userFrm.newpassword.$dirty"></span>
+                  </div>
+
+                  <div class="form-group has-feedback" ng-class="{'has-success': userFrm.newpassword2.$valid && userFrm.newpassword2.$dirty, 'has-error': userFrm.newpassword2.$invalid && userFrm.newpassword2.$dirty}">
+                  <input type="password" name="newpassword2" class="form-control" ng-model="user.newpassword2" matches="userFrm.newpassword.$viewValue">
+                  <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="userFrm.newpassword2.$valid && userFrm.newpassword2.$dirty"></span>
+                  <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="userFrm.newpassword2.$invalid && userFrm.newpassword2.$dirty"></span>
+                  </div>
+                  <span class="help-block" ng-class="{'text-danger': userFrm.$error.matches}" ng-show="userFrm.$error.matches">Passwords must match</span>
+                  <span class="help-block text-danger" ng-show="field_errors.password">{{field_errors.password}}</span>
+              </div>
+
+              <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="add()" ng-disabled="userFrm.$invalid || working"><i class="icon-circleadd"></i> Add</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

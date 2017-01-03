@@ -1,0 +1,32 @@
+
+<div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+      <h2>Settings / Users
+           <div class="pull-right pointer"  ui-sref="^.^"><i class="glyphicon glyphicon-arrow-left"></i></div></h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-8 col-sm-offset-2">
+          <div class="panel panel-default">
+            <div class="panel-body">
+
+                <ul class="list-group" ng-hide="loading">
+                  <li class="list-group-item" style="cursor: pointer;" ui-sref="^.edit({'id': user._id})" ng-repeat="user in users | orderBy: '+name'">
+                    {{user.name}}</span>
+                  </li>
+                </ul>
+                <p ng-show="users.length == 0">No Users Found</p>
+
+                <div class="form-group">
+                  <button type="submit" class="btn btn-sm btn-default" ng-click="state.go('^.^')"><i class="glyphicon glyphicon-arrow-left"></i> Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+    </div>
+  </div>
+
+  <div class="bg-success img-circle " style="position: fixed; bottom: 1.5em; right: 1.5em; font-size: 1.5em; height: 2.5em; width: 2.5em; text-align: center; box-shadow: .2em .2em .3em black; line-height: 2.7em; font-weight: bold; cursor: pointer;" ui-sref="^.add"><i class="icon-plus"></i></button>
+</div>
+
