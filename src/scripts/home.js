@@ -312,6 +312,10 @@ home.directive('controller', [function () {
 
       var event_handler = abode.scope.$on('ABODE_EVENT', function (event, msg) {
 
+        if (!$scope.obj) {
+          return;
+        }
+
         if (msg.type === $scope.type && $scope.name === msg.name) {
           if ($scope.loader) {
             $timeout.cancel($scope.loader);
