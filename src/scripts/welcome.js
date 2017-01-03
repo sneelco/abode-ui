@@ -93,7 +93,7 @@ welcome.controller('powerController', ['$scope','$http', 'abode', function ($sco
   };
 }]);
 
-welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$http', '$q', '$state', '$uibModal', 'abode', 'network', 'Auth', 'Interfaces', 'connection', function ($scope, $timeout, $interval, $http, $q, $state, $uibModal, abode, network, Auth, Interfaces, connection) {
+welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$http', '$q', '$state', '$uibModal', '$location', 'abode', 'network', 'Auth', 'Interfaces', 'connection', function ($scope, $timeout, $interval, $http, $q, $state, $uibModal, $location, abode, network, Auth, Interfaces, connection) {
 
   var ssl_checker;
   var attempts = [
@@ -147,7 +147,19 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
           $scope.loading = false;
         }
       }, function (err) {
-        $scope.loading = false;
+        if (err.status === 401) {
+
+          $scope.sources.push({
+            'name': 'Login to this Abode',
+            'url': $location.protocol() + '://' + $location.host(),
+            'mode': 'server',
+          });
+
+          $scope.loading = false;
+
+        } else {
+          $scope.loading = false;
+        }
       });
 
     }, 100);
