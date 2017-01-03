@@ -302,6 +302,7 @@ settings.controller('usersAdd', ['$scope', '$state', 'abode', 'Users', function 
 settings.controller('usersEdit', ['$scope', '$state', 'abode', 'confirm', 'user', function ($scope, $state, abode, confirm, user) {
   $scope.user = user;
   $scope.tokens = [];
+  $scope.auth = abode.config.auth;
 
   $scope.loading = false;
   $scope.working = false;
@@ -340,12 +341,12 @@ settings.controller('usersEdit', ['$scope', '$state', 'abode', 'confirm', 'user'
     $scope.working = true;
 
     confirm('Are you sure?', {'title': 'Delete User', 'icon': 'icon-trash'}).then(function () {
-      $scope.pin.$delete().then(function () {
+      $scope.user.$delete().then(function () {
         $scope.working = false;
         abode.message({'type': 'success', 'message': 'User Deleted'});
         $state.go('^');
       }, function (err) {
-        abode.message({'type': 'failed', 'message': 'Failed to delete User', 'details': err});
+        abode.message({'type': 'failed', 'message': err.data.message || 'Failed to delete User', 'details': err});
         $scope.errors = err;
         $scope.working = false;
       });

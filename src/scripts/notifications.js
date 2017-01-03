@@ -186,6 +186,8 @@ notifications.directive('notifications', [function () {
     },
     controller: ['$rootScope', '$scope', '$timeout', '$q', 'abode', 'Notifications', function ($rootScope, $scope, $timeout, $q, abode, Notifications) {
       var auto_hide_timer;
+      var success_splay = 1000 * 60 * Math.floor((Math.random() * 5) + 5);
+      var error_splay = 1000 * Math.floor((Math.random() * 5) + 1);
 
       $scope.loader = false;
       $scope.loading = false;

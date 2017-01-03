@@ -20,7 +20,7 @@
               </div>
               <div class="form-group has-feedback" ng-class="{'has-success': userFrm.user.$valid && userFrm.user.$dirty, 'has-error': userFrm.user.$invalid && userFrm.user.$dirty}">
                 <label for="user">User</label>
-                <input type="text" class="form-control" name="user" id="user" placeholder="User" required="" ng-model="user.user">
+                <input type="text" class="form-control" name="user" id="user" placeholder="User" required="" ng-model="user.user" readonly>
                 <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="userFrm.user.$valid && userFrm.user.$dirty"></span>
                 <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="userFrm.user.$invalid && userFrm.user.$dirty"></span>
                 <span class="help-block text-danger" ng-show="field_errors.user">{{field_errors.user}}</span>
@@ -35,18 +35,27 @@
 
               <div class="form-group" >
                 <label for="email">Tokens</label>
-                <button class="btn btn-primary btn-xs pull-right" ng-click="refresh()"><i class="icon-refresh" ng-class="{'spin': loading}" ng-disabled="loading"></i></button>
+                <button class="btn btn-primary btn-xs pull-right" ng-click="load()"><i class="icon-refresh" ng-class="{'spin': loading}" ng-disabled="loading"></i></button>
                 <ul class="list-group" ng-hide="loading">
-                  <li class="list-group-item" ng-repeat="token in tokens | orderBy: '+expires'">
-                    <button class="btn btn-danger btn-xs pull-right" ng-click="delete_token(token)"><i class="icon-trash"></i></button>
+                  <li class="list-group-item" ng-repeat="token in tokens | orderBy: '-expires'">
+                    <button class="btn btn-danger btn-xs pull-right" ng-click="delete_token(token)" ng-disabled="token.client_token == auth.token.client_token"><i class="icon-trash"></i></button>
                     <div>
-                      <i class="text-success icon-ok-sign" ng-show="token.status == 'active'"></i>
+                      <i class="text-success icon-ok-sign" ng-show="token.client_token == auth.token.client_token"></i>
+                      <i class="text-info icon-ok-sign" ng-show="token.status == 'active' && token.client_token != auth.token.client_token"></i>
                       <i class="text-muted icon-tablet" ng-show="token.status == 'nodevice'"></i>
                       <i class="text-muted icon-picture" ng-show="token.status == 'unassigned'"></i>
-                      <small>{{token.agent}}</small>
+                      <small ng-show="token.agent.family">
+                        {{token.agent.family}}<span ng-show="token.agent.os.family"> on {{token.agent.os.family}}</span>
+                        <button uib-popover="{{token.agent.source}}" popover-trigger="'outsideClick click'" type="button" class="btn btn-link btn-xs "><span class="glyphicon glyphicon-question-sign"></span></button>
+                      </small>
+                      <small ng-show="!token.agent.family">{{token.agent.source || token.agent}}</small>
                     </div>
-                    <div class="pull-right"><small>{{token.expires | date: 'medium'}}</small></div>
-                    <div><small>{{token.ip}}</small></div>
+                    <div class="pull-right"></div>
+
+                    <div style="font-size: .8em;" ng-show="token.locale">{{token.locale.city}}, {{token.locale.region}} {{token.locale.country}} ({{token.ip}})</div>
+                    <div style="font-size: .8em;" ng-hide="token.locale">IP: {{token.ip}}</div>
+                    <div style="font-size: .7em;" class="pull-right">Expires: {{token.last_used | date: 'medium'}}</div>
+                    <div style="font-size: .7em;">Used: {{token.expires | date: 'medium'}}</div>
                   </li>
                   <li class="list-group-item" ng-show="tokens.length == 0">No Tokens Found</li>
                 </ul>
@@ -71,7 +80,7 @@
               </div>
 
               <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="userFrm.$invalid || working"><i class="icon-save-floppy"></i> Save</button>
-              <button type="submit" class="btn btn-sm btn-danger" ng-click="delete()"><i class="icon-trash"></i> Delete</button>
+              <button type="submit" class="btn btn-sm btn-danger" ng-click="delete()" ng-disabled="auth.token.user == user.user"><i class="icon-trash"></i> Delete</button>
             </form>
           </div>
         </div>
