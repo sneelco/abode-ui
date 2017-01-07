@@ -117,6 +117,10 @@ welcome.controller('welcomeController', ['$scope', '$timeout', '$interval', '$ht
   $scope.connection = connection;
   $scope.connected = (connection === false || connection.connected === true) ? true : false;
 
+  $scope.restart = function () {
+    $http.post('/api/abode/restart');
+  };
+
   $scope.load = function () {
     var attempt_defers = [];
     $scope.sources = [];
