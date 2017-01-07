@@ -340,6 +340,10 @@ abode.directive('iconSelector', ['$compile', function () {
         {
           'name': 'Movie Alt',
           'class': 'icon-moviereel'
+        },
+        {
+          'name': 'Events',
+          'class': 'icon-eventum'
         }
       ];
     }]

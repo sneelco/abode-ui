@@ -1,7 +1,7 @@
 <div class="room-icon" ng-style="styles" ng-class="{'room-motion': room._motion_on, 'room-light': room._lights_on, 'active': room._motion_on || room._lights_on || room._doors_open || rooms._windows_open || tempType}" ng-click="view()">
-  <div class="room-icon-display" ng-show="icon && room._temperature"><i class="{{icon}}"></i></div>
+  <div class="room-icon-display" ng-show="icon && room._temperature && tempType"><i class="{{icon}}"></i></div>
   <div class="room-icon-temp" ng-show="tempType && room._temperature">{{room._temperature | number:0}}</div>
-  <span ng-show="icon && !room._temperature"><i class="{{icon}}"></i></span>
+  <span ng-show="icon && !room._temperature || !tempType"><i class="{{icon}}"></i></span>
   <div class="room-icon-status room-icon-loading" ng-class="{'room-loading': loading}"><i class="icon-loadingalt spin"></i></div>
   <div class="room-icon-status room-icon-error" ng-class="{'room-error': error}"><i class="icon-warning-sign"></i></div>
   <div class="room-icon-badge room-icon-openclose" ng-class="{'room-openclose': room._doors_open || room._windows_open}">{{room._door_on_count + room._window_on_count}}</div>
