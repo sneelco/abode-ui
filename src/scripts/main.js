@@ -628,7 +628,7 @@ abode.provider('abode', ['$httpProvider', function ($httpProvider) {
         self.scope.$broadcast('EVENTS_RESET', {});
       }
 
-      self.eventSource = new EventSource(self.url('/api/events/' + key + '?last=' + self.last_event).value());
+      self.eventSource = new EventSource(self.url('/api/events/feed/' + key + '?last=' + self.last_event).value());
 
       self.eventSource.addEventListener('message', function (msg) {
         var event = JSON.parse(msg.data);
