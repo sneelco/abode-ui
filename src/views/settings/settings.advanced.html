@@ -14,8 +14,11 @@
             <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
             <form name="settings">
               <div class="form-group">
-                <label for="name">Reload Display</label>
-                <button type="submit" class="pull-right btn btn-sm btn-success" ng-click="reload()" style="width: 10em;"><i class="icon-refresh"></i> Reload</button>
+                <label for="name">CA Cert</label>
+                <textarea class="form-control" ng-model="config.ca_cert" style="font-family: Courier; height: 10em;"></textarea>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-success btn-sm" ng-click="save()">Save</button>
               </div>
               <div class="form-group">
                 <label for="name">Restart</label>

@@ -644,7 +644,11 @@ settings.service('settings', function ($q, $http, $templateCache, abode) {
     var url = (provider) ? '/api/abode/config/' + provider : '/api/abode/config';
 
     $http.put(url, config).then(function (response) {
-      defer.resolve(response.data);
+      write_config().then(function (response) {
+        defer.resolve(response);
+      }, function (err) {
+        defer.reject(err);
+      });
     }, function (err) {
       defer.reject(err);
     });
@@ -839,14 +843,11 @@ settings.controller('settings', function ($scope, $state, abode, settings, confi
 
     settings.save_config(undefined, $scope.config).then(function () {
 
-      notifier.notify({
-        'status': 'success',
-        'message': 'Settings Saved'
-      });
+      $scope.write_config();
 
     }, function (err) {
-      notifier.notify({
-        'status': 'failed',
+      abode.message({
+        'type': 'failed',
         'message': 'Settings Failed to Save',
         'details': err
       });
@@ -857,15 +858,15 @@ settings.controller('settings', function ($scope, $state, abode, settings, confi
   $scope.write_config = function () {
     settings.write_config().then(function () {
 
-      notifier.notify({
-        'status': 'success',
+      abode.message({
+        'type': 'success',
         'message': 'Config Saved'
       });
 
     }, function (err) {
 
-      notifier.notify({
-        'status': 'failed',
+      abode.message({
+        'type': 'failed',
         'message': 'Failed to Save Config',
         'details': err
       });
