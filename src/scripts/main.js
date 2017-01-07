@@ -384,7 +384,7 @@ abode.directive('pinEntry', function () {
         }
 
         return array;
-      }
+      };
 
       if ($scope.randomize) {
         $scope.numbers = shuffle($scope.numbers);
@@ -790,7 +790,7 @@ abode.service('Security', ['$uibModal', '$http', '$timeout', 'abode', function (
               $uiScope.success = false;
               $uiScope.checking = false;
               abode.message({'type': 'failed', 'message': 'Timeout waiting for unlock'});
-            }, 10000)
+            }, 10000);
           }, function () {
             $uiScope.error = true;
             $timeout(function () {
