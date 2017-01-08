@@ -246,6 +246,38 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
     return defer.promise;
   };
 
+  methods.$motion_on = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/devices/' + this._id + '/motion_on').value();
+
+    $http.post(url).then(function (response) {
+      self._on = true;
+      self._motion = true;
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
+  methods.$motion_off = function () {
+    var self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/devices/' + this._id + '/motion_off').value();
+
+    $http.post(url).then(function (response) {
+      self._on = false;
+      self._motion = false;
+      defer.resolve(response.data);
+    }, function (err) {
+      defer.reject(err.data);
+    });
+
+    return defer.promise;
+  };
+
   methods.$toggle = function () {
     var action,
       self = this,
@@ -262,6 +294,32 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
     } else {
       $http.put(url, {'_on': !self._on}).then(function (response) {
         self._on = !self._on;
+        defer.resolve(response.data);
+      }, function (err) {
+        defer.reject(err.data);
+      });
+    }
+
+    return defer.promise;
+  };
+
+  methods.$toggle_motion = function () {
+    var action,
+      self = this,
+      defer = $q.defer(),
+      url = abode.url('/api/devices/' + this.name).value();
+
+    if (self.active) {
+      action = (self._on) ? self.$motion_off : self.$motion_on;
+      action.apply(self).then(function (response) {
+        defer.resolve(response);
+      }, function (err) {
+        defer.reject(err);
+      });
+    } else {
+      $http.put(url, {'_on': !self._on, '_motion': !self._motion}).then(function (response) {
+        self._on = !self._on;
+        self._motion = !self._motion;
         defer.resolve(response.data);
       }, function (err) {
         defer.reject(err.data);
@@ -558,7 +616,6 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           $scope.errors = false;
 
           $scope.device.$refresh(force).then(function (result) {
-            console.log(result);
             $scope.processing = false;
             $scope.errors = false;
           }, function () {
@@ -647,49 +704,21 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
             $scope.processing = false;
             $scope.errors = true;
           });
-          /*
-          if ($scope.device.active === false) {
-            if ($scope.device._on) {
-              $http.put(source_uri + '/devices/' + $scope.device.name, {'_on': false}).then(function () {
-                $scope.processing = false;
-                $scope.errors = false;
-              }, function (err) {
-                console.log(err);
-                $scope.processing = false;
-                $scope.errors = true;
-              });
-            } else {
-              $http.put(source_uri + '/devices/' + $scope.device.name, {'_on': true}).then(function () {
-                $scope.processing = false;
-                $scope.errors = false;
-              }, function (err) {
-                console.log(err);
-                $scope.processing = false;
-                $scope.errors = true;
-              });
-            }
-          } else {
-            if ($scope.device._on) {
-              $http.post(source_uri + '/devices/' + $scope.device.name + '/off').then(function () {
-                $scope.processing = false;
-                $scope.errors = false;
-              }, function (err) {
-                console.log(err);
-                $scope.processing = false;
-                $scope.errors = true;
-              });
-            } else {
-              $http.post(source_uri + '/devices/' + $scope.device.name + '/on').then(function () {
-                $scope.processing = false;
-                $scope.errors = false;
-              }, function (err) {
-                console.log(err);
-                $scope.processing = false;
-                $scope.errors = true;
-              });
-            }
-          }
-          */
+        };
+
+        $scope.toggle_motion = function () {
+
+          $scope.processing = true;
+          $scope.errors = false;
+
+          $scope.device.$toggle_motion().then(function () {
+            $scope.processing = false;
+            $scope.errors = false;
+          }, function (err) {
+            console.log(err);
+            $scope.processing = false;
+            $scope.errors = true;
+          });
         };
 
         $scope.set_mode = function (mode) {
