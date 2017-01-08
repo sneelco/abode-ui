@@ -397,7 +397,7 @@ welcome.controller('welcomeDevicesController', ['$scope', '$timeout', '$http', '
   };
 
   $scope.save_token = function (token) {
-    $http.put('/api/abode/config', {'server_token': token}).then(function () {
+    $http.put('/api/abode/config', {'server_token': token, 'server_url': abode.config.server, 'client_token': abode.config.auth.token.client_token, 'auth_token': abode.config.auth.token.auth_token}).then(function () {
       $http.post('/api/abode/save').then(function () {
         $state.go('welcome_interfaces');
       }, function (err) {
