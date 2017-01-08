@@ -110,6 +110,10 @@ abode.directive('iconSelector', ['$compile', function () {
           'class': 'icon-server'
         },
         {
+          'name': 'Phone',
+          'class': 'icon-mobile',
+        },
+        {
           'name': 'Laptop',
           'class': 'icon-iphone'
         },
@@ -344,6 +348,82 @@ abode.directive('iconSelector', ['$compile', function () {
         {
           'name': 'Events',
           'class': 'icon-eventum'
+        },
+        {
+          'name': 'Chandelier',
+          'class': 'icon-chandelier'
+        },
+        {
+          'name': 'Tools',
+          'class': 'icon-tools'
+        },
+        {
+          'name': 'Tools Alt1',
+          'class': 'icon-mootoolsthree'
+        },
+        {
+          'name': 'Tools Alt2',
+          'class': 'icon-screwdriver'
+        },
+        {
+          'name': 'Tools Alt3',
+          'class': 'icon-screw'
+        },
+        {
+          'name': 'Glass',
+          'class': 'icon-wineglass'
+        },
+        {
+          'name': 'Glass Alt1',
+          'class': 'icon-glass'
+        },
+        {
+          'name': 'Glass Alt2',
+          'class': 'icon-beeralt'
+        },
+        {
+          'name': 'Sport',
+          'class': 'icon-football-soccer'
+        },
+        {
+          'name': 'Sport Alt1',
+          'class': 'icon-usfootball'
+        },
+        {
+          'name': 'Camp Fire',
+          'class': 'icon-campfire'
+        },
+        {
+          'name': 'Tent',
+          'class': 'icon-tent-camping'
+        },
+        {
+          'name': 'Tie',
+          'class': 'icon-tie-business'
+        },
+        {
+          'name': 'Shirt',
+          'class': 'icon-workshirt'
+        },
+        {
+          'name': 'Security Camera',
+          'class': 'icon-cctv'
+        },
+        {
+          'name': 'Chair',
+          'class': 'icon-chair'
+        },
+        {
+          'name': 'Mirror',
+          'class': 'icon-mirror'
+        },
+        {
+          'name': 'Microwave',
+          'class': 'icon-microwave'
+        },
+        {
+          'name': 'Turntable',
+          'class': 'icon-gramophone'
         }
       ];
     }]
