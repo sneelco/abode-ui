@@ -508,6 +508,124 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
     step.actions.splice(index, 1);
   };
 
+  $scope.sceneBuilder = function (actions) {
+    var builder = $uibModal.open({
+      animation: true,
+      templateUrl: 'views/scenes/scene.builder.html',
+      resolve: {
+      },
+      controller: function ($scope, $uibModalInstance, $q, $timeout, Devices) {
+        $scope.loading = true;
+        $scope.devices = [];
+        var device_defers = [];
+
+
+        $scope.addDevice = function () {
+
+          var deviceModal = $uibModal.open({
+            animation: false,
+            templateUrl: 'views/scenes/scene.builder.devices.html',
+            size: 'sm',
+            controller: function ($scope, $uibModalInstance, Devices) {
+              $scope.loading = true;
+              $scope.closing = false;
+              $scope.devices = [];
+
+              Devices.query().$promise.then(function (results) {
+                $scope.devices = results;
+                $scope.loading = false;
+              }, function () {
+                $scope.loading = false;
+              });
+
+              $scope.select = function (device) {
+                $scope.closing = true;
+                Devices.get({'id': device._id}).$promise.then(function (record) {
+                  $uibModalInstance.close(record);
+                }, function () {
+                  $scope.closing = false;
+                });
+              };
+
+              $scope.cancel = function () {
+                $uibModalInstance.dismiss();
+              };
+
+            }
+          });
+
+          deviceModal.result.then(function (device) {
+            $scope.devices.push(device);
+          });
+        };
+
+        $scope.set_device_level = function (device) {
+          return function (id, level) {
+            device.$set_level(level);
+          }
+        };
+
+        actions.forEach(function (action) {
+          if (action.object_type !== 'devices') {
+            return;
+          }
+
+          var defer = $q.defer();
+          device_defers.push(defer.promise);
+
+          Devices.get({'id': action.name}).$promise.then(function (record) {
+            if (record.capabilities.indexOf('dimmer') >= 0) {
+              record._level = action._level;
+              $scope.devices.push(record);
+            }
+            defer.resolve();
+          }, function () {
+            defer.resolve();
+          });
+        });
+
+        $q.all(device_defers).then(function () {
+          $scope.loading = false;
+          $timeout(function () {
+              $scope.$broadcast('rzSliderForceRender');
+          }, 100);
+        });
+
+        $scope.close = function () {
+          $uibModalInstance.close($scope.devices);
+        };
+
+        $scope.cancel = function () {
+          $uibModalInstance.dismiss();
+        };
+      }
+    });
+
+    builder.result.then(function (devices) {
+      devices.forEach(function (device) {
+        var matches = actions.filter(function (action) {
+          return (action.name === device.name && action.object_type === 'devices');
+        });
+
+        if (matches.length > 0) {
+          matches[0]._level = device._level;
+          matches[0]._on = (device._level > 0);
+          return;
+        }
+
+        actions.push({
+          'name': device.name,
+          'object_type': 'devices',
+          'object_id': device._id,
+          'stages': 0,
+          '_level': device._level,
+          '_on': (device._level > 0)
+        });
+
+      })
+    })
+  };
+
   $scope.editAction = function (action) {
     var assign = $uibModal.open({
       animation: true,

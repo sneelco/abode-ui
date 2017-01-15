@@ -1,0 +1,32 @@
+<div class="modal-body">
+<h3 ng-hide="device">Scene Builder
+    <button class="btn btn-xs btn-success pull-right"><i class="icon-circleadd"></i></button></h3>
+  <div ng-show="loading"><i class="icon-circleselection spin"></i> Loading</div>
+  <div ng-hide="loading" style="overflow-x: scroll; overflow-y: hidden; height: 19em; white-space : nowrap;">
+    <div style="display: inline-block; margin: 1em; padding: .5em; height: 16em;  border: 1px solid #444; border-radius: .25em;" ng-repeat="device in devices | filter: {capabilities: 'light'}">
+        <button class="btn btn-default btn-xs pull-right" ng-hide="device.$error || device.$loading"  ng-click="device.$refresh(true)"><i class="icon-refresh"></i></button>
+        <button class="btn btn-danger btn-xs pull-right" ng-show="device.$error" ng-click="device.$refresh(true)"><i class="icon-erroralt"></i></button>
+        <button class="btn btn-default btn-xs pull-right" ng-show="device.$loading"><i class="icon-circleselection spin"></i></button>
+        <span style="margin-top: 5em; margin-right: -1em;" class="pull-right">{{device._level}}</span>
+
+        <div style="display: inline-block; writing-mode: vertical-rl; width: 1em;">
+          <small>{{device.name}}</small>
+        </div>
+        <div style="display: inline-block; width: 3em;">
+          <div style="height: 14em;">
+            <rzslider rz-slider-model="device._level" rz-slider-options="{floor: 0, ceil: 100, step: 1, vertical: true, hideLimitLabels: true, hidePointerLabels: true, onEnd: set_device_level(device), disabled: device.$loading }" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
+          </div>
+        </div>
+    </div>
+    <div style="display: inline-block; margin: 1em; padding: .5em; height: 14em; width: 6em; border: 1px solid #444; border-radius: .25em; text-align: center" ng-show="devices.length == 0">
+    	<button class="btn btn-sm btn-success " style="margin-top: 7em;" ng-click="addDevice()"><i class="icon-circleadd"></i></button>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="modal-footer">
+    <button class="btn btn-warning btn-sm" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary btn-sm" type="button" ng-click="close()">Done</button>
+</div>

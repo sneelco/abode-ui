@@ -347,7 +347,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
         $scope.set_device_level = function (device) {
           return function (id, level) {
             device.$set_level(level);
-          }
+          };
         };
 
         $scope.toggleControls = function () {

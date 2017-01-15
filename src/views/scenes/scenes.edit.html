@@ -79,6 +79,7 @@
                                   <div class="form-group">
                                     <label for="enabled">Actions: </label>
                                     <button class="btn btn-info btn-xs pull-right" ng-click="addAction(step)"><i class="icon-plus-sign"></i> Add</button>
+                                    <button class="btn btn-default btn-xs pull-right" style="margin-right: 1em;"  ng-click="sceneBuilder(step.actions)"><i class="icon-controlpanel"></i></button>
 
                                     <ul class="list-group">
                                       <li class="list-group-item" ng-repeat="action in step.actions" style="cursor: pointer" ng-click="editAction(action)">
