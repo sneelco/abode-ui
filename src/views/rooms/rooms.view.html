@@ -1,56 +1,76 @@
 <div class="modal-header">
     <h4 class="modal-title">{{name}}
 
-      <button class="btn btn-primary btn-sm pull-right" ng-hide="errors || processing" ng-click="reload()"><i class="icon-refresh"></i></button>
+      <button class="btn btn-primary btn-sm pull-right" ng-hide="errors || processing" ng-click="reload()" ng-disabled="controls"><i class="icon-refresh"></i></button>
       <button class="btn btn-danger btn-sm pull-right" ng-show="errors" ng-click="reload()"><i class="icon-erroralt"></i></button>
       <button class="btn btn-default btn-sm pull-right" ng-show="processing"><i class="icon-loadingalt spin"></i></button>
+      <button class="btn btn-sm pull-right" style="margin-right: 1em;" ng-show="filter_counts.light > 0"  ng-click="toggleControls()" ng-class="{'btn-info': controls, 'btn-default': !controls}"><i class="icon-controlpanel"></i></button>
     </h4>
 </div>
 <div class="modal-body">
-  <room-cameras devices="cameras" source="source"></room-cameras>
-  <div class="row" ng-class="{'room-filter-offset': cameras.length > 0}">
-    <div class="col-xs-2">
-      <div class="room_filter" ng-click="filter('light')" ng-class="{selected: filter_condition =='light'}">
-        <i class="icon-lightbulb-idea"></i>
-        <div class="on-count" ng-class="{'on-ok': on_counts.light > 0}">{{filter_counts.light}}</div>
+  <div  ng-hide="controls">
+    <room-cameras devices="cameras" source="source" ng-hide=""></room-cameras>
+    <div class="row" ng-class="{'room-filter-offset': cameras.length > 0}">
+      <div class="col-xs-2">
+        <div class="room_filter" ng-click="filter('light')" ng-class="{selected: filter_condition =='light'}">
+          <i class="icon-lightbulb-idea"></i>
+          <div class="on-count" ng-class="{'on-ok': on_counts.light > 0}">{{filter_counts.light}}</div>
+        </div>
       </div>
+      <div class="col-xs-2"><div class="room_filter" ng-click="filter('scenes')" ng-class="{selected: filter_condition =='scenes'}"><i class="icon-picture"></i><div class="on-count" ng-class="{'on-ok': on_counts.scenes != 0}">{{filter_counts.scenes}}</div></div></div>
+      <div class="col-xs-2"><div class="room_filter" ng-click="filter('motion_sensor')" ng-class="{selected: filter_condition =='motion_sensor'}"><i class="fi-motion"></i><div class="on-count" ng-class="{'on-danger': on_counts.motion_sensor != 0}">{{filter_counts.motion_sensor}}</div></div></div>
+      <div class="col-xs-2"><div class="room_filter" ng-click="filter('door')" ng-class="{selected: filter_condition =='door'}"><i class="fi-door-open"></i><div class="on-count" ng-class="{'on-danger': on_counts.door != 0}">{{filter_counts.door}}</div></div></div>
+      <div class="col-xs-2"><div class="room_filter" ng-click="filter('window')" ng-class="{selected: filter_condition =='window'}"><i class="fi-window"></i><div class="on-count" ng-class="{'on-danger': on_counts.window != 0}">{{filter_counts.window}}</div></div></div>
+      <div class="col-xs-2"><div class="room_filter" ng-click="filter('temperature_sensor')" ng-class="{selected: filter_condition =='temperature_sensor'}">{{room_temperature}}</div></div>
     </div>
-    <div class="col-xs-2"><div class="room_filter" ng-click="filter('scenes')" ng-class="{selected: filter_condition =='scenes'}"><i class="icon-picture"></i><div class="on-count" ng-class="{'on-ok': on_counts.scenes != 0}">{{filter_counts.scenes}}</div></div></div>
-    <div class="col-xs-2"><div class="room_filter" ng-click="filter('motion_sensor')" ng-class="{selected: filter_condition =='motion_sensor'}"><i class="fi-motion"></i><div class="on-count" ng-class="{'on-danger': on_counts.motion_sensor != 0}">{{filter_counts.motion_sensor}}</div></div></div>
-    <div class="col-xs-2"><div class="room_filter" ng-click="filter('door')" ng-class="{selected: filter_condition =='door'}"><i class="fi-door-open"></i><div class="on-count" ng-class="{'on-danger': on_counts.door != 0}">{{filter_counts.door}}</div></div></div>
-    <div class="col-xs-2"><div class="room_filter" ng-click="filter('window')" ng-class="{selected: filter_condition =='window'}"><i class="fi-window"></i><div class="on-count" ng-class="{'on-danger': on_counts.window != 0}">{{filter_counts.window}}</div></div></div>
-    <div class="col-xs-2"><div class="room_filter" ng-click="filter('temperature_sensor')" ng-class="{selected: filter_condition =='temperature_sensor'}">{{room_temperature}}</div></div>
-  </div>
-  <ul class="list-group">
-    <li class="list-group-item" style="cursor: pointer" ng-repeat="scene in scenes | orderBy: ['-_on', '+age', '+name']" ng-class="{'list-group-item-success': scene._on}" ng-show="filter_condition=='scenes' || filter_conditions==''" ng-click="openScene(scene)">
-      <h5 class="list-group-item-heading"><i class="icon-picture"></i> {{scene.name}}</h5>
-      <p style="font-size: .8em;" class="list-group-item-text ">{{scene.age | ageHumanReadable}}</p>
-    </li>
-    <li class="list-group-item" style="cursor: pointer" ng-repeat="device in devices | orderBy: ['-_on', '+age', '+name']" ng-class="{'list-group-item-success': device_state(device, '_on', true, ['light', 'display', 'fan']), 'list-group-item-danger': device_state(device, '_on', true, ['door', 'window', 'motion_sensor']) || device._mode == 'HEAT', 'list-group-item-info': device._mode == 'COOL'}" ng-click="open(device)" ng-show="check_filter(device)">
-      <h4 class="list-group-item-heading">
-        <i class="icon-videocamerathree" ng-show="has_capability(device, 'camera')"></i>
-        <i class="icon-fan" ng-show="has_capability(device, 'fan')"></i>
-        <i class="icon-lightbulb-idea" ng-show="has_capability(device, 'light')"></i>
-        <i class="icon-monitor" ng-show="has_capability(device, 'display')"></i>
-        <i class="fi-window" ng-show="has_capability(device, 'window')"></i>
-        <i class="fi-door-open" ng-show="has_capability(device, 'door')"></i>
-        <i class="fi-motion" ng-show="has_capability(device, 'motion_sensor')"></i>
-        <i class="wi wi-day-snow-thunderstorm" ng-show="has_capability(device, 'weather')"></i>
-        <i class="icon-temperaturealt-thermometeralt" ng-show="has_capability(device, 'conditioner')"></i>
-        {{device.name}}
-        <p class="list-group-item-text pull-right">
-          <span class="badge"></span>
-          <span class="badge" ng-show="device._mode == 'COOL'">{{device._set_point}} <i class="icon-snow"></i></span>
-          <span class="badge" ng-show="device._mode == 'HEAT'">{{device._set_point}} <i class="icon-fire"></i></span>
-          <span class="badge" ng-show="has_capability(device, 'temperature_sensor')">{{device._temperature}} <i class="wi wi-thermometer"></i></span>
-          <span class="badge" ng-show="has_capability(device, 'humidity_sensor')">{{device._humidity}} <i class="wi wi-humidity"></i></span>
-          <span class="badge" ng-show="has_capability(device, 'light_sensor')">{{device._lumens}} <i class="wi wi-day-sunny wi-fw"></i></span>
-        </p>
-      </h4>
+    <ul class="list-group">
+      <li class="list-group-item" style="cursor: pointer" ng-repeat="scene in scenes | orderBy: ['-_on', '+age', '+name']" ng-class="{'list-group-item-success': scene._on}" ng-show="filter_condition=='scenes' || filter_conditions==''" ng-click="openScene(scene)">
+        <h5 class="list-group-item-heading"><i class="icon-picture"></i> {{scene.name}}</h5>
+        <p style="font-size: .8em;" class="list-group-item-text ">{{scene.age | ageHumanReadable}}</p>
+      </li>
+      <li class="list-group-item" style="cursor: pointer" ng-repeat="device in devices | orderBy: ['-_on', '+age', '+name']" ng-class="{'list-group-item-success': device_state(device, '_on', true, ['light', 'display', 'fan']), 'list-group-item-danger': device_state(device, '_on', true, ['door', 'window', 'motion_sensor']) || device._mode == 'HEAT', 'list-group-item-info': device._mode == 'COOL'}" ng-click="open(device)" ng-show="check_filter(device)">
+        <h4 class="list-group-item-heading">
+          <i class="icon-videocamerathree" ng-show="has_capability(device, 'camera')"></i>
+          <i class="icon-fan" ng-show="has_capability(device, 'fan')"></i>
+          <i class="icon-lightbulb-idea" ng-show="has_capability(device, 'light')"></i>
+          <i class="icon-monitor" ng-show="has_capability(device, 'display')"></i>
+          <i class="fi-window" ng-show="has_capability(device, 'window')"></i>
+          <i class="fi-door-open" ng-show="has_capability(device, 'door')"></i>
+          <i class="fi-motion" ng-show="has_capability(device, 'motion_sensor')"></i>
+          <i class="wi wi-day-snow-thunderstorm" ng-show="has_capability(device, 'weather')"></i>
+          <i class="icon-temperaturealt-thermometeralt" ng-show="has_capability(device, 'conditioner')"></i>
+          {{device.name}}
+          <p class="list-group-item-text pull-right">
+            <span class="badge"></span>
+            <span class="badge" ng-show="device._mode == 'COOL'">{{device._set_point}} <i class="icon-snow"></i></span>
+            <span class="badge" ng-show="device._mode == 'HEAT'">{{device._set_point}} <i class="icon-fire"></i></span>
+            <span class="badge" ng-show="has_capability(device, 'temperature_sensor')">{{device._temperature}} <i class="wi wi-thermometer"></i></span>
+            <span class="badge" ng-show="has_capability(device, 'humidity_sensor')">{{device._humidity}} <i class="wi wi-humidity"></i></span>
+            <span class="badge" ng-show="has_capability(device, 'light_sensor')">{{device._lumens}} <i class="wi wi-day-sunny wi-fw"></i></span>
+          </p>
+        </h4>
 
-      <p class="list-group-item-text " style="font-size: .8em;">{{device.age | ageHumanReadable}}</p>
-    </li>
-  </ul>
+        <p class="list-group-item-text " style="font-size: .8em;">{{device.age | ageHumanReadable}}</p>
+      </li>
+    </ul>
+  </div>
+  <div ng-show="controls" style="overflow-x: scroll; overflow-y: hidden; height: 14em; white-space : nowrap;">
+    <div style="display: inline-block; margin: 1em; padding: .5em; border: 1px solid #444; border-radius: .25em;" ng-repeat="device in devices | filter: {capabilities: 'light'}">
+        <button class="btn btn-default btn-xs pull-right" ng-hide="device.$error || device.$loading"  ng-click="device.$refresh(true)"><i class="icon-refresh"></i></button>
+        <button class="btn btn-danger btn-xs pull-right" ng-show="device.$error" ng-click="device.$refresh(true)"><i class="icon-erroralt"></i></button>
+        <button class="btn btn-default btn-xs pull-right" ng-show="device.$loading"><i class="icon-circleselection spin"></i></button>
+        <span style="margin-top: 5em; margin-right: -1em;" class="pull-right">{{device._level}}</span>
+
+        <div style="display: inline-block; writing-mode: sideways-lr; width: 1em;">
+          <small>{{device.name}}</small>
+        </div>
+        <div style="display: inline-block; width: 4em;">
+          <div style="height: 10em;">
+            <rzslider rz-slider-model="device._level" rz-slider-options="{floor: 0, ceil: 100, step: 1, vertical: true, hideLimitLabels: true, hidePointerLabels: true, onEnd: set_device_level(device) }" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
+          </div>
+        </div>
+    </div>
+  </div>
 
 </div>
 

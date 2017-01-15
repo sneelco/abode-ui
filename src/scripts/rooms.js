@@ -334,6 +334,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
         $scope.on_counts = {};
         $scope.room_temperature = '?';
         $scope.destroyed = false;
+        $scope.controls = false;
 
         var filters = {
           'light': ['light'],
@@ -343,6 +344,21 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
           'temperature_sensor': ['conditioner', 'temperature_sensor', 'fan', 'humidity_sensor'],
         };
 
+        $scope.set_device_level = function (device) {
+          return function (id, level) {
+            device.$set_level(level);
+          }
+        };
+
+        $scope.toggleControls = function () {
+          $scope.controls = (!$scope.controls);
+
+          if ($scope.controls) {
+            $timeout(function () {
+                $scope.$broadcast('rzSliderForceRender');
+            }, 100);
+          }
+        };
 
         $scope.filter = function (filter) {
           $scope.filter_condition = (filter !== $scope.filter_condition) ? filter : '';
@@ -439,6 +455,10 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
         $scope.reload = function () {
 
           var errors = false;
+          if ($scope.controls) {
+            return;
+          }
+
           $scope.processing = true;
           $scope.errors = false;
 

@@ -170,6 +170,9 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
       req = $http.get(abode.url('/api/devices/' + this._id ).value());
     }
 
+    self.$loading = true;
+    self.$error = false;
+
     req.then(function (response) {
       var results = response.data.response || response.data;
 
@@ -178,8 +181,11 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           self[key] = results[key];
         }
       }
+      self.$loading = false;
       defer.resolve(self);
     }, function (err) {
+      self.$loading = false;
+      self.$error = true;
       defer.reject(err.data);
     });
 
@@ -221,11 +227,17 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
       defer = $q.defer(),
       url = abode.url('/api/devices/' + this._id + '/on').value();
 
+    self.$loading = true;
+    self.$error = false;
+
     $http.post(url).then(function (response) {
+      self.$loading = false;
       self._on = true;
       self._level = 100;
       defer.resolve(response.data);
     }, function (err) {
+      self.$loading = false;
+      self.$error = true;
       defer.reject(err.data);
     });
 
@@ -237,11 +249,17 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
       defer = $q.defer(),
       url = abode.url('/api/devices/' + this._id + '/off').value();
 
+    self.$loading = true;
+    self.$error = false;
+
     $http.post(url).then(function (response) {
+      self.$loading = false;
       self._on = false;
       self._level = 0;
       defer.resolve(response.data);
     }, function (err) {
+      self.$loading = false;
+      self.$error = true;
       defer.reject(err.data);
     });
 
@@ -378,12 +396,18 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
       defer = $q.defer(),
       url = abode.url('/api/devices/' + this._id + '/set_level').value();
 
+    self.$loading = true;
+    self.$error = false;
+
     $http.post(url, [level]).then(function (response) {
+      self.$loading = false;
       self._level = level;
       self._on = (level > 0) ? true : false;
 
       defer.resolve(response.data);
     }, function (err) {
+      self.$loading = false;
+      self.$error = true;
       defer.reject(err.data);
     });
 
