@@ -437,6 +437,10 @@ home.directive('controller', [function () {
           func = ($scope.obj._on || $scope.obj._lights_on) ? $scope.obj.$off : $scope.obj.$on;
         } else if ($scope.obj['$' + action]) {
           func = $scope.obj['$' + action];
+        } else if (action === 'open_controls') {
+          func = function () {
+            return $scope.obj.$open(true);
+          }
         } else {
           func = $scope.obj.$open;
         }
