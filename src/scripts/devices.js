@@ -223,6 +223,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
 
     $http.post(url).then(function (response) {
       self._on = true;
+      self._level = 100;
       defer.resolve(response.data);
     }, function (err) {
       defer.reject(err.data);
@@ -238,6 +239,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
 
     $http.post(url).then(function (response) {
       self._on = false;
+      self._level = 0;
       defer.resolve(response.data);
     }, function (err) {
       defer.reject(err.data);
@@ -378,6 +380,8 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
 
     $http.post(url, [level]).then(function (response) {
       self._level = level;
+      self._on = (level > 0) ? true : false;
+
       defer.resolve(response.data);
     }, function (err) {
       defer.reject(err.data);
@@ -798,6 +802,17 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
 
           if ($scope.device._level > 0){
             $scope.device._level -= 1;
+          }
+
+          level_wait = $timeout($scope.set_level, 2000);
+        };
+
+        $scope.level_wait = function (id, value) {
+          $scope.processing = true;
+          $scope.errors = false;
+          console.log('1');
+          if (level_wait) {
+            $timeout.cancel(level_wait);
           }
 
           level_wait = $timeout($scope.set_level, 2000);

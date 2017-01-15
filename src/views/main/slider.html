@@ -1,3 +1,4 @@
-<div>
-	<div ng-mousedown="start($event)" ng-mouseup="end()">hi</div>{{level}}
+<div class="slider">
+	<div class="slider-track"></div>
+	<div ng-mousedown="start($event)" ng-mouseup="end()" class="slider-handle" ng-style="sliderPosition"></div>{{level}}
 </div>

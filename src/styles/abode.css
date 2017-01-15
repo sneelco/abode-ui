@@ -1110,3 +1110,26 @@ body {
   margin: .125em .125em;
   border-radius: .25em;
 }
+
+.slider {
+  position: relative;
+  width: 3em;
+  height: 9em;
+}
+
+.slider-track {
+  position: absolute;
+  top: 1em;
+  bottom: 1em;
+  left: 1.4em;
+  right: 1.4em;
+  background-color: red;
+}
+
+.slider-handle {
+  position: absolute;
+  left: .5em;
+  right: .5em;
+  height: .5em;
+  background-color: black;
+}
