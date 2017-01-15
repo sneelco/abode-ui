@@ -54,7 +54,7 @@
       </li>
     </ul>
   </div>
-  <div ng-show="controls" style="overflow-x: scroll; overflow-y: hidden; height: 16em; white-space : nowrap;">
+  <div ng-show="controls" style="overflow-x: scroll; overflow-y: hidden; height: 18em; white-space : nowrap;">
     <div style="display: inline-block; margin: 1em; padding: .5em; border: 1px solid #444; border-radius: .25em;" ng-repeat="device in devices | filter: {capabilities: 'light'}">
         <button class="btn btn-default btn-xs pull-right" ng-hide="device.$error || device.$loading"  ng-click="device.$refresh(true)"><i class="icon-refresh"></i></button>
         <button class="btn btn-danger btn-xs pull-right" ng-show="device.$error" ng-click="device.$refresh(true)"><i class="icon-erroralt"></i></button>
@@ -65,7 +65,7 @@
           <small>{{device.name}}</small>
         </div>
         <div style="display: inline-block; width: 3em;">
-          <div style="height: 12em;">
+          <div style="height: 14em;">
             <rzslider rz-slider-model="device._level" rz-slider-options="{floor: 0, ceil: 100, step: 1, vertical: true, hideLimitLabels: true, hidePointerLabels: true, onEnd: set_device_level(device), disabled: device.$loading }" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
           </div>
         </div>

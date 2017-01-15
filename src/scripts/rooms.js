@@ -40,10 +40,10 @@ rooms.factory('Rooms', ['$resource', '$q', '$http', 'abode', 'rooms', 'RoomDevic
   });
 
 
-  Rooms.prototype.$open = function () {
+  Rooms.prototype.$open = function (controls) {
     var self = this;
 
-    return rooms.view(self);
+    return rooms.view(self, undefined, undefined, controls);
   };
 
   Rooms.prototype.$refresh = function () {
@@ -314,7 +314,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
     return defer.promise;
   };
 
-  var viewRoom = function (room, devices, scenes) {
+  var viewRoom = function (room, devices, scenes, controls) {
 
     return $uibModal.open({
       animation: false,
@@ -334,7 +334,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
         $scope.on_counts = {};
         $scope.room_temperature = '?';
         $scope.destroyed = false;
-        $scope.controls = false;
+        $scope.controls = controls || false;
 
         var filters = {
           'light': ['light'],
