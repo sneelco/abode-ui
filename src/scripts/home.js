@@ -302,7 +302,6 @@ home.directive('controller', [function () {
       $scope.type = $scope.type || 'device';
       $scope.action = $scope.action || 'open';
       $scope.args = $scope.args || [];
-      $scope.icon = $scope.icon || 'icon-lightbulb-idea';
 
 
       //If we get an EVENTS_RESET event, schedule a refresh
@@ -358,6 +357,7 @@ home.directive('controller', [function () {
 
         types[$scope.type].get({'id': $scope.name}).$promise.then(function (result) {
           $scope.obj = result;
+          $scope.icon = $scope.icon || $scope.obj.icon || 'icon-lightbulb-idea';
           $scope.loading = false;
           $scope.error = false;
 
