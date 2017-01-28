@@ -440,7 +440,7 @@ home.directive('controller', [function () {
         } else if (action === 'open_controls') {
           func = function () {
             return $scope.obj.$open(true);
-          }
+          };
         } else {
           func = $scope.obj.$open;
         }

@@ -562,7 +562,7 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
         $scope.set_device_level = function (device) {
           return function (id, level) {
             device.$set_level(level);
-          }
+          };
         };
 
         actions.forEach(function (action) {
@@ -622,8 +622,8 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
           '_on': (device._level > 0)
         });
 
-      })
-    })
+      });
+    });
   };
 
   $scope.editAction = function (action) {
