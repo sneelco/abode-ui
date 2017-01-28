@@ -79,7 +79,6 @@ rooms.factory('Rooms', ['$resource', '$q', '$http', 'abode', 'rooms', 'RoomDevic
       url = abode.url('/api/rooms/' + this._id + '/on').value();
 
     $http.post(url).then(function (response) {
-      self._lights_on = true;
       defer.resolve(response.data);
     }, function (err) {
       defer.reject(err.data);
@@ -94,7 +93,6 @@ rooms.factory('Rooms', ['$resource', '$q', '$http', 'abode', 'rooms', 'RoomDevic
       url = abode.url('/api/rooms/' + this._id + '/off').value();
 
     $http.post(url).then(function (response) {
-      self._lights_on = false;
       defer.resolve(response.data);
     }, function (err) {
       defer.reject(err.data);
