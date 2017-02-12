@@ -20,6 +20,8 @@ var abode = angular.module('abode', [
   'wunderground',
   'ifttt',
   'rad',
+  'lutroncaseta',
+  'mqtt',
 ]);
 
 abode.directive('iconSelector', ['$compile', function () {

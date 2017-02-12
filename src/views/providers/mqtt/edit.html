@@ -1,0 +1,19 @@
+<div ng-controller="mqttEdit">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="device.name">
+  </div>
+  <div class="form-group">
+    <label for="name">Topic</label>
+    <input type="text" class="form-control" id="topic" placeholder="Topic" required="" ng-model="device.config.topic">
+  </div>
+  <div class="form-group">
+    <label for="name">Parser</label>
+    <select class="form-control" size="1" ng-model="device.config.parser" ng-options="parser.value as parser.name for parser in parsers"></select>
+  </div>
+</div>
+<div class="form-group">
+  <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="editDevice.$invalid"><i class="icon-savetodrive"></i> Save</button>
+  <button type="submit" class="btn btn-sm btn-default" ng-click="remove()"><i class="icon-circledelete"></i> Remove</button>
+</div>
+

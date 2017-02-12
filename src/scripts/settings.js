@@ -822,13 +822,15 @@ settings.controller('settings', function ($scope, $state, abode, settings, confi
   ];
 
   $scope.providers = [
+    {'name': 'IFTTT', 'route': 'main.settings.ifttt'},
     {'name': 'Insteon PLM', 'route': 'main.settings.insteon'},
     {'name': 'Insteon Hub', 'route': 'main.settings.insteonhub'},
+    {'name': 'Lutron Caseta', 'route': 'main.settings.lutroncaseta'},
+    {'name': 'MQTT', 'route': 'main.settings.mqtt'},
     {'name': 'Rad', 'route': 'main.settings.rad'},
-    {'name': 'Wunderground', 'route': 'main.settings.wunderground'},
-    {'name': 'IFTTT', 'route': 'main.settings.ifttt'},
     {'name': 'RadioThermostat', 'route': 'main.settings.radiothermostat'},
     {'name': 'Video', 'route': 'main.settings.video'},
+    {'name': 'Wunderground', 'route': 'main.settings.wunderground'},
   ];
 
   $scope.sources = [
