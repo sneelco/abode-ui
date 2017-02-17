@@ -1,0 +1,54 @@
+
+<div class="container-fluid bg-muted" style="padding-bottom: 2em;">
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2 col-xs-offset-1">
+    <h2>Settings / Z-Wave
+           <div class="pull-right pointer"  ui-sref="^.providers"><i class="glyphicon glyphicon-arrow-left"></i></div></h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2">
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="form-group">
+              <label for="enabled">Enabled: </label>
+              <toggle value="config.enabled" class="pull-right"></toggle>
+            </div>
+
+            <div class="form-group">
+              <label for="key">Device</label>
+              <input type="text" class="form-control" id="device" placeholder="Device" required="" ng-model="config.device">
+            </div>
+
+            <div class="form-group">
+              <label for="interval">Message Timeout (sec)</label>
+              <input type="number" class="form-control" id="interval" placeholder="Message Timeout" required="" ng-model="config.message_time">
+            </div>
+
+            <div class="form-group">
+              <label for="interval">Queue Interval (ms)</label>
+              <input type="number" class="form-control" id="interval" placeholder="Queue Interval" required="" ng-model="config.queue_interval">
+            </div>
+
+            <div class="form-group">
+              <label for="interval">Poll Interval (sec)</label>
+              <input type="number" class="form-control" id="interval" placeholder="Poll Interval" required="" ng-model="config.poll_interval">
+            </div>
+
+            <div class="form-group">
+              <label for="debug">Debug Logging: </label>
+              <toggle value="config.debug" class="pull-right"></toggle>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()"><i class="icon-savetodrive"></i> Save</button>
+            </div>
+
+          </div>
+        </div>
+
+  </div>
+</div>
+</div>
+

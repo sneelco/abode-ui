@@ -22,6 +22,7 @@ var abode = angular.module('abode', [
   'rad',
   'lutroncaseta',
   'mqtt',
+  'zwave',
 ]);
 
 abode.directive('iconSelector', ['$compile', function () {
