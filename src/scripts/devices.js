@@ -586,8 +586,12 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
       size: 'sm',
       controller: function ($scope, $uibModalInstance, $interval, $timeout, $state, device, source) {
         var intervals = [];
+        var reload_interval;
         var temp_wait, level_wait;
         var source_uri = (source === undefined) ? '/api' : '/api/sources/' + source;
+
+        var success_splay = 1000 * 60 * Math.floor((Math.random() * 5) + 5);
+        var error_splay = 1000 * Math.floor((Math.random() * 5) + 1);
 
         $scope.device = device;
         $scope.processing = false;
@@ -599,6 +603,37 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
             'view': 'views/devices/capabilities/' + c + '.html'
           };
 
+        });
+
+        //If we get an EVENTS_RESET event, schedule a refresh
+        var feed_detector = abode.scope.$on('EVENTS_RESET', function (event, msg) {
+          $scope.loader = $timeout($scope.reload, error_splay);
+        });
+
+        var event_handler = abode.scope.$on('ABODE_EVENT', function (event, msg) {
+
+          if (!$scope.device) {
+            return;
+          }
+
+          if (reload_interval) {
+            $timeout.cancel(reload_interval);
+          }
+
+          if (msg.type === 'device' && $scope.device.name === msg.name) {
+
+            if (msg.event === 'UPDATED') {
+
+              for (var key in msg.object) {
+                if (msg.object.hasOwnProperty(key) && key[0] === '_') {
+                  $scope.device[key] = msg.object[key];
+                }
+              }
+            }
+
+            reload_interval = $interval($scope.reload, success_splay);
+            $scope.$digest();
+          }
         });
 
         $scope.edit = function () {
@@ -858,10 +893,13 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           });
         };
 
-        intervals.push($interval($scope.reload, 10000));
+        reload_interval = $interval($scope.reload, success_splay);
 
         $scope.$on('$destroy', function () {
+          $interval.cancel(reload_interval);
           intervals.forEach($interval.cancel);
+          event_handler();
+          feed_detector();
         });
       },
       resolve: {
