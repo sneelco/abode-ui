@@ -831,6 +831,7 @@ settings.controller('settings', function ($scope, $state, abode, settings, confi
     {'name': 'RadioThermostat', 'route': 'main.settings.radiothermostat'},
     {'name': 'Video', 'route': 'main.settings.video'},
     {'name': 'Wunderground', 'route': 'main.settings.wunderground'},
+    {'name': 'Z-Wave', 'route': 'main.settings.zwave'},
   ];
 
   $scope.sources = [
