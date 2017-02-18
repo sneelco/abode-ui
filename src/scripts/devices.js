@@ -689,7 +689,7 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
         };
 
         $scope.ok = function () {
-          $uibModalInstance.close();
+          $uibModalInstance.close($scope.device);
         };
 
         $scope.display_unlock = function () {
