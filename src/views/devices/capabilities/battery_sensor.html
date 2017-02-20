@@ -1,0 +1,6 @@
+
+<h4 style=" white-space: nowrap">{{device._battery | number:0}}%
+	<i class="icon-batteryaltthird text-danger" ng-show="device._battery <= 50"></i>
+	<i class="icon-batteryaltsixty text-warning" ng-show="device._battery > 50 && device._battery < 75"></i>
+	<i class="icon-batteryaltfull text-success" ng-show="device._battery >= 75"></i>
+</h4>

@@ -1,10 +1,16 @@
-<div>
+<div ng-controller="zwaveAdd">
   <div class="form-group">
     <label for="name">Name</label>
     <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="device.name">
   </div>
   <div class="form-group">
-    <label for="name">Node ID</label>
-    <input type="text" class="form-control" id="node_id" placeholder="Node ID" required="" ng-model="device.config.node_id">
+    <label for="name">Pending Nodes </label><button class="btn btn-xs btn-primary pull-right" ng-disabled="loading" ng-click="refresh()"><i class="icon-refresh" ng-class="{spin: loading}"></i></button>
+
+    <ul class="list-group bg-muted select-list">
+      <li class="list-group-item" style="cursor: pointer;" ng-repeat="device in devices" ng-click="selectNode(device)" ng-class="{'list-group-item-success': device === selected}">
+      	{{device.config.nodeinfo.manufacturer}} {{device.config.nodeinfo.product}} ({{device.config.nodeinfo.type}})
+      	<div><small>name{{device.config.nodeinfo.name}} <span ng-show="device.config.nodeinfo.loc">in {{device.config.nodeinfo.loc}}</span></small></div>
+      </li>
+    </ul>
   </div>
 </div>

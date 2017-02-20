@@ -66,7 +66,41 @@ zwave.controller('zwaveEdit', function ($scope) {
 
 });
 
-zwave.controller('zwaveAdd', function ($scope) {
+zwave.controller('zwaveAdd', function ($scope, $http, abode) {
   $scope.device = $scope.$parent.device;
-  $scope.device.capabilities = ['weather','temperature_sensor', 'humidity_sensor'];
+
+  $scope.error = false;
+  $scope.loading = false;
+
+  $scope.selectNode = function (device) {
+    $scope.selected = device;
+    $scope.device.config = device.config;
+    $scope.device.capabilities = device.capabilities;
+    $scope.device._on = device._on;
+    $scope.device._level = device._level;
+    $scope.device._mode = device._mode;
+    $scope.device._set_point = device._set_point;
+    $scope.device._temperature = device._temperature;
+    $scope.device._lumens = device._lumens;
+    $scope.device._humidity = device._humidity;
+    $scope.device._uv = device._uv;
+    $scope.device._motion = device._motion;
+    $scope.device._battery = device._battery;
+  };
+
+  $scope.refresh = function () {
+    $scope.loading = true;
+    $http.get(abode.url('/api/zwave').value()).then(function (response) {
+      $scope.error = false;
+      $scope.loading = false;
+
+      $scope.devices = response.data.new_devices;
+
+    }, function () {
+      $scope.error = true;
+      $scope.loading = false;
+    });
+  };
+
+  $scope.refresh();
 });
