@@ -16,6 +16,9 @@
         <div ng-repeat="sensor in sensors" ng-include="sensor.view" class="row" style="" > </div>
       </div>
     </div>
+    <div class="row">
+    <h6 class="text-muted">Seen: {{device.last_seen | date: 'medium'}}</h6>
+    </div>
   </div>
 </div>
 
