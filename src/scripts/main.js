@@ -428,6 +428,26 @@ abode.directive('iconSelector', ['$compile', function () {
         {
           'name': 'Turntable',
           'class': 'icon-gramophone'
+        },
+        {
+          'name': 'shade',
+          'class': 'icon-pattern'
+        },
+        {
+          'name': 'Windows Alt',
+          'class': 'icon-windows'
+        },
+        {
+          'name': 'Drawer',
+          'class': 'icon-storagealt-drawer'
+        },
+        {
+          'name': 'Enter',
+          'class': 'icon-enter'
+        },
+        {
+          'name': 'Exit',
+          'class': 'icon-exit'
         }
       ];
     }]
