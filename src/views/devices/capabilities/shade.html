@@ -1,0 +1,19 @@
+<div class="container-fluid">
+  <div class="col-xs-5 text-left" style="padding-top: 0em;">
+    <div style="border: .1em solid white; border-radius: .4em; height: 10em; width: 4em; text-align: center; vertical-align: middle; position: relative; cursor: pointer; padding-top: 3em; transition: 2s;" ng-click="toggle_onoff()">
+      <div style="background-color: #666; position: absolute; left: 0px; right: 0px; top: 0px; bottom: {{device._level}}%;"></div>
+    </div>
+  </div>
+  <div class="col-xs-3">
+    <div style="height: 10em;">
+      <rzslider rz-slider-model="device._level" rz-slider-options="{floor: 0, ceil: 100, step: 1, vertical: true, hideLimitLabels: true, hidePointerLabels: true, onEnd: level_wait}" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
+    </div>
+  </div>
+  <div class="col-xs-4" style="text-align: center; padding-left: 1em;">
+    <div style="width: 1em; font-size: 1.75em">
+      <div><i class="icon-chevron-up" style="cursor: pointer;" ng-click="level_up()"></i></div>
+      <div style="text-align: center; font-size: .75em">{{device._level}}</div>
+      <div><i class="icon-chevron-down" style="cursor: pointer;" ng-click="level_down()"></i></div>
+    </div>
+  </div>
+</div>
