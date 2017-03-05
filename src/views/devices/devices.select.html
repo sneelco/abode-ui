@@ -1,0 +1,7 @@
+
+<button class="btn form-control" ng-click="openAssign()" ng-class="{'btn-default': device, 'btn-primary': !device, 'btn-danger': error}" ng-disabled="loading">
+  <div ng-show="!device && !loading && !error">Select Device</div>
+  <div ng-show="device && !loading && !error"><i class="{{device.icon}}"></i> {{device.name}}</div>
+  <div ng-show="loading && !error"><i class="icon-circleselection spin"></i> Loading</div>
+  <div ng-show="error"><i class="icon-erroralt"></i> Could not find Device</div>
+</button>

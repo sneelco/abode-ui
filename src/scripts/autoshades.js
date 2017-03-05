@@ -125,6 +125,10 @@ autoshades.controller('autoshadesAdd', function ($scope, autoshades, confirm) {
   $scope.device.config.mode = 'linear';
   $scope.device.config.min_azimuth = 0;
   $scope.device.config.max_azimuth = 180;
+  $scope.device.config.min_azimuth = 0;
+  $scope.device.config.cloudy_level = 100;
+  $scope.device.config.sunrise_level = 100;
+  $scope.device.config.sunset_level = 100;
 
   $scope.modes = [
     'linear',
