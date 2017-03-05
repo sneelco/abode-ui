@@ -1,0 +1,36 @@
+<div ng-controller="autoshadesEdit">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" placeholder="Name" required="" ng-model="device.name">
+  </div>
+  <div class="form-group">
+    <label for="name">Mode</label>
+    <select class="form-control" ng-model="device.config.mode" ng-options="item for item in modes"></select>
+  </div>
+  <div class="form-group">
+    <label for="name">Min Azimuth</label>
+    <rzslider rz-slider-model="device.config.min_azimuth" rz-slider-options="{floor: 0, ceil: 360, hideLimitLabels: true}" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
+  </div>
+  <div class="form-group">
+    <label for="name">Max Azimuth</label>
+    <rzslider rz-slider-model="device.config.max_azimuth" rz-slider-options="{floor: 0, ceil: 360, hideLimitLabels: true}" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
+  </div>
+  <div class="form-group">
+    <label for="name">Shades</label>
+    <button class="pull-right btn btn-success btn-xs" ng-click="addDevice()"><i class="icon-circleadd"></i> Add</button>
+
+    <ul class="list-group bg-muted select-list" style="height: 20em;">
+      <li class="list-group-item" style="cursor: pointer;" ng-repeat="device in device.config.devices" ng-class="{'list-group-item-success': device === selected}">
+      	{{device.name}}
+      	<button class="pull-right btn btn-danger btn-xs" ng-click="deleteDevice(device.$index)"><i class="icon-trash"></i></button>
+        <rzslider rz-slider-model="device.min_level" rz-slider-options="{floor: 0, ceil: 100, hideLimitLabels: true, hidePointerLabels: true}" rz-slider-tpl-url="vendor/angularjs-slider/src/rzSliderTpl.html"></rzslider>
+      	<div><small>Min Level to Adjust: {{device.min_level}}%</small></div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="form-group">
+  <button type="submit" class="pull-right btn btn-sm btn-primary" ng-click="save()" ng-disabled="editDevice.$invalid"><i class="icon-savetodrive"></i> Save</button>
+  <button type="submit" class="btn btn-sm btn-default" ng-click="remove()"><i class="icon-circledelete"></i> Remove</button>
+</div>

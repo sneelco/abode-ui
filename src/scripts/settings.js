@@ -832,6 +832,7 @@ settings.controller('settings', function ($scope, $state, abode, settings, confi
     {'name': 'Video', 'route': 'main.settings.video'},
     {'name': 'Wunderground', 'route': 'main.settings.wunderground'},
     {'name': 'Z-Wave', 'route': 'main.settings.zwave'},
+    {'name': 'Auto-Shades', 'route': 'main.settings.autoshades'},
   ];
 
   $scope.sources = [
