@@ -340,6 +340,7 @@ rooms.service('rooms', function ($http, $q, $uibModal, $resource, $rootScope, $t
           'window': ['window'],
           'door': ['door'],
           'temperature_sensor': ['conditioner', 'temperature_sensor', 'fan', 'humidity_sensor'],
+          'shade': ['shade']
         };
 
         $scope.set_device_level = function (device) {

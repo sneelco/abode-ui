@@ -4,7 +4,7 @@
       <button class="btn btn-primary btn-sm pull-right" ng-hide="errors || processing" ng-click="reload()" ng-disabled="controls"><i class="icon-refresh"></i></button>
       <button class="btn btn-danger btn-sm pull-right" ng-show="errors" ng-click="reload()"><i class="icon-erroralt"></i></button>
       <button class="btn btn-default btn-sm pull-right" ng-show="processing"><i class="icon-loadingalt spin"></i></button>
-      <button class="btn btn-sm pull-right" style="margin-right: 1em;" ng-show="filter_counts.light > 0"  ng-click="toggleControls()" ng-class="{'btn-info': controls, 'btn-default': !controls}"><i class="icon-controlpanel"></i></button>
+      <button class="btn btn-sm pull-right" style="margin-right: 1em;" ng-show="filter_counts.light > 0 || filter_counts.shade > 0"  ng-click="toggleControls()" ng-class="{'btn-info': controls, 'btn-default': !controls}"><i class="icon-controlpanel"></i></button>
     </h4>
 </div>
 <div class="modal-body">
@@ -55,7 +55,7 @@
     </ul>
   </div>
   <div ng-show="controls" style="overflow-x: scroll; overflow-y: hidden; height: 18em; white-space : nowrap;">
-    <div style="display: inline-block; margin: 1em; padding: .5em; border: 1px solid #444; border-radius: .25em;" ng-repeat="device in devices | filter: {capabilities: 'light'}">
+    <div style="display: inline-block; margin: 1em; padding: .5em; border: 1px solid #444; border-radius: .25em;" ng-repeat="device in devices" ng-show="has_capability(device, 'light') || has_capability(device, 'shade')">
         <button class="btn btn-default btn-xs pull-right" ng-hide="device.$error || device.$loading"  ng-click="device.$refresh(true)"><i class="icon-refresh"></i></button>
         <button class="btn btn-danger btn-xs pull-right" ng-show="device.$error" ng-click="device.$refresh(true)"><i class="icon-erroralt"></i></button>
         <button class="btn btn-default btn-xs pull-right" ng-show="device.$loading"><i class="icon-circleselection spin"></i></button>
