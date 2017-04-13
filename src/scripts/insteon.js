@@ -100,6 +100,11 @@ angular.module('insteon', [])
       'capabilities': ['motion_sensor', 'onoff'],
       'link_mode': 'responder',
       'active': false,
+    },
+    {
+      'name': 'Scene',
+      'capabilities': ['onoff', 'scene'],
+      'active': true,
     }
   ];
 

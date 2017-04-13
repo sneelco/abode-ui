@@ -769,6 +769,36 @@ devices.service('devices', function ($q, $http, $uibModal, $rootScope, $timeout,
           });
         };
 
+        $scope.on = function () {
+
+          $scope.processing = true;
+          $scope.errors = false;
+
+          $scope.device.$on().then(function () {
+            $scope.processing = false;
+            $scope.errors = false;
+          }, function (err) {
+            console.log(err);
+            $scope.processing = false;
+            $scope.errors = true;
+          });
+        };
+
+        $scope.off = function () {
+
+          $scope.processing = true;
+          $scope.errors = false;
+
+          $scope.device.$off().then(function () {
+            $scope.processing = false;
+            $scope.errors = false;
+          }, function (err) {
+            console.log(err);
+            $scope.processing = false;
+            $scope.errors = true;
+          });
+        };
+
         $scope.toggle_motion = function () {
 
           $scope.processing = true;
@@ -1268,7 +1298,7 @@ devices.directive('selectDevice', function () {
             '_id': device._id,
             'name': device.name,
             'icon': device.icon,
-          }
+          };
         }, function () {
           $scope.error = true;
           $scope.loading = false;
@@ -1320,7 +1350,7 @@ devices.directive('selectDevice', function () {
 
         assign.result.then(function (result) {
           if (result) {
-            $scope.device = result
+            $scope.device = result;
             $scope.value = {
               '_id': result._id,
               'name': result.name,
@@ -1335,7 +1365,7 @@ devices.directive('selectDevice', function () {
       };
 
   var add_device = function (assigned) {
-    return 
+    return;
   };
     },
     templateUrl: 'views/devices/devices.select.html',
