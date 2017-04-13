@@ -766,6 +766,17 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
           }
         };
 
+
+        $scope.on = function () {
+
+          $scope.device._on = true;
+        };
+
+        $scope.off = function () {
+
+          $scope.device._on = true;
+        };
+
         $scope.display_lock = function () {
 
           $scope.device.locked = true;
@@ -983,6 +994,13 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
           if ($scope.has_capability('light') && !$scope.has_capability('dimmer')) {
             $scope.selected._on = $scope.device._on;
           }
+          if ($scope.has_capability('scene')) {
+            $scope.selected._on = $scope.device._on;
+          }
+          if ($scope.has_capability('shade')) {
+            $scope.selected._on = $scope.device._on;
+            $scope.selected._level = $scope.device._level;
+          }
           if ($scope.has_capability('lock')) {
             $scope.selected._on = $scope.device._on;
             $scope.selected._level = $scope.device._level;
@@ -1040,6 +1058,16 @@ scenes.controller('scenesEdit', function ($scope, $state, $uibModal, scene, devi
             $scope.device._on = true;
             $scope.device._level = 100;
           }
+        };
+
+
+        $scope.on = function () {
+            $scope.device._on = true;
+        };
+
+
+        $scope.off = function () {
+            $scope.device._on = false;
         };
 
         $scope.lock = function () {
